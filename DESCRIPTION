@@ -17,7 +17,7 @@ BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings
 Imports:
-  dplyr,
+  harmonicmeanp,
   IRanges,
   methods,
   S4Vectors,

@@ -4,7 +4,15 @@
 \alias{getPwmMatches}
 \title{Find all PWM matches within an XStringSet}
 \usage{
-getPwmMatches(pwm, stringset, rc = TRUE, min_score = "80\%", ...)
+getPwmMatches(
+  pwm,
+  stringset,
+  rc = TRUE,
+  min_score = "80\%",
+  best_only = FALSE,
+  break_ties = c("random", "first", "last", "central", "all"),
+  ...
+)
 }
 \arguments{
 \item{pwm}{A Position Weight Matrix}
@@ -15,15 +23,24 @@ getPwmMatches(pwm, stringset, rc = TRUE, min_score = "80\%", ...)
 
 \item{min_score}{The minimum score to return a match}
 
+\item{best_only}{logical(1) Only return the best match}
+
+\item{break_ties}{Method for breaking ties when only returning the best match
+Ignored when all matches are returned (the default)}
+
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }
 \value{
-A DataFrame with columns: `seq`, `start`, `end`, `width`, `match`,
-`score` and `direction`
-The first four columns indicate the position of the match within the query
-stringset, whilst `match` returns the matching sequence as an `XStringSet`.
-The `direction` column denotes `F` and `R` as a forward or reverse match
-respectively
+A DataFrame with columns: `seq`, `score`, `direction`, `start`,
+`end`, `fromCentre`, `seq_width`, and `match`
+
+The first three columns describe the sequence with matches, the score of
+the match and whether the match was found using the forward or reverse PWM.
+The columns `start`, `end` and `width` describe the where the match was found
+in the sequence, whilst `from_centre` defines the distance between the centre
+of the match and the centre of the sequence being queried.
+The final column contains the matching fragment of the sequence as an
+`XStringSet`.
 }
 \description{
 Find all PWM matches within a set of sequences
@@ -37,4 +54,9 @@ complement, however this can easily be disable by setting `rc = FALSE`.
 
 The function relies heavily on \link[Biostrings]{matchPWM} and
 \link[IRanges]{Views} for speed.
+
+When choosing to return the best match (`best_only = TRUE`), only the match
+with the highest score is returned for each sequence.
+Should there be tied scores, the best match can be chosen as either the first,
+last, most central, all tied matches, or choosing one at random (the default).
 }

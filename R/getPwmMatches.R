@@ -13,18 +13,31 @@
 #' The function relies heavily on \link[Biostrings]{matchPWM} and
 #' \link[IRanges]{Views} for speed.
 #'
+#' When choosing to return the best match (`best_only = TRUE`), only the match
+#' with the highest score is returned for each sequence.
+#' Should there be tied scores, the best match can be chosen as either the first,
+#' last, most central, all tied matches, or choosing one at random (the default).
+#'
 #' @param pwm A Position Weight Matrix
 #' @param stringset An XStringSet
-#' @param min_score The minimum score to return a match
 #' @param rc logical(1) Also find matches using the reverse complement of pwm
+#' @param min_score The minimum score to return a match
+#' @param best_only logical(1) Only return the best match
+#' @param break_ties Method for breaking ties when only returning the best match
+#' Ignored when all matches are returned (the default)
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
-#' @return A DataFrame with columns: `seq`, `start`, `end`, `width`, `match`,
-#' `score` and `direction`
-#' The first four columns indicate the position of the match within the query
-#' stringset, whilst `match` returns the matching sequence as an `XStringSet`.
-#' The `direction` column denotes `F` and `R` as a forward or reverse match
-#' respectively
+#' @return A DataFrame with columns: `seq`, `score`, `direction`, `start`,
+#' `end`, `fromCentre`, `seq_width`, and `match`
+#'
+#' The first three columns describe the sequence with matches, the score of
+#' the match and whether the match was found using the forward or reverse PWM.
+#' The columns `start`, `end` and `width` describe the where the match was found
+#' in the sequence, whilst `from_centre` defines the distance between the centre
+#' of the match and the centre of the sequence being queried.
+#' The final column contains the matching fragment of the sequence as an
+#' `XStringSet`.
+#'
 #'
 #' @import Biostrings
 #' @importFrom IRanges Views
@@ -32,7 +45,10 @@
 #' @importFrom methods as is
 #' @importFrom stats setNames
 #' @export
-getPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...){
+getPwmMatches <- function(
+    pwm, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
+    break_ties = c("random", "first", "last", "central", "all"), ...
+){
 
   ## Checks
   .checkPWM(pwm)
@@ -60,11 +76,12 @@ getPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...){
 
   ## Setup the return object as empty for any cases without matches
   cols <- c(
-    "seq", "score", "direction", "start", "end", "width", "from_centre", "match"
+    "seq", "score", "direction", "start", "end", "from_centre", "seq_width",
+    "match"
   )
   ## Form it as a list, the eventually wrap into a DF
   out <- as.list(mcols(hits))
-  int_cols <- c("start", "end", "width")
+  int_cols <- c("start", "end", "seq_width")
   out[int_cols] <- lapply(int_cols, \(x) integer())
   out$from_centre <- numeric()
   if (!"score" %in% names(out)) out$score <- numeric()
@@ -80,15 +97,14 @@ getPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...){
   out$seq <- hits_to_map
   out$start <- as.integer(start(hits) - c(0, map$end)[hits_to_map])
   out$end <- as.integer(out$start + w - 1)
-  out$width <- w
-  seq_widths <- width(stringset[out$seq])
-  out$from_centre <- 0.5 * (out$start + out$end) - seq_widths / 2
+  out$seq_width <- width(stringset[out$seq])
+  out$from_centre <- 0.5 * (out$start + out$end) - out$seq_width / 2
 
   ## The match itself
-  out$match <- as(hits, "XStringSet")
-  to_rev <- mcols(hits)$direction == "R"
-  out$match[to_rev] <- reverseComplement(out$match[to_rev])
   out$direction <- factor(mcols(hits)$direction, levels = c("F", "R"))
+  to_rev <- out$direction == "R"
+  out$match <- as(hits, "XStringSet")
+  out$match[to_rev] <- reverseComplement(out$match[to_rev])
 
   ## Setup any named strings to appear in the same order
   names_are_char <- is.character(names(stringset))
@@ -96,9 +112,43 @@ getPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...){
     out$seq <- factor(map$names[hits_to_map], map$names)
     out$seq <- droplevels(out$seq)
   }
-  o <- order(out$seq, out$start)
-  if (names_are_char) out$seq <- as.character(out$seq)
 
   ## The final object
-  DataFrame(out)[o, cols]
+  out <- DataFrame(out)[, cols]
+  if (best_only) {
+    break_ties <- match.arg(break_ties)
+    out <- .getBestMatch(out, break_ties)
+  }
+  o <- order(out$seq, out$start)
+  if (names_are_char) out$seq <- as.character(out$seq)
+  out[o, ]
+
 }
+
+#' @importFrom S4Vectors splitAsList
+#' @keywords internal
+.getBestMatch <- function(df, ties){
+
+  if (nrow(df) == 0) return(df)
+
+  ## Decide how to break ties
+  pos <- sample.int(nrow(df), nrow(df)) # Default to random
+  if (ties == "first") pos <- df$start
+  if (ties == "last") pos <- (-1) * df$end
+  if (ties == "central") pos <- abs(df$from_centre)
+  if (ties == "all") pos <- rep_len(1, nrow(df))
+
+  ## Pick the best match using the values we have
+  o <- order(df$seq, 1 / df$score, pos)
+  df <- df[o,]
+  if (ties != "all") {
+    df <- df[!duplicated(df$seq), ]
+  } else {
+   df_list <- splitAsList(df, df$seq)
+   df_list <- lapply(df_list, \(x) subset(x, score == max(score)))
+   df <- do.call("rbind", df_list)
+  }
+  df
+
+}
+
