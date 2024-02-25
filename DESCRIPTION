@@ -15,11 +15,14 @@ Encoding: UTF-8
 URL: https://github.com/smped/motifTestR
 BugReports: https://github.com/smped/motifTestR/issues
 Depends:
-  Biostrings
+  Biostrings,
+  GenomicRanges
 Imports:
+  GenomeInfoDb,
   harmonicmeanp,
   IRanges,
   methods,
+  parallel,
   S4Vectors,
   stats
 Suggests: 
