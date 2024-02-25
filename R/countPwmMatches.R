@@ -1,0 +1,33 @@
+#' @title Count the matches to a PWM within an XStringSet
+#'
+#' @description Count the matches to a PWM within an XStringSet
+#'
+#' @details
+#' Will simply count the matches within an XStringSet and return an integer.
+#' All matches are included.
+#'
+#' @return An integer(1)
+#'
+#' @param pwm A Position Weight Matrix
+#' @param stringset An XStringSet
+#' @param rc logical(1) Also find matches using the reverse complement of pwm
+#' @param min_score The minimum score to return a match
+#' @param ... Passed to \link[Biostrings]{countPWM}
+#'
+#' @import Biostrings
+#' @export
+countPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...) {
+
+  ## Checks & the map
+  .checkPWM(pwm)
+  map <- .viewMapFromXStringset(stringset)
+
+  # Form the entire XStringSetList into a Views object
+  views <- Views(
+    unlist(stringset), start = map$start, width = map$width, names = map$names
+  )
+  n_matches <- countPWM(pwm, views, ...)
+  if (rc) n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
+  as.integer(sum(n_matches))
+
+}

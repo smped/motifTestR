@@ -50,14 +50,10 @@ getPwmMatches <- function(
     break_ties = c("random", "first", "last", "central", "all"), ...
 ){
 
-  ## Checks
+  ## Checks & the map
   .checkPWM(pwm)
   stopifnot(is(stringset, "XStringSet"))
-
-  # Form a map from the original sequences to a views object
-  map <- data.frame(end = cumsum(width(stringset)), width = width(stringset))
-  map$start <- map$end - map$width + 1
-  map$names <- names(stringset)
+  map <- .viewMapFromXStringset(stringset)
 
   # Form the entire XStringSetList into a Views object
   views <- Views(
