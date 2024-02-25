@@ -1,0 +1,4 @@
+- [ ] Build tests for testMotifEnrich. (Probably in longtests for the iterative model)
+- [ ] Produce examples & example datasets
+- [ ] Write vignette
+- [ ] Scale up for lists of motifs using `unversalmotif`
