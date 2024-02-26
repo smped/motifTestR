@@ -49,6 +49,17 @@
 #' @param unlist logical(1) Return as a sorted GRanges object, or leave as a
 #' GRangesList
 #'
+#' @examples
+#' ## Load the example peaks
+#' data("ar_er_peaks")
+#' sq <- seqinfo(ar_er_peaks)
+#' ## Now sample size-matched ranges for two iterations from chr1
+#' makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_iter = 2)
+#'
+#' ## Or simply sample 100 ranges if not planning any iterative analyses
+#' makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_total = 100)
+#'
+#'
 #' @rdname makeRMRanges-methods
 #' @aliases makeRMRanges
 #' @export

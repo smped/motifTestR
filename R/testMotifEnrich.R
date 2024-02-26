@@ -27,7 +27,7 @@
 #'
 #' @return
 #' A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
-#' `Z` and `p`, with additional columns `est_rate` (Poisson) or `sd_bg`,
+#' `Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
 #' `n_iter` and `perm_p` (Iterations).
 #' The numbers of sequences and matches refer to the test set of sequences,
 #' whilst expected is the expected number of matches under the Poisson or
@@ -53,6 +53,30 @@
 #' number
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param ... Passed internally to \link[Biostrings]{countPWM}
+#'
+#' @examples
+#' ## Load the example peaks
+#' data("ar_er_peaks")
+#' sq <- seqinfo(ar_er_peaks)
+#' ## Now sample size-matched ranges 10 times larger. In real-world analyses,
+#' ## this set should be sampled as at least 1000x larger, ensuring features
+#' ## are matched to your requirements
+#' set.seed(305)
+#' bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_iter = 10)
+#'
+#' ## Convert ranges to DNAStringSets
+#' library(BSgenome.Hsapiens.UCSC.hg19)
+#' genome <- BSgenome.Hsapiens.UCSC.hg19
+#' test_set <- getSeq(genome, ar_er_peaks)
+#' bg_set <- getSeq(genome, bg_ranges)
+#' ## Remove sequences with Ns to avoid annoying messages
+#' bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
+#'
+#' ## Test for enrichment of rhe ESR1 motif
+#' data("ex_pwm")
+#' esr1 <- ex_pwm$ESR1
+#' testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
+#'
 #'
 #' @export
 testMotifEnrich <- function(
@@ -93,7 +117,7 @@ testMotifEnrich <- function(
   Z  <- (matches - expected) / sqrt(expected) ## Assumes a strict poisson
   data.frame(
     sequences = n, matches, expected, enrichment = matches / expected,
-    Z, p, est_rate = bg_rate
+    Z, p, est_bg_rate = bg_rate
   )
 
 }
