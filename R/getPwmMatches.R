@@ -38,6 +38,23 @@
 #' The final column contains the matching fragment of the sequence as an
 #' `XStringSet`.
 #'
+#' @examples
+#' ## Load the example PWM
+#' data("ex_pwm")
+#' esr1 <- ex_pwm$ESR1
+#'
+#' ## Load the example Peaks
+#' data("ar_er_peaks")
+#' library(BSgenome.Hsapiens.UCSC.hg19)
+#' genome <- BSgenome.Hsapiens.UCSC.hg19
+#' seq <- getSeq(genome, ar_er_peaks)
+#'
+#' ## Return all matches
+#' getPwmMatches(esr1, seq)
+#'
+#' ## Just the best match
+#' getPwmMatches(esr1, seq, best_only = TRUE)
+#'
 #'
 #' @import Biostrings
 #' @importFrom IRanges Views

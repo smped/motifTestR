@@ -27,6 +27,7 @@ Imports:
   stats
 Suggests: 
   BiocStyle,
+  BSgenome.Hsapiens.UCSC.hg19,
   MotifDb,
   testthat (>= 3.0.0),
   universalmotif

@@ -60,3 +60,22 @@ with the highest score is returned for each sequence.
 Should there be tied scores, the best match can be chosen as either the first,
 last, most central, all tied matches, or choosing one at random (the default).
 }
+\examples{
+## Load the example PWM
+data("ex_pwm")
+esr1 <- ex_pwm$ESR1
+
+## Load the example Peaks
+data("ar_er_peaks")
+library(BSgenome.Hsapiens.UCSC.hg19)
+genome <- BSgenome.Hsapiens.UCSC.hg19
+seq <- getSeq(genome, ar_er_peaks)
+
+## Return all matches
+getPwmMatches(esr1, seq)
+
+## Just the best match
+getPwmMatches(esr1, seq, best_only = TRUE)
+
+
+}

@@ -79,6 +79,9 @@ central bin containing zero, and tallied.
 Setting `abs` to `TRUE` will set all positions from the centre as
 *absolute values*, returning counts purely as bins with distances from zero,
 marking this as an inclusive lower bound.
+Motif alignments are assigned into bins based on the central position of the
+match, as provided in the column `from_centre` when calling
+\link{getPwmMatches}.
 
 The \link[stats]{binom.test} is performed on each bin using the alternative
 hypothesis, with the returned p-values across all bins combined using the
@@ -88,4 +91,26 @@ values for start, end, centre, width, matches in region, expected and
 enrichment are across this set of bins.
 The expectation is that where a positional bias is evident, this will be a
 narrow range containing a non-trivial proportion of the total matches.
+}
+\examples{
+## Load the example PWM
+data("ex_pwm")
+esr1 <- ex_pwm$ESR1
+
+## Load the example Peaks
+data("ar_er_peaks")
+library(BSgenome.Hsapiens.UCSC.hg19)
+genome <- BSgenome.Hsapiens.UCSC.hg19
+seq <- getSeq(genome, ar_er_peaks)
+
+## Get the best match and use this data
+bm <- getPwmMatches(esr1, seq, best_only = TRUE)
+## Test for enrichment in any position
+testMotifPos(bm = bm)
+
+## Start with the PWM & the stringset, testing for distance from zero
+andr <- ex_pwm$ANDR
+testMotifPos(andr, seq, abs = TRUE)
+
+
 }

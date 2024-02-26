@@ -27,3 +27,16 @@ Count the matches to a PWM within an XStringSet
 Will simply count the matches within an XStringSet and return an integer.
 All matches are included.
 }
+\examples{
+## Load the example PWM
+data("ex_pwm")
+esr1 <- ex_pwm$ESR1
+
+## Load the example Peaks
+data("ar_er_peaks")
+library(BSgenome.Hsapiens.UCSC.hg19)
+genome <- BSgenome.Hsapiens.UCSC.hg19
+seq <- getSeq(genome, ar_er_peaks)
+countPwmMatches(esr1, seq)
+
+}
