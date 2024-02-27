@@ -72,7 +72,7 @@
 #' ## Remove sequences with Ns to avoid annoying messages
 #' bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
 #'
-#' ## Test for enrichment of rhe ESR1 motif
+#' ## Test for enrichment of the ESR1 motif
 #' data("ex_pwm")
 #' esr1 <- ex_pwm$ESR1
 #' testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
@@ -87,6 +87,27 @@ testMotifEnrich <- function(
   ## Checks
   stopifnot(is(bg, "XStringSet"))
   model <- match.arg(model)
+  args <- c(as.list(environment()), list(...))
+  out <- NULL
+  if (is.matrix(pwm)) return(do.call(".testSingleMotifEnrich", args))
+  if (is.list(pwm)) {
+    pwm <- .cleanMotifList(pwm)
+    out <- lapply(
+      pwm, .testSingleMotifEnrich, stringset = stringset, bg = bg,
+      model = model, var = var, mc.cores = mc.cores
+    )
+    out <- do.call("rbind", out)
+  }
+
+  out
+
+}
+
+#' @keywords internal
+.testSingleMotifEnrich <- function(
+    pwm, stringset, bg, model, var, mc.cores = 1, ...
+){
+
   ## Find the matches in the test set. This will also perform tests on inputs
   matches <- countPwmMatches(pwm, stringset, ...)
   n <- length(stringset)

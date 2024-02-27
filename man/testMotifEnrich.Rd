@@ -92,7 +92,7 @@ bg_set <- getSeq(genome, bg_ranges)
 ## Remove sequences with Ns to avoid annoying messages
 bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
 
-## Test for enrichment of rhe ESR1 motif
+## Test for enrichment of the ESR1 motif
 data("ex_pwm")
 esr1 <- ex_pwm$ESR1
 testMotifEnrich(esr1, test_set, bg_set, model = "poisson")

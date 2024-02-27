@@ -34,6 +34,13 @@ test_that("Choosing only the best matches works", {
 
 })
 
+test_that("Passing a list also produces a list",{
+  multi <- getPwmMatches(ex_pwm[1:2], stringset)
+  expect_true(is(multi, "list"))
+  expect_true(length(multi) == 2)
+  expect_true(all(vapply(multi, is, logical(1), "DataFrame")))
+})
+
 test_that("Fails are correct",{
   expect_error(getPwmMatches(letters, stringset))
   expect_error(getPwmMatches(esr1 * 2, stringset))

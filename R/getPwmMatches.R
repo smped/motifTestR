@@ -18,13 +18,14 @@
 #' Should there be tied scores, the best match can be chosen as either the first,
 #' last, most central, all tied matches, or choosing one at random (the default).
 #'
-#' @param pwm A Position Weight Matrix
+#' @param pwm A Position Weight Matrix, list of PWMs or universalmotif list
 #' @param stringset An XStringSet
 #' @param rc logical(1) Also find matches using the reverse complement of pwm
 #' @param min_score The minimum score to return a match
 #' @param best_only logical(1) Only return the best match
 #' @param break_ties Method for breaking ties when only returning the best match
 #' Ignored when all matches are returned (the default)
+#' @param mc.cores Passed to \link[parallel]{mclapply} if passing multiple PWMs
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
 #' @return A DataFrame with columns: `seq`, `score`, `direction`, `start`,
@@ -37,6 +38,8 @@
 #' of the match and the centre of the sequence being queried.
 #' The final column contains the matching fragment of the sequence as an
 #' `XStringSet`.
+#'
+#' When passing a list of PWMs, a list of the above DataFrames will be returned.
 #'
 #' @examples
 #' ## Load the example PWM
@@ -55,16 +58,43 @@
 #' ## Just the best match
 #' getPwmMatches(esr1, seq, best_only = TRUE)
 #'
+#' ## Apply multiple PWMs as a list
+#' getPwmMatches(ex_pwm, seq, best_only = TRUE)
 #'
+#' @importFrom parallel mclapply
+#' @importFrom methods slot
+#' @importClassesFrom universalmotif universalmotif
+#' @export
+getPwmMatches <- function(
+    pwm, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
+    break_ties = c("random", "first", "last", "central", "all"), mc.cores = 1,
+    ...
+) {
+
+  break_ties <- match.arg(break_ties)
+  args <- c(as.list(environment()), list(...))
+  args <- args[names(args) != "mc.cores"]
+  if (is.list(pwm)) {
+    pwm <- .cleanMotifList(pwm)
+    out <- mclapply(
+      pwm, .getSinglePwmMatches, stringset = stringset, rc = rc,
+      min_score = min_score, best_only = best_only, break_ties = break_ties,
+      mc.cores = mc.cores
+    )
+  }
+  if (is.matrix(pwm)) out <- do.call(".getSinglePwmMatches", args)
+  out
+
+}
+
 #' @import Biostrings
 #' @importFrom IRanges Views
 #' @importFrom S4Vectors DataFrame mcols mcols<-
 #' @importFrom methods as is
 #' @importFrom stats setNames
-#' @export
-getPwmMatches <- function(
-    pwm, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
-    break_ties = c("random", "first", "last", "central", "all"), ...
+#' @keywords internal
+.getSinglePwmMatches <- function(
+    pwm, stringset, rc, min_score, best_only = FALSE, break_ties , ...
 ){
 
   ## Checks & the map
@@ -94,11 +124,12 @@ getPwmMatches <- function(
   )
   ## Form it as a list, the eventually wrap into a DF
   out <- as.list(mcols(hits))
-  int_cols <- c("start", "end", "seq_width")
+  int_cols <- c("seq", "start", "end", "seq_width")
   out[int_cols] <- lapply(int_cols, \(x) integer())
   out$from_centre <- numeric()
   if (!"score" %in% names(out)) out$score <- numeric()
-  out$seq <- character()
+  names_are_char <- is.character(names(stringset))
+  if (names_are_char) out$seq <- character()
   out$match <- DNAStringSet()
   if (length(hits) == 0) return(DataFrame(out)[,cols])
 
@@ -120,7 +151,6 @@ getPwmMatches <- function(
   out$match[to_rev] <- reverseComplement(out$match[to_rev])
 
   ## Setup any named strings to appear in the same order
-  names_are_char <- is.character(names(stringset))
   if (names_are_char) {
     out$seq <- factor(map$names[hits_to_map], map$names)
     out$seq <- droplevels(out$seq)
@@ -128,10 +158,7 @@ getPwmMatches <- function(
 
   ## The final object
   out <- DataFrame(out)[, cols]
-  if (best_only) {
-    break_ties <- match.arg(break_ties)
-    out <- .getBestMatch(out, break_ties)
-  }
+  if (best_only) out <- .getBestMatch(out, break_ties)
   o <- order(out$seq, out$start)
   if (names_are_char) out$seq <- as.character(out$seq)
   out[o, ]

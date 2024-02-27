@@ -6,12 +6,14 @@
 #' Will simply count the matches within an XStringSet and return an integer.
 #' All matches are included.
 #'
-#' @return An integer(1)
+#' @return An integer vector
 #'
 #' @param pwm A Position Weight Matrix
 #' @param stringset An XStringSet
 #' @param rc logical(1) Also find matches using the reverse complement of pwm
 #' @param min_score The minimum score to return a match
+#' @param mc.cores Passed to \link[parallel]{mclapply} when analysing a list of
+#' PWMs
 #' @param ... Passed to \link[Biostrings]{countPWM}
 #'
 #' @examples
@@ -26,10 +28,35 @@
 #' seq <- getSeq(genome, ar_er_peaks)
 #' countPwmMatches(esr1, seq)
 #'
-#' @import Biostrings
+#' ## Count all PWMs
+#' countPwmMatches(ex_pwm, seq)
+#'
+#' @importFrom parallel mclapply
 #' @export
-countPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...) {
+countPwmMatches <- function(
+    pwm, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
+) {
 
+  args <- c(as.list(environment()), list(...))
+  args <- args[names(args) != "mc.cores"]
+  if (is.list(pwm)) {
+    pwm <- .cleanMotifList(pwm)
+    out <- mclapply(
+      pwm, .countSinglePwmMatches, stringset = stringset, rc = rc,
+      min_score = min_score, mc.cores = mc.cores
+    )
+    out <- unlist(out)
+  }
+  if (is.matrix(pwm)) out <- do.call(".countSinglePwmMatches", args)
+  out
+
+}
+
+#' @import Biostrings
+#' @keywords internal
+.countSinglePwmMatches <- function(
+    pwm, stringset, rc = TRUE, min_score = "80%", ...
+){
   ## Checks & the map
   .checkPWM(pwm)
   map <- .viewMapFromXStringset(stringset)
@@ -41,5 +68,4 @@ countPwmMatches <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...) {
   n_matches <- countPWM(pwm, views, ...)
   if (rc) n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
   as.integer(sum(n_matches))
-
 }

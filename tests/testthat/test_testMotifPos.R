@@ -47,6 +47,12 @@ test_that("Passing to getPwmMatches works", {
   )
 })
 
+test_that("List input works", {
+  res <- testMotifPos(ex_pwm, seq)
+  expect_true(is(res, "data.frame"))
+  expect_equal(rownames(res), names(ex_pwm))
+})
+
 test_that("testMotifPos errors correctly", {
   empty <- testMotifPos(bm = bm[0,])
   expect_true(nrow(empty) == 0)

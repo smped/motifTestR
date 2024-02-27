@@ -14,6 +14,7 @@ testMotifPos(
   min_score = "80\%",
   break_ties = "random",
   alt = c("greater", "less", "two.sided"),
+  mc.cores = 1,
   ...
 )
 }
@@ -38,6 +39,8 @@ anything passed via `pwm` or `stringset.`}
 \item{break_ties}{Choose how to resolve matches with tied scores}
 
 \item{alt}{Alternative hypothesis for the binomial test}
+
+\item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }

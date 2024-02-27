@@ -11,11 +11,12 @@ getPwmMatches(
   min_score = "80\%",
   best_only = FALSE,
   break_ties = c("random", "first", "last", "central", "all"),
+  mc.cores = 1,
   ...
 )
 }
 \arguments{
-\item{pwm}{A Position Weight Matrix}
+\item{pwm}{A Position Weight Matrix, list of PWMs or universalmotif list}
 
 \item{stringset}{An XStringSet}
 
@@ -27,6 +28,8 @@ getPwmMatches(
 
 \item{break_ties}{Method for breaking ties when only returning the best match
 Ignored when all matches are returned (the default)}
+
+\item{mc.cores}{Passed to \link[parallel]{mclapply} if passing multiple PWMs}
 
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }
@@ -41,6 +44,8 @@ in the sequence, whilst `from_centre` defines the distance between the centre
 of the match and the centre of the sequence being queried.
 The final column contains the matching fragment of the sequence as an
 `XStringSet`.
+
+When passing a list of PWMs, a list of the above DataFrames will be returned.
 }
 \description{
 Find all PWM matches within a set of sequences
@@ -77,5 +82,7 @@ getPwmMatches(esr1, seq)
 ## Just the best match
 getPwmMatches(esr1, seq, best_only = TRUE)
 
+## Apply multiple PWMs as a list
+getPwmMatches(ex_pwm, seq, best_only = TRUE)
 
 }

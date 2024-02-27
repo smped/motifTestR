@@ -24,13 +24,13 @@ Imports:
   methods,
   parallel,
   S4Vectors,
-  stats
+  stats,
+  universalmotif
 Suggests: 
   BiocStyle,
   BSgenome.Hsapiens.UCSC.hg19,
   MotifDb,
   testthat (>= 3.0.0),
-  universalmotif
 LazyData: false
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Config/testthat/edition: 3

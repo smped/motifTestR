@@ -62,6 +62,7 @@
 #' @param min_score The minimum score to return a match
 #' @param break_ties Choose how to resolve matches with tied scores
 #' @param alt Alternative hypothesis for the binomial test
+#' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
 #'
@@ -86,22 +87,50 @@
 #' testMotifPos(andr, seq, abs = TRUE)
 #'
 #'
-#' @importFrom harmonicmeanp p.hmp
-#' @importFrom stats binom.test
+#' @importFrom parallel mclapply
 #' @export
 testMotifPos <- function(
     pwm, stringset, bm, binwidth = 10, abs = FALSE, rc = TRUE,
     min_score = "80%", break_ties = "random",
-    alt = c("greater", "less", "two.sided"), ...
+    alt = c("greater", "less", "two.sided"), mc.cores = 1, ...
 ) {
 
+  alt <- match.arg(alt)
+  args <- c(as.list(environment()), list(...))
+  args <- args[!names(args) %in% c("pwm", "stringset", "mc.cores")]
+  ## Handle any situation without a bm df or list
   if (missing(bm)) {
     ## This will perform all checks as well
     ## pwm & stringset are not required beyond this initial call
     bm <- getPwmMatches(
-      pwm, stringset, rc, min_score, best_only = TRUE, break_ties, ...
+      pwm, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
     )
   }
+  stopifnot(is(bm, "list_OR_List"))
+  if (is(bm, "DataFrame")) {
+    args$bm <- bm
+    out <- do.call(.testSingleMotifPos, args)
+  } else {
+    stopifnot(all(vapply(bm, is, logical(1), "DataFrame")))
+    out <- mclapply(
+      bm, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
+      min_score = min_score, break_ties = break_ties, alt = alt, ...,
+      mc.cores = mc.cores
+    )
+    out <- do.call("rbind", out)
+  }
+
+  out
+
+}
+
+#' @importFrom harmonicmeanp p.hmp
+#' @importFrom stats binom.test
+#' @keywords internal
+.testSingleMotifPos <- function(
+    bm, binwidth , abs, rc, min_score, break_ties, alt, ...
+) {
+
   stopifnot(is(bm, "DataFrame"))
 
   ## Setup a well formed output object for easy combining with other tests
@@ -132,7 +161,6 @@ testMotifPos <- function(
   df$width <- df$end - df$start + 1
   df$bin_prob <- df$width / sum(df$width)
   df$expected <- n_matches * df$bin_prob
-  alt <- match.arg(alt)
   df$p <- vapply(
     seq_along(df$bin),
     \(i) {
@@ -160,7 +188,6 @@ testMotifPos <- function(
   colnames(consensus) <- motif_cols
   out$consensus_motif <- list(consensus)
   out[, out_cols]
-
 }
 
 #' @keywords internal

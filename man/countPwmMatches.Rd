@@ -4,7 +4,14 @@
 \alias{countPwmMatches}
 \title{Count the matches to a PWM within an XStringSet}
 \usage{
-countPwmMatches(pwm, stringset, rc = TRUE, min_score = "80\%", ...)
+countPwmMatches(
+  pwm,
+  stringset,
+  rc = TRUE,
+  min_score = "80\%",
+  mc.cores = 1,
+  ...
+)
 }
 \arguments{
 \item{pwm}{A Position Weight Matrix}
@@ -15,10 +22,13 @@ countPwmMatches(pwm, stringset, rc = TRUE, min_score = "80\%", ...)
 
 \item{min_score}{The minimum score to return a match}
 
+\item{mc.cores}{Passed to \link[parallel]{mclapply} when analysing a list of
+PWMs}
+
 \item{...}{Passed to \link[Biostrings]{countPWM}}
 }
 \value{
-An integer(1)
+An integer vector
 }
 \description{
 Count the matches to a PWM within an XStringSet
@@ -38,5 +48,8 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 genome <- BSgenome.Hsapiens.UCSC.hg19
 seq <- getSeq(genome, ar_er_peaks)
 countPwmMatches(esr1, seq)
+
+## Count all PWMs
+countPwmMatches(ex_pwm, seq)
 
 }

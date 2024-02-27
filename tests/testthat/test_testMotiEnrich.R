@@ -1,0 +1,37 @@
+set.seed(305)
+bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_iter = 10)
+
+## Convert ranges to DNAStringSets
+test_set <- getSeq(genome, ar_er_peaks)
+bg_set <- getSeq(genome, bg_ranges)
+mcols(bg_set) <- mcols(bg_ranges)
+## Remove sequences with Ns to avoid annoying messages
+bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
+
+test_that("Basic Poisson analysis works", {
+  res <- testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
+  expect_true(is(res, "data.frame"))
+  expect_true(nrow(res) == 1)
+  expect_true("est_bg_rate" %in% colnames(res))
+})
+
+test_that("Lists are tested", {
+  res <- testMotifEnrich(um_db, test_set, bg_set, model = "poisson")
+  expect_true(is(res, "data.frame"))
+  expect_equal(rownames(res), vapply(um_db, slot, character(1), "name"))
+})
+
+test_that("Iteration works", {
+  expect_error(testMotifEnrich(esr1, test_set, bg_set, model = "iter"))
+  bg_set <- getSeq(genome, bg_ranges)
+  mcols(bg_set) <- mcols(bg_ranges)
+  iter <- suppressWarnings(
+    ## This will call sequences with N
+    testMotifEnrich(esr1, test_set, bg_set, model = "iter")
+  )
+  expect_true(is(iter, "data.frame"))
+  expect_true(nrow(iter) == 1)
+  expect_true("perm_p" %in% colnames(iter))
+  expect_true(iter$n_iter == 10)
+
+})

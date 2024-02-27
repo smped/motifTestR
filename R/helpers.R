@@ -15,3 +15,21 @@
   map$names <- names(stringset)
   map
 }
+
+#' @keywords internal
+#' @importClassesFrom universalmotif universalmotif
+.cleanMotifList <- function(x) {
+  if (all(vapply(x, is, logical(1), "universalmotif"))) {
+    nm <- vapply(x, slot, character(1), "name")
+    x <- lapply(x, slot, "motif")
+    names(x) <- nm
+  }
+  ## Now check everything is a matrix
+  all_mat <- vapply(
+    x,
+    \(x) all(is.matrix(x), rownames(x) == c("A", "C", "G", "T")),
+    logical(1)
+  )
+  stopifnot(all_mat)
+  x
+}
