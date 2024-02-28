@@ -1,0 +1,238 @@
+---
+title: "Motif Analysis Using motifTestR"
+author:
+- name: Stevie Pederson
+  affiliation: Black Ochre Data Labs, Telethon Kids Institute
+  email: stephen.pederson@telethonkids.org.au
+package: motifTestR
+bibliography: '`r system.file("references.bib", package = "motifTestR")`'
+output:
+  BiocStyle::html_document
+abstract: |
+  Analysis of transcription factor binding motifs using Position Weight Matrices
+  (PWMs) is a common task in analysis of genomic data.
+  Two key tests for analysis of TFBMs using morifTestR are demonstrated below
+vignette: |
+  %\VignetteIndexEntry{Motif Analysis Using motifTestR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, crop = NULL)
+```
+
+
+# Introduction
+
+Bioinformatic analysis of data from ChIP-Seq and ATAC-Seq commonly involves the analysis of sequences within the regions identified is being of interest.
+Whilst these analyses are not restricted to transcription factors, this can 
+often form an important component of this type of analysis.
+Analysis of Transcription Factor Binding Motifs (TFBMs) is often performed 
+using Position Weight Matrics (PWMs) to encode the flexibility in which exact sequence is bound by the particular transcription factor.
+
+Managing of TFBMs is well supported in `R` with `r Biocpkg("MotifDb")` providing
+a wide database of PWMs as provided by multiple databases.
+Additional, both `r Biocpkg("TFBSTools")` [@Tan2016-lj] and `r Biocpkg("universalmotif")` enable the import and management of a wide variety 
+of TFBM formats which are able to be sourced directly from HOCOMOCO [@Kulakovskiy2013-jt], JASPAR [@Sandelin2004-mv] or any other source, or even 
+custom databases determined experimentally.
+Visualisation of TFBMs is also well supported in the Bioconductor ecosystem via `r Biocpkg("motifStack")` [@ou2018], `r Biocpkg("TFBSTools")` and 
+`r Biocpkg("seqLogo")`, with good analytic capability also provided by 
+`r Biocpkg("monaLisa")` [@Machlab2022-rg] and `r Biocpkg("PWMEnrich")`.
+
+Many tools provide analytic capability outside of R, such as HOMER [@Heinz2010-dz] 
+and the MEME-Suite [@Bailey2015-wa], which are both widely used to ask varied 
+questions of the data, including motif enrichment, positional enrichment and identification of novel TFBMs. 
+The package `r Biocpkg("memes")` provides an R wrapper to several of the tools 
+within the MEME-suite, whilst `r Githubpkg("robertamezquita/marge")` provides a wrapper to HOMER.
+However, both of these require the external tools to be installed.
+
+The tools within `motifTestR` aim to build on and expand the existing resources 
+available to the Bioconductor community, and offer two complementary approaches
+to TFBM analysis within `XStringSet` objects containing multiple sequences.
+
+
+# Setup
+
+## Installation
+
+In order to perform the operations in this vignette, the following packages 
+require installation.
+
+```r 
+if (!"BiocManager" %in% rownames(installed.packages()))
+  install.packages("BiocManager")
+BiocManager::install("motifTestR")
+```
+
+Once installed, we can load the required packages
+
+```{r load-packages}
+library(motifTestR)
+library(extraChIPs)
+library(rtracklayer)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(parallel)
+library(tidyverse)
+```
+
+```{r}
+cores <- max(4, detectCores() - 1)
+```
+
+
+## Defining a Set of Peaks
+
+The peaks used in this workflow were obtained from the bed files denoting binding sites of the Androgen Receptor and Estrogen Receptor, which are also marked by
+H3K27ac, in ZR-75-1 cells under DHT treatment [@Hickey2021-mz].
+A subset of 479 peaks, resized to 400bp from chromosome1 can be loaded using the following.
+
+```{r load-examle-peaks}
+data("ar_er_peaks")
+ar_er_peaks
+sq <- seqinfo(ar_er_peaks)
+```
+
+For those wishing to work with a larger dataset, the complete set of peaks across the entire genome can be reformed using the following, although the results presented will refer to the smaller object.
+It should also be noted that using a larger object may cause some computationally demanding steps to run longer than for the smaller object.
+
+```r
+base_url <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3511nnn"
+bed_url <- list(
+  AR = file.path(
+    base_url, "GSM3511083/suppl/GSM3511083%5FAR%5Fpeaks%5FED.bed.gz"
+  ),
+  ER = file.path(
+    base_url, "GSM3511085/suppl/GSM3511085%5FER%5Fpeaks%5FED.bed.gz"
+  ),
+  H3K27ac = file.path(
+    base_url, "GSM3511087/suppl/GSM3511087%5FH3K27ac%5Fpeaks%5FED.bed.gz"
+  )
+)
+all_peaks <- GRangesList(lapply(bed_url, import.bed))
+seqlevels(all_peaks) <- seqnames(sq)
+seqinfo(all_peaks) <- sq
+ar_er_peaks <- makeConsensus(
+  all_peaks, p = 2/3, method = "coverage", min_width = 200
+) |>
+  resize(width = 400, fix = 'center')
+```
+
+## Obtaining a Set of Sequences for Testing
+
+Now that we have genomic co-ordinates as a set of peaks, we can obtain the sequences that are associated with each peak.
+The source ranges can also be added to the sequences as names by coercing the ranges to a character vector
+
+```{r test-seq}
+test_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, ar_er_peaks)
+names(test_seq) <- as.character(ar_er_peaks)
+```
+
+## Obtaining a List of PWMs for Testing
+
+A small list of PWMs, obtained from `r Biocpkg("MotifDb")` are provided with the package and these will be suitable for all downstream analysis.
+For those wishing to use their own data, please choose a set of PWMs by parsing files using `r Biocpkg("universalmotif")` or subsetting those in `MotifDb` down to a suitable size.
+
+```{r}
+data("ex_pwm")
+names(ex_pwm)
+```
+
+# Searching Sequences
+
+## Finding PWM Matches
+
+All PWM matches within the test sequences can be returned for any of the PWMs,
+with `getPwmMatches()` searching using the PWM and it's reverseComplement by 
+default.
+
+```{r match-esr1}
+getPwmMatches(ex_pwm$ESR1, test_seq)
+```
+
+Many sequences will contain multiple matches, and we can subset our results to only the 'best match' by setting `best_only = TRUE`.
+The best match is chosen by the highest score returned for each match.
+If multiple matches return identical scores, one is chosen at random by default.
+This can be further controlled by setting `break_ties` to any of c("random", "first", "last", "central", "all"), which will choose by sequence order, proximity to centre, or all tied matches if preferred.
+
+```{r best-match-esr1}
+getPwmMatches(ex_pwm$ESR1, test_seq, best_only = TRUE)
+```
+
+We can return all best matches for each PWM, by passing the complete list of PWMs.
+
+```{r bm-all}
+bm_all <- getPwmMatches(
+  ex_pwm, test_seq, best_only = TRUE, break_ties = "all",
+  mc.cores = cores
+)
+```
+
+This same strategy of passing a single, or multiple PWMs can be applied even when simply wishing to count the total matches for each PWM.
+
+```{r count-pwm-matches}
+countPwmMatches(ex_pwm, test_seq, mc.cores = cores)
+```
+
+
+# Testing For Positional Bias
+
+A common tool within MEME-Suite is `centrimo` [@Bailey2012-qz] and `motifTestR` provides a simple, easily interpretable alternative using `testMotifPos()`.
+This function bins the distances from the centre of each sequence and, if no positional bias is expected, the matches should be equally distributed between bins.
+
+A test for each bin is performed using `binom.test()` and a summarised p-value for all tests is returned using the asymptotically exact harmonic mean p-value [@Wilson2019-ln].
+By default, the binomial test is applied for the null hypothesis to detect matches in each bin which are greater than expected, however, this can also be set by the user.
+When using the harmonic-mean p-value however, this will return a more conservative p-value across the entire set of bins.
+Additionally, the central bin in `testMotifPos()` is always defined to be symmetrical around zero.
+
+
+```{r}
+testMotifPos(bm = bm_all) |>
+  arrange(p) |>
+  mutate(fdr = p.adjust(p, "fdr"))
+```
+
+The bins returned by the function represent the widest range of bins where the raw p-values were below the harmonic-mean p-value.
+Wide ranges tend to be associated with lower significance for that PWM.
+
+Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
+
+```{r}
+testMotifPos(bm = bm_all, abs = TRUE) |>
+  arrange(p) |>
+  mutate(fdr = p.adjust(p, "fdr"))
+```
+
+This approach is particularly helpful for detecting co-located transcription factors which can be any distance from the TF used to obtain and centre the test set of sequences.
+
+## Viewing Matches
+
+The next matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias
+
+```{r}
+breaks <- seq(-200, 200, by = 5)
+bm_all |>
+  lapply(\(x) data.frame(from_centre = abs(x$from_centre))) |>
+  bind_rows(.id = "Motif") |>
+  mutate(bin = cut(from_centre, breaks = breaks)) |>
+  summarise(
+    from_centre = mean(from_centre),
+    n = dplyr::n(), .by = c(Motif, bin)
+  ) |>
+  mutate(p = n / sum(n), .by = Motif) |>
+  ggplot(aes(from_centre, p, colour = Motif)) +
+  geom_smooth(se = FALSE) +
+  theme_bw()
+## Maybe add a function showing cumulative prob...?
+```
+
+
+
+# References {.unnumbered}
+
+
+# Session info
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
