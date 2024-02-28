@@ -45,7 +45,7 @@
 #' will overlap the background sequences and background ranges are able to be
 #' sampled with replacement.
 #'
-#' @param pwm A Position Weight Matrix
+#' @param pwm A Position Weight Matrix or list of PWMs
 #' @param stringset An XStringSet with equal sequence widths
 #' @param bg An XStringSet with the same sequence widths as the test XStringset
 #' @param model The model used for analysis
@@ -76,6 +76,9 @@
 #' data("ex_pwm")
 #' esr1 <- ex_pwm$ESR1
 #' testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
+#'
+#' ## Test all motifs
+#' testMotifEnrich(ex_pwm, test_set, bg_set, model = "poisson")
 #'
 #'
 #' @export

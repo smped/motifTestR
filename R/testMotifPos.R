@@ -50,10 +50,12 @@
 #' Matrix (PFM) using \link[Biostrings]{consensusMatrix}.
 #'
 #'
-#' @param pwm A Position Weight Matrix. Not required if `bm` is supplied.
+#' @param pwm A Position Weight Matrix, or list of PWMs. Not required if `bm`
+#' is supplied.
 #' @param stringset An XStringSet. Not required if `bm` is supplied
 #' @param bm An optional set of 'best matches' as returned by
-#' \link{getPwmMatches} setting `best_only = TRUE`. Any sequences with multiple
+#' \link{getPwmMatches} setting `best_only = TRUE`. Alternatively, a list of
+#' returned 'best matches' can be used. Any individual sequence with multiple
 #' 'best matches' will have each match weighted. If provided, will override
 #' anything passed via `pwm` or `stringset.`
 #' @param binwidth Width of bins across the range to group data into
@@ -82,9 +84,8 @@
 #' ## Test for enrichment in any position
 #' testMotifPos(bm = bm)
 #'
-#' ## Start with the PWM & the stringset, testing for distance from zero
-#' andr <- ex_pwm$ANDR
-#' testMotifPos(andr, seq, abs = TRUE)
+#' ## Provide a list of PWMs, testing for distance from zero
+#' testMotifPos(ex_pwm, seq, abs = TRUE, binwidth = 10)
 #'
 #'
 #' @importFrom parallel mclapply

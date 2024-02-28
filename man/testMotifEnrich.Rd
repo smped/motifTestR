@@ -15,7 +15,7 @@ testMotifEnrich(
 )
 }
 \arguments{
-\item{pwm}{A Position Weight Matrix}
+\item{pwm}{A Position Weight Matrix or list of PWMs}
 
 \item{stringset}{An XStringSet with equal sequence widths}
 
@@ -96,6 +96,9 @@ bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
 data("ex_pwm")
 esr1 <- ex_pwm$ESR1
 testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
+
+## Test all motifs
+testMotifEnrich(ex_pwm, test_set, bg_set, model = "poisson")
 
 
 }

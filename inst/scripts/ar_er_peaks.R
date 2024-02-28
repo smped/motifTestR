@@ -36,6 +36,10 @@ h3
 ar_er_peaks <- GRangesList(
   AR = ar, ER = er, H3K27ac = h3
 ) |>
-  makeConsensus(p = 1) |>
+  makeConsensus(p = 2/3, method = "coverage") |>
   subset(seqnames == "chr1") |>
-  resize(width = 400, fix = 'center')
+  subset(width > 300 & width < 800) |>
+  resize(width = 400, fix = 'center') |>
+  granges()
+
+save(ar_er_peaks, file = "data/ar_er_peaks.RData")
