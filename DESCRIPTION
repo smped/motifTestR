@@ -17,6 +17,7 @@ BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings,
   GenomicRanges,
+  ggplot2,
   R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
@@ -32,7 +33,6 @@ Suggests:
   BSgenome.Hsapiens.UCSC.hg19,
   dplyr,
   extraChIPs,
-  ggplot2,
   knitr,
   MotifDb,
   rmarkdown,

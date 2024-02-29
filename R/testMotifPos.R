@@ -195,35 +195,3 @@ testMotifPos <- function(
   out[, out_cols]
 }
 
-#' @keywords internal
-.makeBmBins <- function(bm, binwidth, abs){
-
-  ## Set sequence weights for multiple matches
-  reps <- table(as.character(bm$seq)) # Counts reps
-  bm$weight <- as.numeric(1 / reps[as.character(bm$seq)]) # 1 / reps
-
-  ## Make the bins
-  longest_seq <- max(bm$seq_width)
-  stopifnot(binwidth < longest_seq)
-  if (abs) {
-    ## Set the dist from centre to be +ve only
-    bm$from_centre <- abs(bm$from_centre)
-    all_breaks <- c(seq(0, longest_seq / 2, by = binwidth), longest_seq / 2)
-    seq_per_bin <- vapply(all_breaks, \(x) sum(bm$seq_width >= x), integer(1))
-  } else {
-    ## To define bins, make sure the central bin is around zero and that
-    ## bins extends symetrically from this point to the widest sequence
-    pos_breaks <- c(
-      ## Ensure the upper limit is included, even if it leaves a smaller bin
-      seq(binwidth / 2, longest_seq / 2, by = binwidth), longest_seq / 2
-    )
-    all_breaks <- c(-1 * pos_breaks, pos_breaks)
-    pos_bins <- vapply(pos_breaks, \(x) sum(bm$seq_width >= x), integer(1))
-    seq_per_bin <- c(pos_bins, pos_bins)
-  }
-
-  ## Cut into bins
-  all_breaks <- unique(sort(all_breaks))
-  bm$bin <- cut(bm$from_centre, breaks = all_breaks, include.lowest = TRUE)
-  bm
-}
