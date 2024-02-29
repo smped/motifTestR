@@ -16,7 +16,8 @@ URL: https://github.com/smped/motifTestR
 BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings,
-  GenomicRanges
+  GenomicRanges,
+  R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
   harmonicmeanp,
@@ -29,12 +30,14 @@ Imports:
 Suggests: 
   BiocStyle,
   BSgenome.Hsapiens.UCSC.hg19,
+  dplyr,
+  extraChIPs,
+  ggplot2,
   knitr,
   MotifDb,
   rmarkdown,
   rtracklayer,
-  testthat (>= 3.0.0),
-  tidyverse
+  testthat (>= 3.0.0)
 biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
 LazyData: false
 RoxygenNote: 7.3.1

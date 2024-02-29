@@ -81,6 +81,7 @@
 #' testMotifEnrich(ex_pwm, test_set, bg_set, model = "poisson")
 #'
 #'
+#' @importFrom stats p.adjust
 #' @export
 testMotifEnrich <- function(
     pwm, stringset, bg, model = c("poisson", "iteration"), var = "iteration",
@@ -91,6 +92,9 @@ testMotifEnrich <- function(
   stopifnot(is(bg, "XStringSet"))
   model <- match.arg(model)
   args <- c(as.list(environment()), list(...))
+  cols <- c(
+    "sequences", "matches", "expected", "enrichment", "Z", "p", "est_bg_rate"
+  )
   out <- NULL
   if (is.matrix(pwm)) return(do.call(".testSingleMotifEnrich", args))
   if (is.list(pwm)) {
@@ -100,9 +104,11 @@ testMotifEnrich <- function(
       model = model, var = var, mc.cores = mc.cores
     )
     out <- do.call("rbind", out)
+    out$fdr <- p.adjust(out$p, "fdr")
+    cols <- c(cols[1:6], "fdr", cols[7])
   }
 
-  out
+  out[,cols]
 
 }
 

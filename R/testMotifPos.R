@@ -89,6 +89,7 @@
 #'
 #'
 #' @importFrom parallel mclapply
+#' @importFrom stats p.adjust
 #' @export
 testMotifPos <- function(
     pwm, stringset, bm, binwidth = 10, abs = FALSE, rc = TRUE,
@@ -107,21 +108,26 @@ testMotifPos <- function(
       pwm, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
     )
   }
-  stopifnot(is(bm, "list_OR_List"))
+  .checkInputBM(bm)
+  cols <- c(
+    "start", "end", "centre", "width", "total_matches", "matches_in_region",
+    "expected", "enrichment", "prop_total", "p", "consensus_motif"
+  )
   if (is(bm, "DataFrame")) {
     args$bm <- bm
     out <- do.call(.testSingleMotifPos, args)
   } else {
-    stopifnot(all(vapply(bm, is, logical(1), "DataFrame")))
     out <- mclapply(
       bm, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
       min_score = min_score, break_ties = break_ties, alt = alt, ...,
       mc.cores = mc.cores
     )
+    cols <- c(cols[1:10], "fdr", "consensus_motif")
     out <- do.call("rbind", out)
+    out$fdr <- p.adjust(out$p, "fdr")
   }
 
-  out
+  out[, cols]
 
 }
 
@@ -131,8 +137,6 @@ testMotifPos <- function(
 .testSingleMotifPos <- function(
     bm, binwidth , abs, rc, min_score, break_ties, alt, ...
 ) {
-
-  stopifnot(is(bm, "DataFrame"))
 
   ## Setup a well formed output object for easy combining with other tests
   out_cols <- c(

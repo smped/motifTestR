@@ -51,6 +51,8 @@ test_that("List input works", {
   res <- testMotifPos(ex_pwm, seq)
   expect_true(is(res, "data.frame"))
   expect_equal(rownames(res), names(ex_pwm))
+  expect_true(all(exp_cols %in% colnames(res)))
+  expect_true("fdr" %in% colnames(res))
 })
 
 test_that("testMotifPos errors correctly", {

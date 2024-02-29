@@ -33,3 +33,35 @@
   stopifnot(all_mat)
   x
 }
+
+#' @keywords internal
+.checkInputBM <- function(bm) {
+  colTypes <- c(
+    score = "numeric", direction = "factor", start = "integer", end = "integer",
+    from_centre = "numeric", seq_width = "integer", match = "DNAStringSet"
+  )
+  reqdCols <- c("seq", names(colTypes)) # seq can be any type
+
+  if (is(bm, "DataFrame")) {
+    stopifnot(all(reqdCols %in% colnames(bm)))
+    types <- vapply(bm, \(x) is(x)[[1]], character(1))
+    stopifnot(
+      identical(types[names(colTypes)], colTypes)
+    )
+  } else {
+    stopifnot(is(bm, "list") & !is(bm, "data.frame"))
+    hasCols <- vapply(bm, \(x) all(reqdCols %in% colnames(x)), logical(1))
+    if (any(!hasCols))
+      stop("All objects must contain the columns: \n", paste(reqdCols, "\n"))
+    correctTypes <- vapply(
+      bm,
+      \(x) {
+        types <- vapply(x, \(cols) is(cols)[[1]], character(1))
+        identical(types[names(colTypes)], colTypes)
+      }, logical(1)
+    )
+    if (any(!correctTypes)) stop("All columns are not of the correct type")
+  }
+
+  invisible(TRUE)
+}

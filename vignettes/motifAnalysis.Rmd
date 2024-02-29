@@ -73,11 +73,12 @@ library(extraChIPs)
 library(rtracklayer)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(parallel)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}
-cores <- max(4, detectCores() - 1)
+cores <- 1
 ```
 
 
@@ -192,8 +193,7 @@ Additionally, the central bin in `testMotifPos()` is always defined to be symmet
 
 ```{r}
 testMotifPos(bm = bm_all) |>
-  arrange(p) |>
-  mutate(fdr = p.adjust(p, "fdr"))
+  arrange(p)
 ```
 
 The bins returned by the function represent the widest range of bins where the raw p-values were below the harmonic-mean p-value.
@@ -203,11 +203,10 @@ Due to the two-stranded nature of DNA, the distance from zero cn also be assesse
 
 ```{r}
 testMotifPos(bm = bm_all, abs = TRUE) |>
-  arrange(p) |>
-  mutate(fdr = p.adjust(p, "fdr"))
+  arrange(p) 
 ```
 
-This approach is particularly helpful for detecting co-located transcription factors which can be any distance from the TF used to obtain and centre the test set of sequences.
+This approach is particularly helpful for detecting co-located transcription factors which can be any distance from the TF which was used to obtain and centre the test set of sequences.
 
 ## Viewing Matches
 
@@ -223,9 +222,10 @@ bm_all |>
     from_centre = mean(from_centre),
     n = dplyr::n(), .by = c(Motif, bin)
   ) |>
-  mutate(p = n / sum(n), .by = Motif) |>
+  mutate(N = sum(n), p = n / N, .by = Motif) |>
+  subset(Motif != "ZN143") |>
   ggplot(aes(from_centre, p, colour = Motif)) +
-  geom_smooth(se = FALSE) +
+  geom_smooth(aes(linewidth = N), se = FALSE) +
   theme_bw()
 ## Maybe add a function showing cumulative prob...?
 ```
