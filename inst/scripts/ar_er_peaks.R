@@ -36,9 +36,9 @@ h3
 ar_er_peaks <- GRangesList(
   AR = ar, ER = er, H3K27ac = h3
 ) |>
-  makeConsensus(p = 2/3, method = "coverage") |>
+  makeConsensus(p = 2/3, method = "coverage", min_width = 200) |>
   subset(seqnames == "chr1") |>
-  subset(width > 300 & width < 800) |>
+  subset(n == 3) |>
   resize(width = 400, fix = 'center') |>
   granges()
 

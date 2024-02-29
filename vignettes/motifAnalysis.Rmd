@@ -97,6 +97,7 @@ For those wishing to work with a larger dataset, the complete set of peaks acros
 It should also be noted that using a larger object may cause some computationally demanding steps to run longer than for the smaller object.
 
 ```r
+## Not run
 base_url <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3511nnn"
 bed_url <- list(
   AR = file.path(
@@ -112,9 +113,12 @@ bed_url <- list(
 all_peaks <- GRangesList(lapply(bed_url, import.bed))
 seqlevels(all_peaks) <- seqnames(sq)
 seqinfo(all_peaks) <- sq
+## Return the ranges with coverage from 2 or more targets
 ar_er_peaks <- makeConsensus(
   all_peaks, p = 2/3, method = "coverage", min_width = 200
 ) |>
+  ## Now subset to the ranges which overlap a peak from every target
+  subset(n == 3) |> 
   resize(width = 400, fix = 'center')
 ```
 

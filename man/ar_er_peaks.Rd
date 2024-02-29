@@ -5,7 +5,7 @@
 \alias{ar_er_peaks}
 \title{A set of peaks with AR and ER detected}
 \format{
-An object of class \code{GRanges} of length 479.
+An object of class \code{GRanges} of length 229.
 }
 \source{
 \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123767}
