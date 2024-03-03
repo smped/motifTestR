@@ -56,7 +56,7 @@ seq <- getSeq(genome, ar_er_peaks)
 bm <- getPwmMatches(esr1, seq, best_only = TRUE)
 plotMatchPos(bm, se = FALSE)
 
-## Matches can also be hjown by distance from centre
+## Matches can also be shown by distance from centre
 plotMatchPos(bm, abs = TRUE)
 
 ## Cumulative Probability plots are also implemented

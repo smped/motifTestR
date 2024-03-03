@@ -81,8 +81,9 @@ getPwmMatches <- function(
       min_score = min_score, best_only = best_only, break_ties = break_ties,
       mc.cores = mc.cores
     )
+  } else {
+    out <- do.call(".getSinglePwmMatches", args)
   }
-  if (is.matrix(pwm)) out <- do.call(".getSinglePwmMatches", args)
   out
 
 }
@@ -98,7 +99,7 @@ getPwmMatches <- function(
 ){
 
   ## Checks & the map
-  .checkPWM(pwm)
+  pwm <- .checkPWM(pwm)
   stopifnot(is(stringset, "XStringSet"))
   map <- .viewMapFromXStringset(stringset)
 
@@ -127,11 +128,11 @@ getPwmMatches <- function(
   int_cols <- c("seq", "start", "end", "seq_width")
   out[int_cols] <- lapply(int_cols, \(x) integer())
   out$from_centre <- numeric()
-  if (!"score" %in% names(out)) out$score <- numeric()
   names_are_char <- is.character(names(stringset))
   if (names_are_char) out$seq <- character()
   out$match <- DNAStringSet()
-  if (length(hits) == 0) return(DataFrame(out)[,cols])
+  out$direction <- factor(mcols(hits)$direction, levels = c("F", "R"))
+  if (length(hits) == 0) return(DataFrame(out[cols]))
 
   ## Map back to the original Views
   hits_to_map <- findInterval(start(hits), map$start)
@@ -145,7 +146,6 @@ getPwmMatches <- function(
   out$from_centre <- 0.5 * (out$start + out$end) - out$seq_width / 2
 
   ## The match itself
-  out$direction <- factor(mcols(hits)$direction, levels = c("F", "R"))
   to_rev <- out$direction == "R"
   out$match <- as(hits, "XStringSet")
   out$match[to_rev] <- reverseComplement(out$match[to_rev])

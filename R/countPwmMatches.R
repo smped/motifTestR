@@ -58,7 +58,7 @@ countPwmMatches <- function(
     pwm, stringset, rc = TRUE, min_score = "80%", ...
 ){
   ## Checks & the map
-  .checkPWM(pwm)
+  pwm <- .checkPWM(pwm)
   map <- .viewMapFromXStringset(stringset)
 
   # Form the entire XStringSetList into a Views object

@@ -192,8 +192,9 @@ Additionally, the central bin in `testMotifPos()` is always defined to be symmet
 
 
 ```{r}
-testMotifPos(matches = bm_all) |>
+res <- testMotifPos(matches = bm_all) |>
   arrange(p)
+head(res)
 ```
 
 The bins returned by the function represent the widest range of bins where the raw p-values were below the harmonic-mean p-value.
@@ -202,8 +203,9 @@ Wide ranges tend to be associated with lower significance for that PWM.
 Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
 
 ```{r}
-testMotifPos(matches = bm_all, abs = TRUE) |>
+res_abs <- testMotifPos(matches = bm_all, abs = TRUE) |>
   arrange(p) 
+head(res_abs)
 ```
 
 This approach is particularly helpful for detecting co-located transcription factors which can be any distance from the TF which was used to obtain and centre the test set of sequences.
@@ -213,7 +215,8 @@ This approach is particularly helpful for detecting co-located transcription fac
 The next matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias
 
 ```{r}
-plotMatchPos(bm_all[1:3], type = "cdf", binwidth = 10)
+topMotifs <- rownames(res)[1:3]
+plotMatchPos(bm_all[topMotifs], abs = TRUE, binwidth = 10, se = FALSE)
 ```
 
 
