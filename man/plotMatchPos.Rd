@@ -9,6 +9,7 @@ plotMatchPos(
   binwidth = 10,
   abs = FALSE,
   type = c("density", "cdf", "heatmap"),
+  geom = c("smooth", "line", "point", "col"),
   ...
 )
 }
@@ -21,8 +22,45 @@ plotMatchPos(
 
 \item{type}{Plot match density, the CDF or a binned heatmap}
 
+\item{geom}{Type of geom to be used for line plots. Ignored for heatmaps}
+
 \item{...}{Passed to individual geom* functions}
+}
+\value{
+A ggplot2 object
 }
 \description{
 Plot the distribution of motif matches across sequences
+}
+\details{
+Multiple options are provided for showing the distribution of PWM matches
+within a set of sequences, using either the smoothed probability density,
+the probability CDF or as a heatmap.
+Distances can be shown as symmetrical around the centre or using absolute distances
+from the central position within the sequences.
+
+Heatmaps are only enabled for comparisons across multiple PWMs
+}
+\examples{
+## Load the example PWM
+data("ex_pwm")
+esr1 <- ex_pwm$ESR1
+
+## Load the example Peaks
+data("ar_er_peaks")
+library(BSgenome.Hsapiens.UCSC.hg19)
+genome <- BSgenome.Hsapiens.UCSC.hg19
+seq <- getSeq(genome, ar_er_peaks)
+
+## Just the best match
+bm <- getPwmMatches(esr1, seq, best_only = TRUE)
+plotMatchPos(bm, se = FALSE)
+
+## Matches can also be hjown by distance from centre
+plotMatchPos(bm, abs = TRUE)
+
+## Cumulative Probability plots are also implemented
+plotMatchPos(bm, type = "cdf", geom = "line", colour = "red") +
+  geom_abline(intercept = 0.5, slope = 1/ 400)
+
 }
