@@ -192,7 +192,7 @@ Additionally, the central bin in `testMotifPos()` is always defined to be symmet
 
 
 ```{r}
-testMotifPos(bm = bm_all) |>
+testMotifPos(matches = bm_all) |>
   arrange(p)
 ```
 
@@ -202,7 +202,7 @@ Wide ranges tend to be associated with lower significance for that PWM.
 Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
 
 ```{r}
-testMotifPos(bm = bm_all, abs = TRUE) |>
+testMotifPos(matches = bm_all, abs = TRUE) |>
   arrange(p) 
 ```
 
@@ -213,21 +213,7 @@ This approach is particularly helpful for detecting co-located transcription fac
 The next matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias
 
 ```{r}
-breaks <- seq(-200, 200, by = 5)
-bm_all |>
-  lapply(\(x) data.frame(from_centre = abs(x$from_centre))) |>
-  bind_rows(.id = "Motif") |>
-  mutate(bin = cut(from_centre, breaks = breaks)) |>
-  summarise(
-    from_centre = mean(from_centre),
-    n = dplyr::n(), .by = c(Motif, bin)
-  ) |>
-  mutate(N = sum(n), p = n / N, .by = Motif) |>
-  subset(Motif != "ZN143") |>
-  ggplot(aes(from_centre, p, colour = Motif)) +
-  geom_smooth(aes(linewidth = N), se = FALSE) +
-  theme_bw()
-## Maybe add a function showing cumulative prob...?
+plotMatchPos(bm_all[1:3], type = "cdf", binwidth = 10)
 ```
 
 

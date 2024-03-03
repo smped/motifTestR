@@ -5,10 +5,10 @@ test_that(".cleanMotifList works as expected", {
 })
 
 test_that("inputBM checks work", {
-  expect_error(.checkInputBM(data.frame()))
-  expect_error(.checkInputBM(DataFrame()))
-  bm <- getPwmMatches(esr1, stringset)
-  expect_true(.checkInputBM(bm))
-  expect_true(.checkInputBM(list(bm)))
-  expect_error(.checkInputBM(bm[1:2]))
+  expect_error(.checkMatches(data.frame()))
+  expect_error(.checkMatches(DataFrame()))
+  matches <- getPwmMatches(esr1, stringset)
+  expect_true(.checkMatches(matches))
+  expect_true(.checkMatches(list(matches)))
+  expect_error(.checkMatches(matches[1:2]))
 })

@@ -7,7 +7,7 @@
 testMotifPos(
   pwm,
   stringset,
-  bm,
+  matches,
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
@@ -19,12 +19,12 @@ testMotifPos(
 )
 }
 \arguments{
-\item{pwm}{A Position Weight Matrix, or list of PWMs. Not required if `bm`
+\item{pwm}{A Position Weight Matrix, or list of PWMs. Not required if `matches`
 is supplied.}
 
-\item{stringset}{An XStringSet. Not required if `bm` is supplied}
+\item{stringset}{An XStringSet. Not required if `matches` is supplied}
 
-\item{bm}{An optional set of 'best matches' as returned by
+\item{matches}{An optional set of 'best matches' as returned by
 \link{getPwmMatches} setting `best_only = TRUE`. Alternatively, a list of
 returned 'best matches' can be used. Any individual sequence with multiple
 'best matches' will have each match weighted. If provided, will override
@@ -73,7 +73,7 @@ rejection of the null hypothesis.
 
 Input can be provided as the output from \link{getPwmMatches} setting
 `best_only = TRUE` if these matches have already been identified.
-If choosing to provide this object to the argument `bm`, nothing is required
+If choosing to provide this object to the argument `matches`, nothing is required
 for the arguments `pwm`, `stringset`, `rc`, `min_score` or `break_ties`
 Otherwise, a Position Weight Matrix (PWM) and an `XStringSet` are required,
 along with the relevant arguments, with best matches identified within the
@@ -109,9 +109,9 @@ genome <- BSgenome.Hsapiens.UCSC.hg19
 seq <- getSeq(genome, ar_er_peaks)
 
 ## Get the best match and use this data
-bm <- getPwmMatches(esr1, seq, best_only = TRUE)
+matches <- getPwmMatches(esr1, seq, best_only = TRUE)
 ## Test for enrichment in any position
-testMotifPos(bm = bm)
+testMotifPos(matches = matches)
 
 ## Provide a list of PWMs, testing for distance from zero
 testMotifPos(ex_pwm, seq, abs = TRUE, binwidth = 10)

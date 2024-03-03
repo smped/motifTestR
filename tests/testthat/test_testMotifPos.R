@@ -4,11 +4,11 @@ exp_cols <- c(
 )
 
 ## Bodgy up a set of matches
-bm <- getPwmMatches(esr1, stringset)
-bm$seq <- c(1, seq_len(nrow(bm) - 1))
+matches <- getPwmMatches(esr1, stringset)
+matches$seq <- c(1, seq_len(nrow(matches) - 1))
 
 test_that("testMotifPos returns symmetrical peaks as expected",{
-  res <- testMotifPos(bm = bm)
+  res <- testMotifPos(matches = matches)
   expect_true(nrow(res) == 1)
   expect_equal(colnames(res), exp_cols)
   expect_equal(
@@ -23,7 +23,7 @@ test_that("testMotifPos returns symmetrical peaks as expected",{
 })
 
 test_that("setting abs = TRUE behaves as expected", {
-  bins <- motifTestR:::.makeBmBins(bm, binwidth = 10, abs = TRUE)
+  bins <- motifTestR:::.makeBmBins(matches, binwidth = 10, abs = TRUE)
   expect_equal(bins$weight, c(0.5, 0.5, rep_len(1, 5)))
   exp_bins <- c(
     "[0,10]", "(10,20]", "(20,30]", "(30,40]", "(40,50]", "(50,60]",
@@ -56,7 +56,7 @@ test_that("List input works", {
 })
 
 test_that("testMotifPos errors correctly", {
-  empty <- testMotifPos(bm = bm[0,])
+  empty <- testMotifPos(matches = matches[0,])
   expect_true(nrow(empty) == 0)
   expect_true(is(empty, "data.frame"))
   expect_equal(colnames(empty), exp_cols)

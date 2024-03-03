@@ -17,7 +17,7 @@ plotMatchPos <- function(
     matches, binwidth = 10, abs = FALSE, type = c("density", "cdf", "heatmap"),
     ...
 ){
-  .checkInputBM(matches)
+  .checkMatches(matches)
   type <- match.arg(type)
   if (!is(matches, "DataFrame")) {
     if (is.null(names(matches))) names(matches) <- seq_along(matches)

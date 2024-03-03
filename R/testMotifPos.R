@@ -11,7 +11,7 @@
 #'
 #' Input can be provided as the output from \link{getPwmMatches} setting
 #' `best_only = TRUE` if these matches have already been identified.
-#' If choosing to provide this object to the argument `bm`, nothing is required
+#' If choosing to provide this object to the argument `matches`, nothing is required
 #' for the arguments `pwm`, `stringset`, `rc`, `min_score` or `break_ties`
 #' Otherwise, a Position Weight Matrix (PWM) and an `XStringSet` are required,
 #' along with the relevant arguments, with best matches identified within the
@@ -50,10 +50,10 @@
 #' Matrix (PFM) using \link[Biostrings]{consensusMatrix}.
 #'
 #'
-#' @param pwm A Position Weight Matrix, or list of PWMs. Not required if `bm`
+#' @param pwm A Position Weight Matrix, or list of PWMs. Not required if `matches`
 #' is supplied.
-#' @param stringset An XStringSet. Not required if `bm` is supplied
-#' @param bm An optional set of 'best matches' as returned by
+#' @param stringset An XStringSet. Not required if `matches` is supplied
+#' @param matches An optional set of 'best matches' as returned by
 #' \link{getPwmMatches} setting `best_only = TRUE`. Alternatively, a list of
 #' returned 'best matches' can be used. Any individual sequence with multiple
 #' 'best matches' will have each match weighted. If provided, will override
@@ -80,9 +80,9 @@
 #' seq <- getSeq(genome, ar_er_peaks)
 #'
 #' ## Get the best match and use this data
-#' bm <- getPwmMatches(esr1, seq, best_only = TRUE)
+#' matches <- getPwmMatches(esr1, seq, best_only = TRUE)
 #' ## Test for enrichment in any position
-#' testMotifPos(bm = bm)
+#' testMotifPos(matches = matches)
 #'
 #' ## Provide a list of PWMs, testing for distance from zero
 #' testMotifPos(ex_pwm, seq, abs = TRUE, binwidth = 10)
@@ -92,7 +92,7 @@
 #' @importFrom stats p.adjust
 #' @export
 testMotifPos <- function(
-    pwm, stringset, bm, binwidth = 10, abs = FALSE, rc = TRUE,
+    pwm, stringset, matches, binwidth = 10, abs = FALSE, rc = TRUE,
     min_score = "80%", break_ties = "random",
     alt = c("greater", "less", "two.sided"), mc.cores = 1, ...
 ) {
@@ -100,25 +100,25 @@ testMotifPos <- function(
   alt <- match.arg(alt)
   args <- c(as.list(environment()), list(...))
   args <- args[!names(args) %in% c("pwm", "stringset", "mc.cores")]
-  ## Handle any situation without a bm df or list
-  if (missing(bm)) {
+  ## Handle any situation without a matches df or list
+  if (missing(matches)) {
     ## This will perform all checks as well
     ## pwm & stringset are not required beyond this initial call
-    bm <- getPwmMatches(
+    matches <- getPwmMatches(
       pwm, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
     )
   }
-  .checkInputBM(bm)
+  .checkMatches(matches)
   cols <- c(
     "start", "end", "centre", "width", "total_matches", "matches_in_region",
     "expected", "enrichment", "prop_total", "p", "consensus_motif"
   )
-  if (is(bm, "DataFrame")) {
-    args$bm <- bm
+  if (is(matches, "DataFrame")) {
+    args$matches <- matches
     out <- do.call(.testSingleMotifPos, args)
   } else {
     out <- mclapply(
-      bm, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
+      matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
       min_score = min_score, break_ties = break_ties, alt = alt, ...,
       mc.cores = mc.cores
     )
@@ -135,7 +135,7 @@ testMotifPos <- function(
 #' @importFrom stats binom.test
 #' @keywords internal
 .testSingleMotifPos <- function(
-    bm, binwidth , abs, rc, min_score, break_ties, alt, ...
+    matches, binwidth , abs, rc, min_score, break_ties, alt, ...
 ) {
 
   ## Setup a well formed output object for easy combining with other tests
@@ -146,17 +146,17 @@ testMotifPos <- function(
   out <- lapply(out_cols, \(x) integer())
   out$consensus_motif <- list()
   names(out) <- out_cols
-  n_matches <- nrow(bm)
+  n_matches <- nrow(matches)
   if (n_matches == 0) return(data.frame(out))
 
   ## The required columns for all downstream analysis are
   reqd_cols <- c("seq", "from_centre", "seq_width")
-  stopifnot(all(reqd_cols %in% colnames(bm)))
-  bm <- .makeBmBins(bm, binwidth, abs)
-  bins <- levels(bm$bin)
+  stopifnot(all(reqd_cols %in% colnames(matches)))
+  matches <- .makeBmBins(matches, binwidth, abs)
+  bins <- levels(matches$bin)
 
   ## Get the counts & form a df with every bin as a row
-  counts <- vapply(splitAsList(bm, bm$bin), \(x) sum(x$weight), numeric(1))
+  counts <- vapply(splitAsList(matches, matches$bin), \(x) sum(x$weight), numeric(1))
   df <- data.frame(bin = names(counts), matches_in_bin = as.integer(counts))
   bin_coords <- do.call("rbind", strsplit(df$bin, split = ","))
   bin_coords <- apply(bin_coords, 2, \(x) as.integer(gsub("\\[|\\(|\\]", "", x)))
@@ -188,8 +188,8 @@ testMotifPos <- function(
   out$p <- as.numeric(hmp)
 
   ## Setup the consensus motif to return
-  motif_cols <- strsplit(consensusString(bm$match), "")[[1]]
-  consensus <- consensusMatrix(bm$match)[c("A", "C", "G", "T"),]
+  motif_cols <- strsplit(consensusString(matches$match), "")[[1]]
+  consensus <- consensusMatrix(matches$match)[c("A", "C", "G", "T"),]
   colnames(consensus) <- motif_cols
   out$consensus_motif <- list(consensus)
   out[, out_cols]
