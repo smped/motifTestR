@@ -93,7 +93,7 @@
 #' @export
 testMotifPos <- function(
     pwm, stringset, matches, binwidth = 10, abs = FALSE, rc = TRUE,
-    min_score = "80%", break_ties = "random",
+    min_score = "80%", break_ties = "all",
     alt = c("greater", "less", "two.sided"), mc.cores = 1, ...
 ) {
 
@@ -148,10 +148,6 @@ testMotifPos <- function(
   names(out) <- out_cols
   n_matches <- nrow(matches)
   if (n_matches == 0) return(data.frame(out))
-
-  ## The required columns for all downstream analysis are
-  reqd_cols <- c("seq", "from_centre", "seq_width")
-  stopifnot(all(reqd_cols %in% colnames(matches)))
   matches <- .makeBmBins(matches, binwidth, abs)
   bins <- levels(matches$bin)
 
@@ -169,7 +165,7 @@ testMotifPos <- function(
   df$p <- vapply(
     seq_along(df$bin),
     \(i) {
-      x <- as.list(df[i,])
+      x <- df[i,]
       binom.test(x$matches_in_bin, n_matches, x$bin_prob, alt)$p.value
     }, numeric(1)
   )
@@ -188,9 +184,7 @@ testMotifPos <- function(
   out$p <- as.numeric(hmp)
 
   ## Setup the consensus motif to return
-  motif_cols <- strsplit(consensusString(matches$match), "")[[1]]
   consensus <- consensusMatrix(matches$match)[c("A", "C", "G", "T"),]
-  colnames(consensus) <- motif_cols
   out$consensus_motif <- list(consensus)
   out[, out_cols]
 }

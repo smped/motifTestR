@@ -138,10 +138,23 @@ names(test_seq) <- as.character(ar_er_peaks)
 A small list of PWMs, obtained from `r Biocpkg("MotifDb")` are provided with the package and these will be suitable for all downstream analysis.
 For those wishing to use their own data, please choose a set of PWMs by parsing files using `r Biocpkg("universalmotif")` or subsetting those in `MotifDb` down to a suitable size.
 
-```{r}
+```{r ex-pwm}
 data("ex_pwm")
 names(ex_pwm)
 ```
+
+Again, a larger set of motifs may be obtained using following code, or by customising query fileds as preferred.
+
+```r
+## Not run
+library(MotifDb)
+ex_pwm <- MotifDb |>
+  subset(organism == "Hsapiens") |>
+  query("HOCOMOCOv11-core-A") |>
+  as.list() 
+names(ex_pwm) <- gsub(".+HOCOMOCOv11-core-A-(.+)_.+", "\\1", names(ex_pwm))
+```
+
 
 # Searching Sequences
 
@@ -174,6 +187,7 @@ bm_all <- getPwmMatches(
 ```
 
 This same strategy of passing a single, or multiple PWMs can be applied even when simply wishing to count the total matches for each PWM.
+Counting may be useful for restricting downstream analysis to the set of motifs with more than a given number of matches.
 
 ```{r count-pwm-matches}
 countPwmMatches(ex_pwm, test_seq, mc.cores = cores)
@@ -191,8 +205,8 @@ When using the harmonic-mean p-value however, this will return a more conservati
 Additionally, the central bin in `testMotifPos()` is always defined to be symmetrical around zero.
 
 
-```{r}
-res <- testMotifPos(matches = bm_all) |>
+```{r test-motif-pos}
+res <- testMotifPos(matches = bm_all, mc.cores = cores) |>
   arrange(p)
 head(res)
 ```
@@ -202,8 +216,8 @@ Wide ranges tend to be associated with lower significance for that PWM.
 
 Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
 
-```{r}
-res_abs <- testMotifPos(matches = bm_all, abs = TRUE) |>
+```{r test-motif-pos-abs}
+res_abs <- testMotifPos(matches = bm_all, abs = TRUE, mc.cores = cores) |>
   arrange(p) 
 head(res_abs)
 ```
@@ -214,9 +228,24 @@ This approach is particularly helpful for detecting co-located transcription fac
 
 The next matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias
 
-```{r}
-topMotifs <- rownames(res)[1:3]
+```{r, eval = FALSE}
+topMotifs <- rownames(res_abs)[1:4]
 plotMatchPos(bm_all[topMotifs], abs = TRUE, binwidth = 10, se = FALSE)
+plotMatchPos(bm_all[topMotifs], abs = TRUE, binwidth = 10, geom = "col") +
+  facet_wrap(~name)
+plotMatchPos(bm_all[topMotifs], abs = TRUE, type = "cdf", geom = "line")
+```
+
+```{r, eval = FALSE}
+topMotifs <- rownames(res_abs)[res_abs$fdr < 0.05 & res_abs$total_matches > 100]
+plotMatchPos(bm_all[topMotifs], type = "heatmap", abs = TRUE, binwidth = 5) +
+  scale_fill_viridis_c(option = "inferno")
+```
+
+# Testing For Motif Enrichment
+
+```{r}
+## Need to define telomeres & centromeres for hg19
 ```
 
 

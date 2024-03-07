@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^Rprof\.out$
 README.md
 TODO.md

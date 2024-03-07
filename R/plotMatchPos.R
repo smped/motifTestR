@@ -45,6 +45,7 @@
 #'   geom_abline(intercept = 0.5, slope = 1/ 400)
 #'
 #' @importFrom S4Vectors splitAsList
+#' @importFrom rlang !! sym
 #' @import ggplot2
 #' @export
 plotMatchPos <- function(
@@ -75,7 +76,7 @@ plotMatchPos <- function(
     name <- sym("name")
 
   } else {
-    binned <- motifTestR:::.makeBmBins(matches, binwidth, abs)
+    binned <- .makeBmBins(matches, binwidth, abs)
     bins <- vapply(splitAsList(binned, binned$bin), \(x) sum(x$weight), numeric(1))
     df <- data.frame(bin = names(bins), total = as.numeric(bins))
     df$p <- df$total / sum(df$total)
@@ -92,23 +93,23 @@ plotMatchPos <- function(
   geom <- paste0("geom_", match.arg(geom))
   geom_fun <- match.fun(geom)
   if (type == "density") {
-    p <- ggplot(df, aes({{ x }}, p, colour = {{ name }})) +
-      geom_fun(...)
+    plot_aes <- aes({{ x }}, !!sym("p"), colour = {{ name }})
+    if (geom == "geom_col") names(plot_aes)[[3]] <- "fill"
+    plot <- ggplot(df, plot_aes) + geom_fun(...)
   }
   if (type == "cdf") {
-    int <- ifelse(abs, 0, 0.5)
-    p <- ggplot(df, aes({{ x }}, cdf, colour = {{ name }})) +
+    plot <- ggplot(df, aes({{ x }}, !!sym("cdf"), colour = {{ name }})) +
       geom_fun(...)
   }
   if (type == "heatmap") {
     if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-    p <- ggplot(df, aes(bin, name, fill = p)) +
+    plot <- ggplot(df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))) +
       geom_tile(...) +
       scale_x_discrete(expand = rep_len(0, 4)) +
       scale_y_discrete(expand = rep_len(0, 4)) +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
   }
 
-  p
+  plot
 
 }

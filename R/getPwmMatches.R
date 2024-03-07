@@ -74,12 +74,15 @@ getPwmMatches <- function(
   break_ties <- match.arg(break_ties)
   args <- c(as.list(environment()), list(...))
   args <- args[names(args) != "mc.cores"]
+  nm_type <- "integer"
+  if (!is.null(names(stringset))) nm_type <- "character"
+  args$nm_type <- nm_type
   if (is.list(pwm)) {
     pwm <- .cleanMotifList(pwm)
     out <- mclapply(
       pwm, .getSinglePwmMatches, stringset = stringset, rc = rc,
       min_score = min_score, best_only = best_only, break_ties = break_ties,
-      mc.cores = mc.cores
+      nm_type = nm_type, mc.cores = mc.cores
     )
   } else {
     out <- do.call(".getSinglePwmMatches", args)
@@ -95,7 +98,7 @@ getPwmMatches <- function(
 #' @importFrom stats setNames
 #' @keywords internal
 .getSinglePwmMatches <- function(
-    pwm, stringset, rc, min_score, best_only = FALSE, break_ties , ...
+    pwm, stringset, rc, min_score, best_only = FALSE, break_ties, nm_type, ...
 ){
 
   ## Checks & the map
@@ -119,20 +122,15 @@ getPwmMatches <- function(
   }
 
   ## Setup the return object as empty for any cases without matches
+  if (length(hits) == 0) return(.emptyPwmDF(nm_type))
+
+  ## Form it as a list, the eventually wrap into a DF
   cols <- c(
     "seq", "score", "direction", "start", "end", "from_centre", "seq_width",
     "match"
   )
-  ## Form it as a list, the eventually wrap into a DF
-  out <- as.list(mcols(hits))
-  int_cols <- c("seq", "start", "end", "seq_width")
-  out[int_cols] <- lapply(int_cols, \(x) integer())
-  out$from_centre <- numeric()
-  names_are_char <- is.character(names(stringset))
-  if (names_are_char) out$seq <- character()
-  out$match <- DNAStringSet()
-  out$direction <- factor(mcols(hits)$direction, levels = c("F", "R"))
-  if (length(hits) == 0) return(DataFrame(out[cols]))
+  out <- mcols(hits)
+  out$direction <- factor(out$direction, levels = c("F", "R"))
 
   ## Map back to the original Views
   hits_to_map <- findInterval(start(hits), map$start)
@@ -151,17 +149,16 @@ getPwmMatches <- function(
   out$match[to_rev] <- reverseComplement(out$match[to_rev])
 
   ## Setup any named strings to appear in the same order
-  if (names_are_char) {
+  if (nm_type == "character") {
     out$seq <- factor(map$names[hits_to_map], map$names)
     out$seq <- droplevels(out$seq)
   }
 
   ## The final object
-  out <- DataFrame(out)[, cols]
   if (best_only) out <- .getBestMatch(out, break_ties)
   o <- order(out$seq, out$start)
-  if (names_are_char) out$seq <- as.character(out$seq)
-  out[o, ]
+  if (nm_type == "character") out$seq <- as.character(out$seq)
+  out[o, cols]
 
 }
 
@@ -176,19 +173,32 @@ getPwmMatches <- function(
   if (ties == "first") pos <- df$start
   if (ties == "last") pos <- (-1) * df$end
   if (ties == "central") pos <- abs(df$from_centre)
-  if (ties == "all") pos <- rep_len(1, nrow(df))
 
   ## Pick the best match using the values we have
-  o <- order(df$seq, 1 / df$score, pos)
-  df <- df[o,]
   if (ties != "all") {
+    o <- order(df$seq, -df$score, pos)
+    df <- df[o,]
     df <- df[!duplicated(df$seq), ]
   } else {
-   df_list <- splitAsList(df, df$seq)
-   df_list <- lapply(df_list, \(x) subset(x, score == max(score)))
-   df <- do.call("rbind", df_list)
+   split_scores <- split(df$score, cumsum(!duplicated(df$seq)))
+   keep <- as.logical(unlist(lapply(split_scores, \(x) x == max(x))))
+   df <- df[keep,]
   }
   df
 
 }
 
+#' @importFrom S4Vectors DataFrame
+#' @keywords internal
+.emptyPwmDF <- function(nm_type){
+  DataFrame(
+    seq = vector(nm_type, 0),
+    score = numeric(),
+    direction = factor(NULL, levels = c("F", "R")),
+    start = integer(),
+    end = integer(),
+    from_centre = numeric(),
+    seq_width = integer(),
+    match = DNAStringSet()
+  )
+}

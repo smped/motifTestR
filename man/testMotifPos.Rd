@@ -12,7 +12,7 @@ testMotifPos(
   abs = FALSE,
   rc = TRUE,
   min_score = "80\%",
-  break_ties = "random",
+  break_ties = "all",
   alt = c("greater", "less", "two.sided"),
   mc.cores = 1,
   ...

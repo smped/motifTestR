@@ -25,6 +25,7 @@ Imports:
   IRanges,
   methods,
   parallel,
+  rlang,
   S4Vectors,
   stats,
   universalmotif
