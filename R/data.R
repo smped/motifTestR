@@ -35,3 +35,25 @@
 #' @name ar_er_peaks
 #' @rdname ar_er_peaks
 "ar_er_peaks"
+
+#' @title Regions from hg19 with high N content
+#'
+#' @description
+#' A GRanges object with regions annotated as telomeres or centromeres
+#'
+#' @details
+#' The regions defined as centromeres or telomeres in hg19, taken from
+#' AnnotationHub objects "AH107360" and "AH107361". These were combined with
+#' regions containing Ns from the UCSC 2bit file, and regions with Ns in the
+#' BSgenome.Hsapiens.UCSC.hg19 were retained.
+#'
+#' @source The package AnnotationHub and
+#' \url{https://hgdownload.cse.ucsc.edu/goldenpath/hg19/bigZips/hg19.fa.masked.gz}
+#'
+#' @usage data("hg19_mask")
+#' @examples
+#' data("hg19_mask")
+#' hg19_mask
+#' @name hg19_mask
+#' @rdname hg19_mask
+"hg19_mask"

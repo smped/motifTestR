@@ -60,17 +60,19 @@
 #' sq <- seqinfo(ar_er_peaks)
 #' ## Now sample size-matched ranges 10 times larger. In real-world analyses,
 #' ## this set should be sampled as at least 1000x larger, ensuring features
-#' ## are matched to your requirements
+#' ## are matched to your requirements. This example masks regions with known N
+#' ## content, including centromeres & telomeres
+#' data("hg19_mask")
 #' set.seed(305)
-#' bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_iter = 10)
+#' bg_ranges <- makeRMRanges(
+#'   ar_er_peaks, GRanges(sq)[1], exclude = hg19_mask, n_iter = 10
+#' )
 #'
 #' ## Convert ranges to DNAStringSets
 #' library(BSgenome.Hsapiens.UCSC.hg19)
 #' genome <- BSgenome.Hsapiens.UCSC.hg19
 #' test_set <- getSeq(genome, ar_er_peaks)
 #' bg_set <- getSeq(genome, bg_ranges)
-#' ## Remove sequences with Ns to avoid annoying messages
-#' bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
 #'
 #' ## Test for enrichment of the ESR1 motif
 #' data("ex_pwm")
