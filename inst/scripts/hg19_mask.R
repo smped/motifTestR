@@ -26,7 +26,7 @@ seqlevels(masks) <- seqnames(seqinfo(hg19_mask))
 seqinfo(masks) <- seqinfo(hg19_mask)
 masks$type <- 'N-content'
 
-#' Get all the sequences corresponding to these masks fro the actual BSgenome
+#' Get all the sequences corresponding to these masks from the actual BSgenome
 library(BSgenome.Hsapiens.UCSC.hg19)
 seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, masks)
 n_probs <- letterFrequency(seq, letters = "N", as.prob = TRUE)
