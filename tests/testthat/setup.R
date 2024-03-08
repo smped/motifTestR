@@ -1,3 +1,6 @@
+library(BSgenome.Hsapiens.UCSC.hg19)
+genome <- BSgenome.Hsapiens.UCSC.hg19
+
 esr1 <- structure(
   ## Taken from HOCOMOCO v12
   c(
@@ -19,10 +22,9 @@ stringset <- DNAStringSet(
 
 data("ex_pwm")
 data("ar_er_peaks")
+data("ar_er_seq")
 sq <- seqinfo(ar_er_peaks)
-library(BSgenome.Hsapiens.UCSC.hg19)
-genome <- BSgenome.Hsapiens.UCSC.hg19
-seq <- getSeq(genome, ar_er_peaks)
+seq <- ar_er_seq
 
 um_db <- c(
   universalmotif::create_motif(

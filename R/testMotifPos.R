@@ -73,19 +73,16 @@
 #' data("ex_pwm")
 #' esr1 <- ex_pwm$ESR1
 #'
-#' ## Load the example Peaks
-#' data("ar_er_peaks")
-#' library(BSgenome.Hsapiens.UCSC.hg19)
-#' genome <- BSgenome.Hsapiens.UCSC.hg19
-#' seq <- getSeq(genome, ar_er_peaks)
+#' ## Load the example sequences
+#' data("ar_er_seq")
 #'
 #' ## Get the best match and use this data
-#' matches <- getPwmMatches(esr1, seq, best_only = TRUE)
+#' matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 #' ## Test for enrichment in any position
 #' testMotifPos(matches = matches)
 #'
 #' ## Provide a list of PWMs, testing for distance from zero
-#' testMotifPos(ex_pwm, seq, abs = TRUE, binwidth = 10)
+#' testMotifPos(ex_pwm, ar_er_seq, abs = TRUE, binwidth = 10)
 #'
 #'
 #' @importFrom parallel mclapply
@@ -156,11 +153,20 @@ testMotifPos <- function(
   df <- data.frame(bin = names(counts), matches_in_bin = as.integer(counts))
   bin_coords <- do.call("rbind", strsplit(df$bin, split = ","))
   bin_coords <- apply(bin_coords, 2, \(x) as.integer(gsub("\\[|\\(|\\]", "", x)))
-  df$start <- bin_coords[,1]
-  df$end <- bin_coords[,2]
+  df$start <- bin_coords[, 1]
+  df$end <- bin_coords[, 2]
   df$bin <- factor(df$bin, levels = bins)
-  df$width <- df$end - df$start + 1
-  df$bin_prob <- df$width / sum(df$width)
+  ## Given matches are measured from the centre, only bases > d_from_edge
+  ## away from the ends of the range are viable
+  motif_width <- max(width(matches$match))
+  d_from_edge <- (motif_width - 1) / 2
+  valid_pos <- seq(min(df$start) + d_from_edge, max(df$end) - d_from_edge)
+  if (abs) valid_pos <- seq(d_from_edge %% 1, max(df$end) - d_from_edge)
+  df$valid_width <- vapply(
+    seq_len(nrow(df)),
+    \(i) sum(valid_pos > df$start[i] & valid_pos <= df$end[i]), numeric(1)
+  )
+  df$bin_prob <- df$valid_width / sum(df$valid_width)
   df$expected <- n_matches * df$bin_prob
   df$p <- vapply(
     seq_along(df$bin),

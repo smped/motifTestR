@@ -47,19 +47,16 @@
 #' esr1 <- ex_pwm$ESR1
 #'
 #' ## Load the example Peaks
-#' data("ar_er_peaks")
-#' library(BSgenome.Hsapiens.UCSC.hg19)
-#' genome <- BSgenome.Hsapiens.UCSC.hg19
-#' seq <- getSeq(genome, ar_er_peaks)
+#' data("ar_er_seq")
 #'
 #' ## Return all matches
-#' getPwmMatches(esr1, seq)
+#' getPwmMatches(esr1, ar_er_seq)
 #'
 #' ## Just the best match
-#' getPwmMatches(esr1, seq, best_only = TRUE)
+#' getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 #'
 #' ## Apply multiple PWMs as a list
-#' getPwmMatches(ex_pwm, seq, best_only = TRUE)
+#' getPwmMatches(ex_pwm, ar_er_seq, best_only = TRUE)
 #'
 #' @importFrom parallel mclapply
 #' @importFrom methods slot
@@ -141,7 +138,7 @@ getPwmMatches <- function(
   out$start <- as.integer(start(hits) - c(0, map$end)[hits_to_map])
   out$end <- as.integer(out$start + w - 1)
   out$seq_width <- width(stringset[out$seq])
-  out$from_centre <- 0.5 * (out$start + out$end) - out$seq_width / 2
+  out$from_centre <- (out$start + out$end - out$seq_width) / 2
 
   ## The match itself
   to_rev <- out$direction == "R"

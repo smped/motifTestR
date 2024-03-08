@@ -36,6 +36,25 @@
 #' @rdname ar_er_peaks
 "ar_er_peaks"
 
+#' @title Sequences from peaks with AR and ER detected
+#'
+#' @description
+#' The genomic sequences obtained from the ar_er_peaks
+#'
+#' @details
+#' These sequences represent the sequences obtained from
+#' BSgenome.Hsapiens.UCSC.hg19 for thw peaks supplied as `ar_er_peaks`
+#'
+#'
+#' @usage data("ar_er_seq")
+#'
+#' @examples
+#' data("ar_er_seq")
+#' ar_er_seq
+#' @name ar_er_seq
+#' @rdname ar_er_seq
+"ar_er_seq"
+
 #' @title Regions from hg19 with high N content
 #'
 #' @description

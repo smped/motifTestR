@@ -75,8 +75,9 @@ greater than the sequences of interest is advised, with background sets
 >1000 times larger being preferred.
 }
 \examples{
-## Load the example peaks
+## Load the example peaks & the sequences
 data("ar_er_peaks")
+data("ar_er_seq")
 sq <- seqinfo(ar_er_peaks)
 ## Now sample size-matched ranges 10 times larger. In real-world analyses,
 ## this set should be sampled as at least 1000x larger, ensuring features
@@ -91,16 +92,15 @@ bg_ranges <- makeRMRanges(
 ## Convert ranges to DNAStringSets
 library(BSgenome.Hsapiens.UCSC.hg19)
 genome <- BSgenome.Hsapiens.UCSC.hg19
-test_set <- getSeq(genome, ar_er_peaks)
-bg_set <- getSeq(genome, bg_ranges)
+bg_seq <- getSeq(genome, bg_ranges)
 
 ## Test for enrichment of the ESR1 motif
 data("ex_pwm")
 esr1 <- ex_pwm$ESR1
-testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
+testMotifEnrich(esr1, ar_er_seq, bg_seq, model = "poisson")
 
 ## Test all motifs
-testMotifEnrich(ex_pwm, test_set, bg_set, model = "poisson")
+testMotifEnrich(ex_pwm, ar_er_seq, bg_seq, model = "poisson")
 
 
 }

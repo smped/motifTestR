@@ -46,14 +46,11 @@ Heatmaps are only enabled for comparisons across multiple PWMs
 data("ex_pwm")
 esr1 <- ex_pwm$ESR1
 
-## Load the example Peaks
-data("ar_er_peaks")
-library(BSgenome.Hsapiens.UCSC.hg19)
-genome <- BSgenome.Hsapiens.UCSC.hg19
-seq <- getSeq(genome, ar_er_peaks)
+## Load the example sequences from the peaks
+data("ar_er_seq")
 
 ## Just the best match
-bm <- getPwmMatches(esr1, seq, best_only = TRUE)
+bm <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 plotMatchPos(bm, se = FALSE)
 
 ## Matches can also be shown by distance from centre

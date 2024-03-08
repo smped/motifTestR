@@ -43,13 +43,10 @@ data("ex_pwm")
 esr1 <- ex_pwm$ESR1
 
 ## Load the example Peaks
-data("ar_er_peaks")
-library(BSgenome.Hsapiens.UCSC.hg19)
-genome <- BSgenome.Hsapiens.UCSC.hg19
-seq <- getSeq(genome, ar_er_peaks)
-countPwmMatches(esr1, seq)
+data("ar_er_seq")
+countPwmMatches(esr1, ar_er_seq)
 
 ## Count all PWMs
-countPwmMatches(ex_pwm, seq)
+countPwmMatches(ex_pwm, ar_er_seq)
 
 }

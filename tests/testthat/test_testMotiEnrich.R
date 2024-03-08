@@ -1,12 +1,12 @@
 set.seed(305)
-bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], n_iter = 10)
+data("hg19_mask")
+bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], exclude = hg19_mask, n_iter = 10)
 
 ## Convert ranges to DNAStringSets
-test_set <- getSeq(genome, ar_er_peaks)
+test_set <- ar_er_seq
 bg_set <- getSeq(genome, bg_ranges)
 mcols(bg_set) <- mcols(bg_ranges)
-## Remove sequences with Ns to avoid annoying messages
-bg_set <- bg_set[vapply(bg_set, hasOnlyBaseLetters, logical(1))]
+
 
 test_that("Basic Poisson analysis works", {
   res <- testMotifEnrich(esr1, test_set, bg_set, model = "poisson")
@@ -22,8 +22,6 @@ test_that("Lists are tested", {
 })
 
 test_that("Iteration works", {
-  expect_error(testMotifEnrich(esr1, test_set, bg_set, model = "iter"))
-  bg_set <- getSeq(genome, bg_ranges)
   mcols(bg_set) <- mcols(bg_ranges)
   iter <- suppressWarnings(
     ## This will call sequences with N

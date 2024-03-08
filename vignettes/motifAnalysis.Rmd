@@ -74,7 +74,7 @@ library(rtracklayer)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(parallel)
 library(dplyr)
-library(ggplot2)
+# library(ggplot2)
 ```
 
 ```{r}
@@ -143,7 +143,7 @@ data("ex_pwm")
 names(ex_pwm)
 ```
 
-Again, a larger set of motifs may be obtained using following code, or by customising query fileds as preferred.
+Again, a larger set of motifs may be obtained using following code, or by customising query fields as preferred.
 
 ```r
 ## Not run
@@ -161,7 +161,7 @@ names(ex_pwm) <- gsub(".+HOCOMOCOv11-core-A-(.+)_.+", "\\1", names(ex_pwm))
 ## Finding PWM Matches
 
 All PWM matches within the test sequences can be returned for any of the PWMs,
-with `getPwmMatches()` searching using the PWM and it's reverseComplement by 
+with `getPwmMatches()` searching using the PWM and it's reverse complement by 
 default.
 
 ```{r match-esr1}

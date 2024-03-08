@@ -102,19 +102,16 @@ narrow range containing a non-trivial proportion of the total matches.
 data("ex_pwm")
 esr1 <- ex_pwm$ESR1
 
-## Load the example Peaks
-data("ar_er_peaks")
-library(BSgenome.Hsapiens.UCSC.hg19)
-genome <- BSgenome.Hsapiens.UCSC.hg19
-seq <- getSeq(genome, ar_er_peaks)
+## Load the example sequences
+data("ar_er_seq")
 
 ## Get the best match and use this data
-matches <- getPwmMatches(esr1, seq, best_only = TRUE)
+matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 ## Test for enrichment in any position
 testMotifPos(matches = matches)
 
 ## Provide a list of PWMs, testing for distance from zero
-testMotifPos(ex_pwm, seq, abs = TRUE, binwidth = 10)
+testMotifPos(ex_pwm, ar_er_seq, abs = TRUE, binwidth = 10)
 
 
 }

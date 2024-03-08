@@ -43,3 +43,7 @@ ar_er_peaks <- GRangesList(
   granges()
 
 save(ar_er_peaks, file = "data/ar_er_peaks.RData")
+
+library(BSgenome.Hsapiens.UCSC.hg19)
+ar_er_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, ar_er_peaks)
+save(ar_er_seq, file = "data/ar_er_seq.RData")
