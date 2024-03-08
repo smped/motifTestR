@@ -56,7 +56,7 @@
     stopifnot(is(matches, "list") & !is(matches, "data.frame"))
     hasCols <- vapply(matches, \(x) all(reqdCols %in% colnames(x)), logical(1))
     if (any(!hasCols))
-      stop("All objects must contain the columns: \n", paste(reqdCols, "\n"))
+      stop("All objects must contain the columns: \n", reqdCols, "\n")
     correctTypes <- vapply(
       matches,
       \(x) {

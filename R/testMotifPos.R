@@ -119,7 +119,7 @@ testMotifPos <- function(
       min_score = min_score, break_ties = break_ties, alt = alt, ...,
       mc.cores = mc.cores
     )
-    cols <- c(cols[1:10], "fdr", "consensus_motif")
+    cols <- c(cols[seq_len(10)], "fdr", "consensus_motif")
     out <- do.call("rbind", out)
     out$fdr <- p.adjust(out$p, "fdr")
   }

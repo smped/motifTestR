@@ -107,7 +107,7 @@ testMotifEnrich <- function(
     )
     out <- do.call("rbind", out)
     out$fdr <- p.adjust(out$p, "fdr")
-    cols <- c(cols[1:6], "fdr", cols[7])
+    cols <- c(cols[-7], "fdr", cols[7])
   }
 
   out[,cols]
