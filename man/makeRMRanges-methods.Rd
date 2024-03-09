@@ -33,9 +33,9 @@ makeRMRanges(x, y, ...)
 )
 }
 \arguments{
-\item{x}{GRanges with ranges to be matched}
+\item{x}{GRanges/GRangesList with ranges to be matched}
 
-\item{y}{GRanges with ranges to select random matching ranges from}
+\item{y}{GRanges/GRangesList with ranges to select random matching ranges from}
 
 \item{...}{Not used}
 
@@ -43,7 +43,9 @@ makeRMRanges(x, y, ...)
 
 \item{n_iter}{The number of times to repeat the random selection process}
 
-\item{n_total}{Setting this value will over-ride anything set using n_iter}
+\item{n_total}{Setting this value will over-ride anything set using n_iter.
+Can be vector of any length, corresponding to the length of x, when x is a
+GRangesList}
 
 \item{replace}{logical(1) Sample with our without replacement when creating
 the set of random ranges.}

@@ -10,7 +10,7 @@ getPwmMatches(
   rc = TRUE,
   min_score = "80\%",
   best_only = FALSE,
-  break_ties = c("random", "first", "last", "central", "all"),
+  break_ties = c("all", "random", "first", "last", "central"),
   mc.cores = 1,
   ...
 )

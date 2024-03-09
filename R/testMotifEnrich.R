@@ -51,6 +51,7 @@
 #' @param model The model used for analysis
 #' @param var A column in the mcols element of bg, usually denoting an iteration
 #' number
+#' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param ... Passed internally to \link[Biostrings]{countPWM}
 #'
@@ -87,7 +88,7 @@
 #' @export
 testMotifEnrich <- function(
     pwm, stringset, bg, model = c("poisson", "iteration"), var = "iteration",
-    mc.cores = 1, ...
+    sort_by = c("p", "none"), mc.cores = 1, ...
 ) {
 
   ## Checks
@@ -108,7 +109,10 @@ testMotifEnrich <- function(
     out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
 
   out$fdr <- p.adjust(out$p, "fdr")
-  out[,cols]
+  o <- seq_len(nrow(out))
+  sort_by <- match.arg(sort_by)
+  if (sort_by != "none") o <- order(out[[sort_by]])
+  out[o,cols]
 
 }
 

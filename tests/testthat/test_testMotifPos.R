@@ -1,6 +1,6 @@
 exp_cols <- c(
   "start", "end", "centre", "width", "total_matches", "matches_in_region",
-  "expected", "enrichment", "prop_total", "p", "consensus_motif"
+  "expected", "enrichment", "prop_total", "p", "fdr", "consensus_motif"
 )
 
 ## Bodgy up a set of matches
@@ -8,7 +8,7 @@ matches <- getPwmMatches(esr1, stringset)
 matches$seq <- c(1, seq_len(nrow(matches) - 1))
 
 test_that("testMotifPos returns symmetrical peaks as expected",{
-  res <- testMotifPos(matches = matches)
+  res <- testMotifPos(matches)
   expect_true(nrow(res) == 1)
   expect_equal(colnames(res), exp_cols)
   expect_equal(
@@ -23,7 +23,7 @@ test_that("testMotifPos returns symmetrical peaks as expected",{
 })
 
 test_that("setting abs = TRUE behaves as expected", {
-  bins <- motifTestR:::.makeBmBins(matches, binwidth = 10, abs = TRUE)
+  bins <- .makeBmBins(matches, binwidth = 10, abs = TRUE)
   expect_equal(bins$weight, c(0.5, 0.5, rep_len(1, 5)))
   exp_bins <- c(
     "[0,10]", "(10,20]", "(20,30]", "(30,40]", "(40,50]", "(50,60]",
@@ -48,7 +48,7 @@ test_that("Passing to getPwmMatches works", {
 })
 
 test_that("List input works", {
-  res <- testMotifPos(ex_pwm, seq)
+  res <- testMotifPos(ex_pwm, seq, sort_by = "none")
   expect_true(is(res, "data.frame"))
   expect_equal(rownames(res), names(ex_pwm))
   expect_true(all(exp_cols %in% colnames(res)))
@@ -56,9 +56,11 @@ test_that("List input works", {
 })
 
 test_that("testMotifPos errors correctly", {
-  empty <- testMotifPos(matches = matches[0,])
+  empty <- testMotifPos(matches[0,])
   expect_true(nrow(empty) == 0)
   expect_true(is(empty, "data.frame"))
   expect_equal(colnames(empty), exp_cols)
   expect_error(testMotifPos(esr1, stringset, binwidth = 500))
+  expect_error(testMotifPos(""))
+  expect_error(testMotifPos(c(list(""), ex_pwm)))
 })

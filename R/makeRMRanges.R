@@ -36,11 +36,13 @@
 #' @return A GRanges or GRangesList object
 #'
 #'
-#' @param x GRanges with ranges to be matched
-#' @param y GRanges with ranges to select random matching ranges from
+#' @param x GRanges/GRangesList with ranges to be matched
+#' @param y GRanges/GRangesList with ranges to select random matching ranges from
 #' @param exclude GRanges of ranges to omit from testing
 #' @param n_iter The number of times to repeat the random selection process
-#' @param n_total Setting this value will over-ride anything set using n_iter
+#' @param n_total Setting this value will over-ride anything set using n_iter.
+#' Can be vector of any length, corresponding to the length of x, when x is a
+#' GRangesList
 #' @param replace logical(1) Sample with our without replacement when creating
 #' the set of random ranges.
 #' @param mc.cores Passsed to \link[parallel]{mclapply}
@@ -106,6 +108,7 @@ setMethod(
       iter_size <- length(x)
       n_total <- as.integer(n_iter * iter_size)
     }
+    n_total <- n_total[[1]]
 
     ## Now the random sampling
     rand_w <- sample(w, n_total, replace = TRUE)

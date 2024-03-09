@@ -31,7 +31,7 @@
   ## Now check everything is a matrix
   all_mat <- vapply(
     x,
-    \(x) all(is.matrix(x), rownames(x) == c("A", "C", "G", "T")),
+    \(mat) all(is.matrix(mat), rownames(mat) == c("A", "C", "G", "T")),
     logical(1)
   )
   stopifnot(all_mat)
@@ -45,6 +45,7 @@
     from_centre = "numeric", seq_width = "integer", match = "DNAStringSet"
   )
   reqdCols <- c("seq", names(colTypes)) # seq can be any type
+  msg <- paste(reqdCols, collapse = ",")
 
   if (is(matches, "DataFrame")) {
     stopifnot(all(reqdCols %in% colnames(matches)))
@@ -56,7 +57,7 @@
     stopifnot(is(matches, "list") & !is(matches, "data.frame"))
     hasCols <- vapply(matches, \(x) all(reqdCols %in% colnames(x)), logical(1))
     if (any(!hasCols))
-      stop("All objects must contain the columns: \n", reqdCols, "\n")
+      stop("All objects must contain the columns: \n", msg)
     correctTypes <- vapply(
       matches,
       \(x) {

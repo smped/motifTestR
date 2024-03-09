@@ -5,30 +5,25 @@
 \title{Test for a Uniform Distribution across a set of best matches}
 \usage{
 testMotifPos(
-  pwm,
+  x,
   stringset,
-  matches,
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
   min_score = "80\%",
   break_ties = "all",
   alt = c("greater", "less", "two.sided"),
+  sort_by = c("p", "none"),
   mc.cores = 1,
   ...
 )
 }
 \arguments{
-\item{pwm}{A Position Weight Matrix, or list of PWMs. Not required if `matches`
-is supplied.}
+\item{x}{A Position Weight Matrix, universalmotif object or list thereof.
+Alternatively can be a single DataFrame or list of DataFrames as returned
+by \link{getPwmMatches} with `best_only = TRUE`}
 
-\item{stringset}{An XStringSet. Not required if `matches` is supplied}
-
-\item{matches}{An optional set of 'best matches' as returned by
-\link{getPwmMatches} setting `best_only = TRUE`. Alternatively, a list of
-returned 'best matches' can be used. Any individual sequence with multiple
-'best matches' will have each match weighted. If provided, will override
-anything passed via `pwm` or `stringset.`}
+\item{stringset}{An XStringSet. Not required if matches are supplied as x}
 
 \item{binwidth}{Width of bins across the range to group data into}
 
@@ -41,6 +36,8 @@ anything passed via `pwm` or `stringset.`}
 \item{break_ties}{Choose how to resolve matches with tied scores}
 
 \item{alt}{Alternative hypothesis for the binomial test}
+
+\item{sort_by}{Column to sort results by}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
@@ -108,7 +105,7 @@ data("ar_er_seq")
 ## Get the best match and use this data
 matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 ## Test for enrichment in any position
-testMotifPos(matches = matches)
+testMotifPos(matches)
 
 ## Provide a list of PWMs, testing for distance from zero
 testMotifPos(ex_pwm, ar_er_seq, abs = TRUE, binwidth = 10)

@@ -50,20 +50,17 @@
 #' Matrix (PFM) using \link[Biostrings]{consensusMatrix}.
 #'
 #'
-#' @param pwm A Position Weight Matrix, or list of PWMs. Not required if `matches`
-#' is supplied.
-#' @param stringset An XStringSet. Not required if `matches` is supplied
-#' @param matches An optional set of 'best matches' as returned by
-#' \link{getPwmMatches} setting `best_only = TRUE`. Alternatively, a list of
-#' returned 'best matches' can be used. Any individual sequence with multiple
-#' 'best matches' will have each match weighted. If provided, will override
-#' anything passed via `pwm` or `stringset.`
+#' @param x A Position Weight Matrix, universalmotif object or list thereof.
+#' Alternatively can be a single DataFrame or list of DataFrames as returned
+#' by \link{getPwmMatches} with `best_only = TRUE`
+#' @param stringset An XStringSet. Not required if matches are supplied as x
 #' @param binwidth Width of bins across the range to group data into
 #' @param abs Use absolute positions around zero to find symmetrical enrichment
 #' @param rc logical(1) Also find matches using the reverse complement of pwm
 #' @param min_score The minimum score to return a match
 #' @param break_ties Choose how to resolve matches with tied scores
 #' @param alt Alternative hypothesis for the binomial test
+#' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
@@ -79,7 +76,7 @@
 #' ## Get the best match and use this data
 #' matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 #' ## Test for enrichment in any position
-#' testMotifPos(matches = matches)
+#' testMotifPos(matches)
 #'
 #' ## Provide a list of PWMs, testing for distance from zero
 #' testMotifPos(ex_pwm, ar_er_seq, abs = TRUE, binwidth = 10)
@@ -89,42 +86,50 @@
 #' @importFrom stats p.adjust
 #' @export
 testMotifPos <- function(
-    pwm, stringset, matches, binwidth = 10, abs = FALSE, rc = TRUE,
-    min_score = "80%", break_ties = "all",
-    alt = c("greater", "less", "two.sided"), mc.cores = 1, ...
+    x, stringset, binwidth = 10, abs = FALSE, rc = TRUE, min_score = "80%",
+    break_ties = "all", alt = c("greater", "less", "two.sided"),
+    sort_by = c("p", "none"), mc.cores = 1,
+    ...
 ) {
 
-  alt <- match.arg(alt)
-  args <- c(as.list(environment()), list(...))
-  args <- args[!names(args) %in% c("pwm", "stringset", "mc.cores")]
-  ## Handle any situation without a matches df or list
-  if (missing(matches)) {
-    ## This will perform all checks as well
-    ## pwm & stringset are not required beyond this initial call
+  ## Handle single objects by coercing to a list where appropriate
+  valid_cl <- c("matrix", "universalmotif", "DataFrame")
+  if (any(vapply(valid_cl, \(cl) is(x, cl), logical(1)))) x <- list(x)
+  if (!is.list(x))
+    stop("Input should be provided as a list, PWM/matrix or DF of matches")
+
+  ## Handle a list of PWMs
+  isPWM <- vapply(
+    x, \(el) is(el, "matrix") | is(el, "universalmotif"), logical(1)
+  )
+  if (all(isPWM)) {
     matches <- getPwmMatches(
-      pwm, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
+      x, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
     )
+  } else {
+    ## Now for a list of matches
+   .checkMatches(x) ## Will fail if not valid
+    matches <- x
   }
-  .checkMatches(matches)
+  if (missing(matches)) stop("Provided input is not in a recognised format")
+  alt <- match.arg(alt)
+
   cols <- c(
     "start", "end", "centre", "width", "total_matches", "matches_in_region",
-    "expected", "enrichment", "prop_total", "p", "consensus_motif"
+    "expected", "enrichment", "prop_total", "p", "fdr", "consensus_motif"
   )
-  if (is(matches, "DataFrame")) {
-    args$matches <- matches
-    out <- do.call(.testSingleMotifPos, args)
-  } else {
-    out <- mclapply(
-      matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
-      min_score = min_score, break_ties = break_ties, alt = alt, ...,
-      mc.cores = mc.cores
-    )
-    cols <- c(cols[seq_len(10)], "fdr", "consensus_motif")
-    out <- do.call("rbind", out)
-    out$fdr <- p.adjust(out$p, "fdr")
-  }
 
-  out[, cols]
+  out <- mclapply(
+    matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
+    min_score = min_score, break_ties = break_ties, alt = alt, ...,
+    mc.cores = mc.cores
+  )
+  out <- do.call("rbind", out)
+  out$fdr <- p.adjust(out$p, "fdr")
+  o <- seq_len(nrow(out))
+  sort_by <- match.arg(sort_by)
+  if (sort_by != "none") o <- order(out[[sort_by]])
+  out[o, cols]
 
 }
 
@@ -132,7 +137,7 @@ testMotifPos <- function(
 #' @importFrom stats binom.test
 #' @keywords internal
 .testSingleMotifPos <- function(
-    matches, binwidth , abs, rc, min_score, break_ties, alt, ...
+    matches, binwidth, abs, rc, min_score, break_ties, alt, ...
 ) {
 
   ## Setup a well formed output object for easy combining with other tests

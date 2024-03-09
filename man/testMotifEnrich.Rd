@@ -10,6 +10,7 @@ testMotifEnrich(
   bg,
   model = c("poisson", "iteration"),
   var = "iteration",
+  sort_by = c("p", "none"),
   mc.cores = 1,
   ...
 )
@@ -25,6 +26,8 @@ testMotifEnrich(
 
 \item{var}{A column in the mcols element of bg, usually denoting an iteration
 number}
+
+\item{sort_by}{Column to sort results by}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
