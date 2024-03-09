@@ -37,6 +37,7 @@ Suggests:
   extraChIPs,
   knitr,
   MotifDb,
+  patchwork,
   rmarkdown,
   rtracklayer,
   testthat (>= 3.0.0)
