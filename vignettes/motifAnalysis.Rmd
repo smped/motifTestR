@@ -325,7 +325,7 @@ enrich_res <- testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores) |>
 enrich_res |> head()
 ```
 
-```{r}
+```{r eval = FALSE}
 testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iter")
 ```
 

@@ -23,10 +23,7 @@ test_that("Lists are tested", {
 
 test_that("Iteration works", {
   mcols(bg_set) <- mcols(bg_ranges)
-  iter <- suppressWarnings(
-    ## This will call sequences with N
-    testMotifEnrich(esr1, test_set, bg_set, model = "iter")
-  )
+  iter <- testMotifEnrich(esr1, test_set, bg_set, model = "iter")
   expect_true(is(iter, "data.frame"))
   expect_true(nrow(iter) == 1)
   expect_true("perm_p" %in% colnames(iter))

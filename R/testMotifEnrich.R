@@ -100,29 +100,27 @@ testMotifEnrich <- function(
     poisson = "est_bg_rate", iteration = c("perm_p", "n_iter", "sd_bg")
   )
   cols <- c(cols, opt_cols[[model]])
-  out <- NULL
-   ## Run the analysis
-  if (is.matrix(pwm)) {
-    out <- do.call(".testSingleMotifEnrich", args)
-    cols <- setdiff(cols, "fdr")
-  }
-  if (is.list(pwm)) {
+  ## Run the analysis
+  if (model == "poisson") {
+    out <- .testPois(pwm, stringset, bg, mc.cores, ...)
+  } else{
+    ## The iterative method
+    if (is.matrix(pwm)) pwm <- list(pwm)
     pwm <- .cleanMotifList(pwm)
     out <- lapply(
-      pwm, .testSingleMotifEnrich, stringset = stringset, bg = bg,
-      model = model, var = var, mc.cores = mc.cores
+      pwm, .testSingleMotifEnrich, stringset = stringset, bg = bg, var = var,
+      mc.cores = mc.cores
     )
     out <- do.call("rbind", out)
-    out$fdr <- p.adjust(out$p, "fdr")
+
   }
+  out$fdr <- p.adjust(out$p, "fdr")
   out[,cols]
 
 }
 
 #' @keywords internal
-.testSingleMotifEnrich <- function(
-    pwm, stringset, bg, model, var, mc.cores = 1, ...
-){
+.testSingleMotifEnrich <- function(pwm, stringset, bg, var, mc.cores = 1, ...){
 
   ## Find the matches in the test set. This will also perform tests on inputs
   matches <- countPwmMatches(pwm, stringset, ...)
@@ -133,31 +131,42 @@ testMotifEnrich <- function(
   if (!all(bg_w == w))
     stop("All background sequences must be the same length as the test sequences")
 
-  if (model == "poisson") {
-    out <- .testPois(pwm, bg, matches, n, ...)
-  }
-  if (model == "iteration") {
-    out <- .testIter(pwm, bg, var, mc.cores, matches, n, ...)
-  }
-
+  out <- .testIter(pwm, bg, var, mc.cores, matches, n, ...)
   out
 
 }
 
 #' @importFrom stats poisson.test
 #' @keywords internal
-.testPois <- function(pwm, bg, matches, n, ...){
+.testPois <- function(pwm, test_seq, bg_seq, mc.cores, ...){
 
   ## This should be able to be sped up easily by counting all in a single run
   ## The duplications  to all calculations below can be vectorised in the main
   ## function
-  bg_rate <- countPwmMatches(pwm, bg, ...) / length(bg)
-  p <- poisson.test(matches, n, bg_rate)$p.value
-  expected <- bg_rate * n
-  Z  <- (matches - expected) / sqrt(expected) ## Assumes a strict poisson
+  # bg_rate <- countPwmMatches(pwm, bg, ...) / length(bg)
+  # p <- poisson.test(matches, n, bg_rate)$p.value
+  # expected <- bg_rate * n
+  # Z  <- (matches - expected) / sqrt(expected) ## Assumes a strict poisson
+  # data.frame(
+  #   sequences = n, matches, expected, enrichment = matches / expected,
+  #   Z, p, est_bg_rate = bg_rate
+  # )
+  if (is.matrix(pwm)) pwm <- list(pwm)
+  pwm <- .cleanMotifList(pwm)
+  n_seq <- length(test_seq)
+  matches <- countPwmMatches(pwm, test_seq, mc.cores = mc.cores)
+  n_bg <- countPwmMatches(pwm, bg_seq, mc.cores = mc.cores)
+  est_bg_rate <- n_bg / length(bg_seq)
+  expected <- est_bg_rate * n_seq
+  ## Running vapply seems faster mclappy here
+  p <- vapply(
+    seq_along(pwm),
+    \(i) poisson.test(matches[i], n_seq, est_bg_rate[i])$p.value,
+    numeric(1)
+  )
   data.frame(
-    sequences = n, matches, expected, enrichment = matches / expected,
-    Z, p, est_bg_rate = bg_rate
+    sequences = n_seq, matches, expected, enrichment = matches / expected,
+    Z  = (matches - expected) / sqrt(expected), p, est_bg_rate
   )
 
 }
