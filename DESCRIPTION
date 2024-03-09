@@ -23,6 +23,7 @@ Imports:
   GenomeInfoDb,
   harmonicmeanp,
   IRanges,
+  matrixStats,
   methods,
   parallel,
   rlang,

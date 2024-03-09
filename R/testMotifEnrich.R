@@ -101,64 +101,63 @@ testMotifEnrich <- function(
   )
   cols <- c(cols, opt_cols[[model]])
   ## Run the analysis
-  if (model == "poisson") {
-    out <- .testPois(pwm, stringset, bg, mc.cores, ...)
-  } else{
-    ## The iterative method
-    if (is.matrix(pwm)) pwm <- list(pwm)
-    pwm <- .cleanMotifList(pwm)
-    out <- lapply(
-      pwm, .testSingleMotifEnrich, stringset = stringset, bg = bg, var = var,
-      mc.cores = mc.cores
-    )
-    out <- do.call("rbind", out)
+  if (is.matrix(pwm)) pwm <- list(pwm)
+  pwm <- .cleanMotifList(pwm)
+  if (model == "poisson") out <- .testPois(pwm, stringset, bg, mc.cores, ...)
+  if (model == "iteration")
+    out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
 
-  }
   out$fdr <- p.adjust(out$p, "fdr")
   out[,cols]
 
 }
 
+#' @importFrom parallel mclapply
+#' @importFrom stats pchisq
+#' @importFrom matrixStats colSds
 #' @keywords internal
-.testSingleMotifEnrich <- function(pwm, stringset, bg, var, mc.cores = 1, ...){
+.testIter <- function(pwm, stringset, bg, var, mc.cores, ...) {
 
-  ## Find the matches in the test set. This will also perform tests on inputs
-  matches <- countPwmMatches(pwm, stringset, ...)
+  stopifnot(var %in% colnames(mcols(bg)))
   n <- length(stringset)
-  w <- unique(width(stringset))
-  if (length(w) != 1) stop("All sequences are required to be the same length")
-  bg_w <- width(bg)
-  if (!all(bg_w == w))
-    stop("All background sequences must be the same length as the test sequences")
+  matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+  splitbg <- split(bg, mcols(bg)[[var]])
+  if (!all(vapply(splitbg, length, integer(1)) == n))
+    stop("All iterations must be the same size as the test sequences")
 
-  out <- .testIter(pwm, bg, var, mc.cores, matches, n, ...)
-  out
+  bg_matches <- mclapply(
+    splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
+    mc.cores = mc.cores
+  )
+  bg_mat <- do.call("rbind", bg_matches)
+  mean_bg <- colMeans(bg_mat)
+  sd_bg <- colSds(bg_mat)
+  n_iter <- nrow(bg_mat)
+  diff <- bg_mat - matrix(
+    matches, nrow = n_iter, ncol = length(matches), byrow = TRUE
+  )
+  perm_p <- (colSums(diff > 0) + 1) / n_iter
+  Z <- (matches - mean_bg) / sd_bg
+  p <- 1 - pchisq(Z^2, 1)
+
+  data.frame(
+    sequences = length(stringset), matches, expected = mean_bg,
+    enrichment = matches / mean_bg, Z, p, perm_p, n_iter, sd_bg
+  )
 
 }
+
 
 #' @importFrom stats poisson.test
 #' @keywords internal
 .testPois <- function(pwm, test_seq, bg_seq, mc.cores, ...){
 
-  ## This should be able to be sped up easily by counting all in a single run
-  ## The duplications  to all calculations below can be vectorised in the main
-  ## function
-  # bg_rate <- countPwmMatches(pwm, bg, ...) / length(bg)
-  # p <- poisson.test(matches, n, bg_rate)$p.value
-  # expected <- bg_rate * n
-  # Z  <- (matches - expected) / sqrt(expected) ## Assumes a strict poisson
-  # data.frame(
-  #   sequences = n, matches, expected, enrichment = matches / expected,
-  #   Z, p, est_bg_rate = bg_rate
-  # )
-  if (is.matrix(pwm)) pwm <- list(pwm)
-  pwm <- .cleanMotifList(pwm)
   n_seq <- length(test_seq)
   matches <- countPwmMatches(pwm, test_seq, mc.cores = mc.cores)
   n_bg <- countPwmMatches(pwm, bg_seq, mc.cores = mc.cores)
   est_bg_rate <- n_bg / length(bg_seq)
   expected <- est_bg_rate * n_seq
-  ## Running vapply seems faster mclappy here
+  ## Running vapply seems faster than mclappy here
   p <- vapply(
     seq_along(pwm),
     \(i) poisson.test(matches[i], n_seq, est_bg_rate[i])$p.value,
@@ -171,28 +170,3 @@ testMotifEnrich <- function(
 
 }
 
-#' @importFrom parallel mclapply
-#' @importFrom stats pchisq sd
-#' @keywords internal
-.testIter <- function(pwm, bg, var, mc.cores, matches, n, ...) {
-
-  stopifnot(var %in% colnames(mcols(bg)))
-  bglist <- split(bg, mcols(bg)[[var]])
-  if (!all(vapply(bglist, length, integer(1)) == n))
-    stop("All iterations should be the same size as the test sequences")
-  bg_matches <- mclapply(
-    bglist, \(x) countPwmMatches(pwm, x, ...), mc.cores = mc.cores
-  )
-  bg_matches <- as.integer(unlist(bg_matches))
-  mean_bg <- mean(bg_matches)
-  sd_bg <- sd(bg_matches)
-  n_iter <- length(bg_matches)
-  Z <- (matches - mean_bg) / sd_bg
-  perm_p <- (sum(bg_matches > matches) + 1) / n_iter
-  p <- 1 - pchisq(Z^2, 1)
-  data.frame(
-    sequences = n, matches, expected = mean_bg, enrichment = matches / mean_bg,
-    Z, p, sd_bg, n_iter, perm_p
-  )
-
-}
