@@ -76,3 +76,22 @@
 #' @name hg19_mask
 #' @rdname hg19_mask
 "hg19_mask"
+
+#' @title Candidate Enhancer Regions from ZR-75-1 Cells
+#'
+#' @description
+#' The chr1 subset of candidate enhancers for ZR-75-1 cells
+#'
+#' @details
+#' These enhancers are the chr1 subset of enhancer regions for ZR-75-1 cells as
+#' identified by EnhancerAtlas 2.0
+#'
+#' @source \url{http://www.enhanceratlas.org/index.php}
+#'
+#' @usage data("zr75_enh")
+#' @examples
+#' data("zr75_enh")
+#' zr75_enh
+#' @name zr75_enh
+#' @rdname zr75_enh
+"zr75_enh"

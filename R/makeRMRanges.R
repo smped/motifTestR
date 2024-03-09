@@ -89,12 +89,16 @@ setMethod(
     stopifnot(is(exclude, "GRanges"))
     sq_gr <- GRanges(seqinfo(x))
     w <- width(x)
+    max_w <- max(w)
     chr_ends <- c(
-      resize(sq_gr, width = max(w) / 2, fix = "start"),
-      resize(sq_gr, width = max(w) / 2, fix = "end")
+      resize(sq_gr, width = max_w / 2, fix = "start"),
+      resize(sq_gr, width = max_w / 2, fix = "end")
     )
+    # Chop the ends off so resizing won't spit an error
+    exclude <- GenomicRanges::setdiff(exclude, chr_ends)
+    exclude <- resize(exclude, width = width(exclude) + max_w, fix = "center")
     exclude <- c(granges(exclude), chr_ends)
-    y <- setdiff(y, exclude)
+    y <- GenomicRanges::setdiff(y, exclude)
 
     ## Set the iterations
     has_iter <- is.null(n_total)
@@ -104,11 +108,34 @@ setMethod(
     }
 
     ## Now the random sampling
-    gpos <- GPos(y)
-    i <- sample(seq_along(gpos), n_total, replace = replace)
     rand_w <- sample(w, n_total, replace = TRUE)
-    gr <- GRanges(gpos[i])
+    too_big <- sum(width(y)) > .Machine$integer.max
+    if (too_big) {
+      ## The human genome is ~3.1e9 & the usual max integer is 2.1e9
+      ## Splitting in half should solve problems for all genomes < 4e9
+      ## Sorry to wheat people...
+      i <- floor(length(y) / 2)
+      n1 <- floor(n_total / 2)
+      y1 <- y[seq_len(i)]
+      i1 <- sample(sum(width(y1)), n1, replace = replace)
+      gr1 <- GPos(y1)[i1]
+
+      y2 <- GenomicRanges::setdiff(y, y1)
+      n2 <- n_total - n1
+      i2 <- sample(sum(width(y2)), n2, replace = replace)
+      gr2 <- GPos(y2)[i2]
+
+      ## Randomise to make up for chunking
+      i <- sample(n_total, n_total, replace = FALSE)
+      gr <- GRanges(c(gr1, gr2))[i]
+
+    } else {
+      gpos <- GPos(y)
+      i <- sample(seq_along(gpos), n_total, replace = replace)
+      gr <- GRanges(gpos[i])
+    }
     gr <- resize(gr, width = rand_w, fix = "center")
+    ## Ranges will be randomised so adding iterations in order is fine
     if (has_iter) gr$iteration <- rep(seq_len(n_iter), times = iter_size)
     sort(gr)
 

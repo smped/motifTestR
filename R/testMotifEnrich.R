@@ -94,11 +94,18 @@ testMotifEnrich <- function(
   stopifnot(is(bg, "XStringSet"))
   model <- match.arg(model)
   args <- c(as.list(environment()), list(...))
-  cols <- c(
-    "sequences", "matches", "expected", "enrichment", "Z", "p", "est_bg_rate"
+  ## Prepare the output
+  cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
+  opt_cols <- list(
+    poisson = "est_bg_rate", iteration = c("perm_p", "n_iter", "sd_bg")
   )
+  cols <- c(cols, opt_cols[[model]])
   out <- NULL
-  if (is.matrix(pwm)) return(do.call(".testSingleMotifEnrich", args))
+   ## Run the analysis
+  if (is.matrix(pwm)) {
+    out <- do.call(".testSingleMotifEnrich", args)
+    cols <- setdiff(cols, "fdr")
+  }
   if (is.list(pwm)) {
     pwm <- .cleanMotifList(pwm)
     out <- lapply(
@@ -107,9 +114,7 @@ testMotifEnrich <- function(
     )
     out <- do.call("rbind", out)
     out$fdr <- p.adjust(out$p, "fdr")
-    cols <- c(cols[-7], "fdr", cols[7])
   }
-
   out[,cols]
 
 }
@@ -143,6 +148,9 @@ testMotifEnrich <- function(
 #' @keywords internal
 .testPois <- function(pwm, bg, matches, n, ...){
 
+  ## This should be able to be sped up easily by counting all in a single run
+  ## The duplications  to all calculations below can be vectorised in the main
+  ## function
   bg_rate <- countPwmMatches(pwm, bg, ...) / length(bg)
   p <- poisson.test(matches, n, bg_rate)$p.value
   expected <- bg_rate * n

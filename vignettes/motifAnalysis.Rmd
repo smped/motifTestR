@@ -209,9 +209,9 @@ When using the harmonic-mean p-value however, this tends return a more conservat
 
 
 ```{r test-motif-pos}
-res <- testMotifPos(matches = bm_all, mc.cores = cores) |>
+res_pos <- testMotifPos(matches = bm_all, mc.cores = cores) |>
   arrange(p)
-head(res)
+head(res_pos)
 ```
 
 The bins returned by the function represent the widest range of bins where the raw p-values were below the harmonic-mean p-value.
@@ -233,12 +233,11 @@ The complete set of matches returned as a list above can be simply passed to `gg
 By default, smoothed values across all motifs will be overlaid (Figure \@ref(fig:plot-pos)A), however, tailoring using ggplot is simple to produce a wide variety of outputs (Figure \@ref(fig:plot-pos)B)
 
 ```{r plot-pos, fig.cap = "Distribution of motif matches around the centres of the set of peaks"}
-topMotifs <- rownames(res)[1:4]
+topMotifs <- rownames(res_pos)[1:4]
 A <- plotMatchPos(bm_all[topMotifs], binwidth = 10, se = FALSE)
 B <- plotMatchPos(bm_all[topMotifs], binwidth = 10, geom = "col") +
   geom_smooth(se = FALSE, show.legend = FALSE) +
   facet_wrap(~name)
-# B <- plotMatchPos(bm_all[topMotifs], abs = TRUE, binwidth = 10, se = FALSE)
 A + B + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom")
 ```
 
@@ -270,11 +269,80 @@ It has been noticed that this approach commonly produces a set of counts for H~0
 
 ## Defining a Set of Control Sequences
 
+Choosing a suitable set of control sequences can be undertaken by any number of methods.
+`motifTestR` enables a strategy of matching sequences by any number of given features.
+The data object `zr75_enh` contains the candidate enhancers for ZR-75-1 cells defined by v2.0 of the Enhancer Atlas [@gao2019], for chromosome 1 only.
+A high proportion of our peaks are associated with these regions and choosing control sequences based a similar proportion of these regions may be a viable strategy.
+
+```{r zr75-enh}
+data("zr75_enh")
+mean(overlapsAny(ar_er_peaks, zr75_enh))
+```
+
+``` r
+## Not run
+zr75_enh <- import.bed("http://www.enhanceratlas.org/data/download/enhancer/hs/ZR75-1.bed")
+zr75_enh <- granges(zr75_enh)
+seqlevels(zr75_enh) <- seqnames(sq)
+seqinfo(zr75_enh) <- sq
+mean(overlapsAny(ar_er_peaks, zr75_enh))
+```
+
+
 ```{r}
-## Need to define telomeres & centromeres for hg19
+ar_er_peaks$feature <- ifelse(
+  overlapsAny(ar_er_peaks, zr75_enh), "enhancer", "other"
+)
+bg_ranges <- GRangesList(
+  enhancer = zr75_enh,
+  other = GenomicRanges::setdiff(GRanges(sq)[1], zr75_enh)
+)
+```
+
+```{r}
+data("hg19_mask")
+set.seed(305)
+rm_ranges <- makeRMRanges(
+  splitAsList(ar_er_peaks, ar_er_peaks$feature),
+  bg_ranges, exclude = hg19_mask,
+  n_iter = 100
+)
+```
+
+This gives a set of control ranges which are randomly-selected (R) size-matched (M) to our peaks and are drawn from a similar distribution of genomic features.
+By setting `n_iter = 100`, this set will be 100 times larger than our test set and typically this value can be set to 1000 or even 5000 for better estimates of parameters under the null distribution.
+
+```{r}
+rm_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rm_ranges)
+mcols(rm_seq) <- mcols(rm_ranges)
 ```
 
 ## Testing For Enrichment
+
+```{r}
+enrich_res <- testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores) |>
+  arrange(p)
+enrich_res |> head()
+```
+
+```{r}
+testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iter")
+```
+
+```{r plot-overlaps, fig.cap = "Distribution of PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence."}
+topMotifs <- rownames(enrich_res)[1:4]
+ex_pwm[topMotifs] |>
+  getPwmMatches(test_seq) |>
+  lapply(\(x) x$seq) |>
+  plotOverlaps(type = "upset")
+```
+
+# Appendix
+
+Vignettes are commonly prepared for compiling with limited resources and as such example datasets and analyses may less informative.
+For more comprehensive analysis the following three chunks will allow analysis of the above dataset, but without being restricted to chromosome 1
+
+
 
 # References {.unnumbered}
 
