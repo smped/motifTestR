@@ -8,8 +8,8 @@ testMotifEnrich(
   pwm,
   stringset,
   bg,
-  model = c("poisson", "iteration"),
   var = "iteration",
+  model = c("poisson", "iteration", "quasipoisson", "negbinom"),
   sort_by = c("p", "none"),
   mc.cores = 1,
   ...
@@ -22,10 +22,10 @@ testMotifEnrich(
 
 \item{bg}{An XStringSet with the same sequence widths as the test XStringset}
 
-\item{model}{The model used for analysis}
-
 \item{var}{A column in the mcols element of bg, usually denoting an iteration
 number}
+
+\item{model}{The model used for analysis}
 
 \item{sort_by}{Column to sort results by}
 
@@ -36,7 +36,7 @@ number}
 \value{
 A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
 `Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
-`n_iter` and `perm_p` (Iterations).
+`n_iter` and `iter_p` (Iterations).
 The numbers of sequences and matches refer to the test set of sequences,
 whilst expected is the expected number of matches under the Poisson or
 iterative null distribution. The ratio of matches to expected is given as

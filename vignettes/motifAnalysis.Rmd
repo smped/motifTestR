@@ -249,9 +249,10 @@ Control regions can be drawn from each with proportions that match the test set 
 ar_er_peaks$feature <- ifelse(
   overlapsAny(ar_er_peaks, zr75_enh), "enhancer", "other"
 )
+chr1 <- GRanges(sq)[1]
 bg_ranges <- GRangesList(
   enhancer = zr75_enh,
-  other = GenomicRanges::setdiff(GRanges(sq)[1], zr75_enh)
+  other = GenomicRanges::setdiff(chr1, zr75_enh)
 )
 ```
 
@@ -285,37 +286,69 @@ rm_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rm_ranges)
 mcols(rm_seq) <- mcols(rm_ranges)
 ```
 
+If choosing strategies for enrichment testing outside of `motifTestR`, these sequences can be exported as a fasta file using `writeXStringSet` from the `r Biocpkg("Biostrings")` package.
+
 ## Testing For Enrichment
 
-Testing for overall motif enrichment is implemented using two alternative strategies.
-By default, counts of matches within the control set of sequences are assumed to follow a Poisson distribution for each PWM, and these parameters are used to perform a `poisson.test()` for each PWM, and the p-values form this test are returned.
-The Z-scores returned are not used for testing and are for indicative purposes only under the Poisson model.
+Testing for overall motif enrichment is implemented using multiple strategies, using Poisson, QuasiPoisson, Negative-Binomial or pure Iterative approaches.
+Whilst some PWMs may closely follow a Poisson distribution under H~0~, others may be over-dispersed.
+Each approach has unique advantages and weaknesses as summarised below:
+
+- *Poisson*
+    + BG Sequences can be of any size, unrelated to the test set
+    + Modelling is performed based on the expected number of matches *per sequence*
+    + The fastest approach
+    + Anti-conservative p-values where counts are over-dispersed
+- *QuasiPoisson*
+    + Modelling is performed per *set of sequences* (of identical size to the test set)
+    + Requires BG Sequences to be in 'iterative' blocks
+    + Over-dispersion is a linear function of the mean
+    + Fewer 'iterative blocks' can still model over-dispersion reasonably well
+- *Negative Binomial*
+    + Very similar to QuasiPoisson but models over-dispersion as a quadratic function of the mean
+    + Slightly more conservative than QuasiPoisson
+- *Iterative*
+    + No model assumptions
+    + Requires BG Sequences to be in 'iterative' blocks
+    + P-Values derived from Z-scores (using the Central Limit Theorem)
+    + Sampled p-values from iterations can be used if preferred
+    + Requires the largest number of iterative blocks (>1000) 
+    + Slowest, but most reliable approach
+
+From a per iteration perspective there is little difference between the Iterative and the modelled QuasiPoisson/NB approaches, however the modelled approaches can still return reliable results from a lower number of iterative blocks, lending a clear speed advantage.
+Z-scores returned are only used for statistical testing under the iterative approach and are for indicative purposes only under all other models model.
 
 Whilst no guidelines have been developed for an optimal number of sequences, a control set which is orders of magnitude larger than the test set may be prudent.
 A larger set of control sequences clearly leads to longer analytic time-frames and larger computational resources, so this is left to what is considered appropriate by the researcher, nothing that here, we chose a control set which is 100x larger than our test sequences.
+If choosing an iterative approach and using the iteration-derived p-values, setting a number of iterations based on the resolution required for these values may be important, noting that the lowest possible p-value is 1/n_iterations.
 
 ```{r enrich-res}
-enrich_res <- testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores) 
+enrich_res <- testMotifEnrich(
+  ex_pwm, test_seq, rm_seq, model = "negbinom", mc.cores = cores
+)
 head(enrich_res)
 ```
 
-Setting the model to "iteration" instead uses an iterative approach to define the null distributions of counts and Z-scores are calculated from these values.
-The returned p-values from this test are taken from the Z-scores directly, with permutation p-values also returned if preferred by the researcher.
-Whilst requiring greater computational effort, fewer statistical assumptions are made beyond the Central Limit Theorem and results will be more conservative than under the Poisson approach.
+Setting the model to "iteration" instead uses a classical iterative approach to define the null distributions of counts and Z-scores are calculated from these values.
+The returned p-values from this test are taken from the Z-scores directly, with p-values derived from the sampled iterations also returned if preferred by the researcher.
+Whilst requiring greater computational effort, fewer statistical assumptions are made and results may be more conservative than under modelling approaches.
 
-```{r iter-res, eval = FALSE}
-## Not run
-testMotifEnrich(ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iter")
+```{r iter-res}
+iter_res <- testMotifEnrich(
+  ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iteration"
+)
+head(iter_res)
 ```
 
-Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`
+Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`.
+In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs.
 
 ```{r plot-overlaps, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence."}
 topMotifs <- rownames(enrich_res)[1:4]
 ex_pwm[topMotifs] |>
   getPwmMatches(test_seq, mc.cores = cores) |>
   lapply(\(x) x$seq) |>
-  plotOverlaps(type = "upset", min_size = 10)
+  plotOverlaps(type = "upset", min_size = 5)
 ```
 
 

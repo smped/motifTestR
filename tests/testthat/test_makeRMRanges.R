@@ -44,9 +44,18 @@ test_that("GRangesList behaves as expected", {
 
 })
 
-test_that("makeRMRAnges errors as expected", {
+test_that("makeRMRanges errors as expected", {
   expect_error(makeRMRanges(rng, chr, "chr1:1"))
   expect_error(makeRMRanges(rng, GRanges("chr1:150-120"))) # BG too short
   expect_error(makeRMRanges(rng, GRanges("chr1:1-200"))) # Range 2 excluded
   expect_error(makeRMRanges(grl, y[1]))
+})
+
+test_that("splitting entire genomes works", {
+  hg19 <- extraChIPs::defineSeqinfo("GRCh37")
+  genome(hg19) <- "hg19"
+  rng <- GRanges(c("chr1:101-150", "chr1:201-250"), seqinfo = hg19)
+  rm_ranges <- makeRMRanges(rng, GRanges(hg19), n_total = 2)
+  expect_true(length(rm_ranges) == 2)
+  expect_equal(dim(mcols(rm_ranges)), c(2, 0))
 })

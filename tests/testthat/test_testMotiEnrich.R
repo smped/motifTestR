@@ -26,7 +26,32 @@ test_that("Iteration works", {
   iter <- testMotifEnrich(esr1, test_set, bg_set, model = "iter")
   expect_true(is(iter, "data.frame"))
   expect_true(nrow(iter) == 1)
-  expect_true("perm_p" %in% colnames(iter))
+  expect_true("iter_p" %in% colnames(iter))
   expect_true(iter$n_iter == 10)
 
+})
+
+test_that("Quasipoisson works", {
+  mcols(bg_set) <- mcols(bg_ranges)
+  iter <- testMotifEnrich(esr1, test_set, bg_set, model = "quasi")
+  expect_true(is(iter, "data.frame"))
+  expect_true(nrow(iter) == 1)
+  expect_true(iter$n_iter == 10)
+
+})
+
+test_that("NegBinom works", {
+  mcols(bg_set) <- mcols(bg_ranges)
+  iter <- suppressWarnings(
+    # 10 is too few iterations in reality
+    testMotifEnrich(esr1, test_set, bg_set, model = "neg")
+  )
+  expect_true(is(iter, "data.frame"))
+  expect_true(nrow(iter) == 1)
+  expect_true(iter$n_iter == 10)
+
+})
+
+test_that("Errors are caught",{
+  expect_error(.testIter(list(esr1), test_set, bg_set[-1]))
 })

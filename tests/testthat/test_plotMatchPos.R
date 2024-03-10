@@ -35,4 +35,5 @@ test_that("single input works", {
 
 test_that("errors are as expected",{
   expect_error(plotMatchPos(bm[[1]], type = "heat"))
+  expect_error(plotMatchPos(bm[c(1, 1)]))
 })

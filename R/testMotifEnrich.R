@@ -28,7 +28,7 @@
 #' @return
 #' A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
 #' `Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
-#' `n_iter` and `perm_p` (Iterations).
+#' `n_iter` and `iter_p` (Iterations).
 #' The numbers of sequences and matches refer to the test set of sequences,
 #' whilst expected is the expected number of matches under the Poisson or
 #' iterative null distribution. The ratio of matches to expected is given as
@@ -87,7 +87,8 @@
 #' @importFrom stats p.adjust
 #' @export
 testMotifEnrich <- function(
-    pwm, stringset, bg, model = c("poisson", "iteration"), var = "iteration",
+    pwm, stringset, bg, var = "iteration",
+    model = c("poisson", "iteration", "quasipoisson", "negbinom"),
     sort_by = c("p", "none"), mc.cores = 1, ...
 ) {
 
@@ -97,16 +98,21 @@ testMotifEnrich <- function(
   args <- c(as.list(environment()), list(...))
   ## Prepare the output
   cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
-  opt_cols <- list(
-    poisson = "est_bg_rate", iteration = c("perm_p", "n_iter", "sd_bg")
+  mod_cols <- list(
+    poisson = "est_bg_rate", iteration = c("iter_p", "n_iter", "sd_bg"),
+    quasipoisson = c("n_iter", "sd_bg"), negbinom = c("n_iter", "sd_bg")
   )
-  cols <- c(cols, opt_cols[[model]])
+  cols <- c(cols, mod_cols[[model]])
   ## Run the analysis
   if (is.matrix(pwm)) pwm <- list(pwm)
   pwm <- .cleanMotifList(pwm)
   if (model == "poisson") out <- .testPois(pwm, stringset, bg, mc.cores, ...)
   if (model == "iteration")
     out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
+  if (model == "quasipoisson")
+    out <- .testQuasi(pwm, stringset, bg, var, mc.cores, ...)
+  if (model == "negbinom")
+    out <- .testNB(pwm, stringset, bg, var, mc.cores, ...)
 
   out$fdr <- p.adjust(out$p, "fdr")
   o <- seq_len(nrow(out))
@@ -114,6 +120,88 @@ testMotifEnrich <- function(
   if (sort_by != "none") o <- order(out[[sort_by]])
   out[o,cols]
 
+}
+
+#' @importFrom parallel mclapply
+#' @importFrom MASS glm.nb
+#' @importFrom matrixStats colSds
+#' @keywords internal
+.testNB <- function(pwm, stringset, bg, var, mc.cores, ...) {
+
+  stopifnot(var %in% colnames(mcols(bg)))
+  n <- length(stringset)
+  matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+  splitbg <- split(bg, mcols(bg)[[var]])
+  if (!all(vapply(splitbg, length, integer(1)) == n))
+    stop("All iterations must be the same size as the test sequences")
+
+  bg_matches <- mclapply(
+    splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
+    mc.cores = mc.cores
+  )
+  bg_mat <- do.call("rbind", bg_matches)
+  n_iter <- nrow(bg_mat)
+  mean_bg <- colMeans(bg_mat)
+  sd_bg <- colSds(bg_mat)
+  Z <- (matches - mean_bg) / sd_bg
+
+  p <- vapply(
+    seq_along(pwm),
+    \(i) {
+      df <- data.frame(
+        x = c(matches[[i]], bg_mat[,i]),
+        type = c("test", rep_len("control", n_iter))
+      )
+      fit <- glm.nb(x~type, data = df)
+      summary(fit)$coef[2, 4]
+    }, numeric(1)
+  )
+
+  data.frame(
+    sequences = n, matches, expected = mean_bg, enrichment = matches / mean_bg,
+    Z, p, n_iter, sd_bg
+  )
+}
+
+#' @importFrom parallel mclapply
+#' @importFrom stats glm quasipoisson
+#' @importFrom matrixStats colSds
+#' @keywords internal
+.testQuasi <- function(pwm, stringset, bg, var, mc.cores, ...) {
+
+  stopifnot(var %in% colnames(mcols(bg)))
+  n <- length(stringset)
+  matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+  splitbg <- split(bg, mcols(bg)[[var]])
+  if (!all(vapply(splitbg, length, integer(1)) == n))
+    stop("All iterations must be the same size as the test sequences")
+
+  bg_matches <- mclapply(
+    splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
+    mc.cores = mc.cores
+  )
+  bg_mat <- do.call("rbind", bg_matches)
+  n_iter <- nrow(bg_mat)
+  mean_bg <- colMeans(bg_mat)
+  sd_bg <- colSds(bg_mat)
+  Z <- (matches - mean_bg) / sd_bg
+
+  p <- vapply(
+    seq_along(pwm),
+    \(i) {
+      df <- data.frame(
+        x = c(matches[[i]], bg_mat[,i]),
+        type = c("test", rep_len("control", n_iter))
+      )
+      fit <- glm(x~type, family = quasipoisson(), data = df)
+      summary(fit)$coef[2, 4]
+    }, numeric(1)
+  )
+
+  data.frame(
+    sequences = n, matches, expected = mean_bg, enrichment = matches / mean_bg,
+    Z, p, n_iter, sd_bg
+  )
 }
 
 #' @importFrom parallel mclapply
@@ -140,13 +228,13 @@ testMotifEnrich <- function(
   diff <- bg_mat - matrix(
     matches, nrow = n_iter, ncol = length(matches), byrow = TRUE
   )
-  perm_p <- (colSums(diff > 0) + 1) / n_iter
+  iter_p <- (colSums(diff > 0) + 1) / n_iter
   Z <- (matches - mean_bg) / sd_bg
   p <- 1 - pchisq(Z^2, 1)
 
   data.frame(
     sequences = length(stringset), matches, expected = mean_bg,
-    enrichment = matches / mean_bg, Z, p, perm_p, n_iter, sd_bg
+    enrichment = matches / mean_bg, Z, p, iter_p, n_iter, sd_bg
   )
 
 }
