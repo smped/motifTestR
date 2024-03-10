@@ -3,7 +3,7 @@ title: "Motif Analysis Using motifTestR"
 author:
 - name: Stevie Pederson
   affiliation: Black Ochre Data Labs, Telethon Kids Institute
-  email: stephen.pederson@telethonkids.org.au
+  email: stephen.pederson.au@gmail.com
 package: motifTestR
 bibliography: '`r system.file("references.bib", package = "motifTestR")`'
 output:

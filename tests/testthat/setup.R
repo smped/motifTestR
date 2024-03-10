@@ -1,3 +1,4 @@
+library(extraChIPs)
 library(BSgenome.Hsapiens.UCSC.hg19)
 genome <- BSgenome.Hsapiens.UCSC.hg19
 

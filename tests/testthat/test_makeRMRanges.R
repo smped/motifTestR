@@ -52,7 +52,7 @@ test_that("makeRMRanges errors as expected", {
 })
 
 test_that("splitting entire genomes works", {
-    hg19 <- extraChIPs::defineSeqinfo("GRCh37")
+    hg19 <- defineSeqinfo("GRCh37")
     genome(hg19) <- "hg19"
     rng <- GRanges(c("chr1:101-150", "chr1:201-250"), seqinfo = hg19)
     rm_ranges <- makeRMRanges(rng, GRanges(hg19), n_total = 2)

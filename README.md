@@ -9,3 +9,7 @@
 This package provides a small set of functions for analysing transcription factor binding motifs (TFBMs).
 Testing for positional bias is enabled using a novel approach, and testing for enrichment relative to a set of background sequences is enabled using multiple statistical models.
 
+Testing for positional bias is intended to be an R native alternative to [CentriMo](https://meme-suite.org/meme/doc/centrimo.html) from the MEME-suite, and will detect any deviation of note from an even distribution across the width of sequences being tested, not just the centrality of motifs.
+Given the conventional statistical approach taken, results are easily interpretable directly through adjusted p-values.
+Enrichment testing follows well-worn modelling and iterative strategies, and instead offers a novel approach to selection of control, or background, sequences.
+
