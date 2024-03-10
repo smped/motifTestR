@@ -4,3 +4,6 @@
 README.md
 TODO.md
 ^inst/scripts/N.bed.gz$
+^\.github$
+^_pkgdown\.yml$
+^data-raw$

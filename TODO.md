@@ -4,6 +4,7 @@
     + AR/ER Peaks. Can get seq from BSgenome
     + ESR1, ANDR + 3 motifs
     + hg19_mask
-- [ ] Write vignette
-- [X] Scale up for lists of motifs using `unversalmotif`
-- [ ] Find points to speed up matches
+    + zr75_enh
+- [x] Write vignette
+- [x] Scale up for lists of motifs using `unversalmotif`
+- [x] Find points to speed up matches

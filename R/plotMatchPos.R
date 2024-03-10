@@ -7,10 +7,12 @@
 #' Multiple options are provided for showing the distribution of PWM matches
 #' within a set of sequences, using either the smoothed probability density,
 #' the probability CDF or as a heatmap.
-#' Distances can be shown as symmetrical around the centre or using absolute distances
-#' from the central position within the sequences.
+#' Distances can be shown as symmetrical around the centre or using absolute
+#' distances from the central position within the sequences.
 #'
-#' Heatmaps are only enabled for comparisons across multiple PWMs
+#' Heatmaps are only enabled for comparisons across multiple PWMs, with
+#' optional clustering enabled. If adding a dendrogram for clustering,
+#' the returned plot object will be a patchwork object.
 #'
 #' @return A ggplot2 object
 #'
@@ -20,6 +22,11 @@
 #' @param abs logical(1) Plot absolute distances from centre
 #' @param type Plot match density, the CDF or a binned heatmap
 #' @param geom Type of geom to be used for line plots. Ignored for heatmaps
+#' @param cluster logical(1) Cluster motifs when drawing a heatmap. If TRUE a
+#' dendrogram will be added to the LHS of the plot
+#' @param w Relative width of the dendrogram on (0, 1)
+#' @param heat_fill scale_fill_continuous object for heatmaps. If not provided,
+#' scale_fill_viridis_c() will be added to the heatmap.
 #' @param ... Passed to individual geom* functions
 #'
 #' @examples
@@ -48,7 +55,8 @@
 plotMatchPos <- function(
         matches, binwidth = 10, abs = FALSE,
         type = c("density", "cdf", "heatmap"),
-        geom = c("smooth", "line", "point", "col"), ...
+        geom = c("smooth", "line", "point", "col"),
+        cluster = FALSE, w = 0.1, heat_fill = NULL, ...
 ){
     .checkMatches(matches)
     type <- match.arg(type)
@@ -103,17 +111,65 @@ plotMatchPos <- function(
     }
     if (type == "heatmap") {
         if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-        plot <- ggplot(
-            df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))
-        ) +
-            geom_tile(...) +
-            scale_x_discrete(expand = rep_len(0, 4)) +
-            scale_y_discrete(expand = rep_len(0, 4)) +
-            theme(
-                axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
-            )
+        plot <- .createHeatmap(df, cluster, w, heat_fill, ...)
     }
 
     plot
+
+}
+
+#' @importFrom ggdendro dendro_data
+#' @importFrom stats hclust dist xtabs as.dendrogram as.formula
+#' @importFrom patchwork plot_layout
+#' @importFrom rlang !! sym
+#' @keywords internal
+.createHeatmap <- function(df, cluster, w, fill_scale, ...) {
+
+    levels <- unique(df$name)
+    if (is.null(fill_scale)) fill_scale <- scale_fill_viridis_c()
+    stopifnot(is(fill_scale, "ScaleContinuous"))
+    stopifnot(w > 0 & w < 1)
+    ylab <- "name"
+    ## Create the dendrogram if needed
+    if (cluster) {
+
+        fm <- as.formula("p ~ name + bin")
+        mat <- as.matrix(xtabs(fm, df[c("name", "bin", "p")]))
+        clust <- hclust(dist(mat), method = "ward.D2")
+        dend <- dendro_data(as.dendrogram(clust))
+        levels <- dend$labels$label
+        ym <- max(dend$segments$xend)
+        dend_aes <- aes(
+            x = !!sym("yend"), y = !!sym("xend"),
+            xend = !!sym("y"), yend = !!sym("x")
+        )
+        dend_plot <- ggplot(dend$segments) +
+            geom_segment(dend_aes) +
+            scale_x_reverse(expand = expansion(0)) +
+            scale_y_continuous(limits = c(0, ym) + 0.5, expand = expansion(0)) +
+            labs(x = "", y = c()) +
+            theme_minimal() +
+            theme(
+                panel.grid = element_blank(),
+                axis.text = element_blank(), axis.ticks = element_blank(),
+                plot.margin = unit(c(5.5, 0, 5.5, 5.5), "points")
+            )
+        ylab <- NULL
+    }
+
+    # Always create the heatmap...
+    df$name <- factor(df$name, levels = levels)
+    plot <- ggplot(
+        df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))
+    ) +
+        geom_tile(...) +
+        scale_x_discrete(expand = rep_len(0, 4)) +
+        scale_y_discrete(expand = rep_len(0, 4), name = ylab) +
+        fill_scale +
+        theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+        )
+    if (!cluster) return(plot)
+    dend_plot + plot + plot_layout(widths = c(w, 1 - w))
 
 }

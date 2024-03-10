@@ -3,7 +3,7 @@ title: "Motif Analysis Using motifTestR"
 author:
 - name: Stevie Pederson
   affiliation: Black Ochre Data Labs, Telethon Kids Institute
-  email: stephen.pederson@telethonkids.org.au
+  email: stephen.pederson.au@gmail.com
 package: motifTestR
 bibliography: '`r system.file("references.bib", package = "motifTestR")`'
 output:
@@ -73,7 +73,7 @@ data("ar_er_peaks")
 The peaks used in this workflow were obtained from the bed files denoting binding sites of the Androgen Receptor and Estrogen Receptor, which are also marked by H3K27ac, in ZR-75-1 cells under DHT treatment [@Hickey2021-mz].
 The object `ar_er_peaks` contains a subset of `r length(ar_er_peaks)` peaks found within chromosome 1, with all peaks resized to 400bp 
 
-```{r load-examle-peaks}
+```{r load-example-peaks}
 data("ar_er_peaks")
 ar_er_peaks
 sq <- seqinfo(ar_er_peaks)

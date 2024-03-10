@@ -1,6 +1,6 @@
 Package: motifTestR
 Title: Perform key tests for binding motifs in sequence data
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: person("Stevie", "Pederson", 
   email = "stephen.pederson.au@gmail.com", 
   role = c("aut", "cre"),
@@ -18,16 +18,18 @@ BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings,
   GenomicRanges,
-  ggplot2,
+  ggplot2 (>= 3.5.0),
   R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
+  ggdendro,
   harmonicmeanp,
   IRanges,
   MASS,
   matrixStats,
   methods,
   parallel,
+  patchwork,
   rlang,
   S4Vectors,
   stats,
@@ -39,7 +41,6 @@ Suggests:
   extraChIPs,
   knitr,
   MotifDb,
-  patchwork,
   rmarkdown,
   rtracklayer,
   testthat (>= 3.0.0)
