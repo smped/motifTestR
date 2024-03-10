@@ -1,0 +1,38 @@
+template:
+  params:
+    bootswatch: simplex
+
+authors:
+  Stevie Pederson:
+    href: https://github.com/smped
+
+reference:
+
+- title: Core Functions
+  contents:
+    - ends_with("Matches")
+    - starts_with("test")
+    - makeRMRanges
+    - plotMatchPos
+
+- title: Data Objects
+  contents:
+    - starts_with("ar_er")
+    - ex_pwm
+    - hg19_mask
+    - zr75_enh
+
+navbar:
+  type: default
+  left:
+  - text: Reference
+    href: reference/index.html
+  - text: Vignettes
+    menu:
+    - text: Basic Motif Analysis
+      href: articles/motifAnalysis.html
+  - text: News
+    href: news/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/smped/motifTestR
