@@ -10,6 +10,9 @@ plotMatchPos(
   abs = FALSE,
   type = c("density", "cdf", "heatmap"),
   geom = c("smooth", "line", "point", "col"),
+  cluster = FALSE,
+  w = 0.1,
+  heat_fill = NULL,
   ...
 )
 }
@@ -24,6 +27,14 @@ plotMatchPos(
 
 \item{geom}{Type of geom to be used for line plots. Ignored for heatmaps}
 
+\item{cluster}{logical(1) Cluster motifs when drawing a heatmap. If TRUE a
+dendrogram will be added to the LHS of the plot}
+
+\item{w}{Relative width of the dendrogram on (0, 1)}
+
+\item{heat_fill}{scale_fill_continuous object for heatmaps. If not provided,
+scale_fill_viridis_c() will be added to the heatmap.}
+
 \item{...}{Passed to individual geom* functions}
 }
 \value{
@@ -36,10 +47,12 @@ Plot the distribution of motif matches across sequences
 Multiple options are provided for showing the distribution of PWM matches
 within a set of sequences, using either the smoothed probability density,
 the probability CDF or as a heatmap.
-Distances can be shown as symmetrical around the centre or using absolute distances
-from the central position within the sequences.
+Distances can be shown as symmetrical around the centre or using absolute
+distances from the central position within the sequences.
 
-Heatmaps are only enabled for comparisons across multiple PWMs
+Heatmaps are only enabled for comparisons across multiple PWMs, with
+optional clustering enabled. If adding a dendrogram for clustering,
+the returned plot object will be a patchwork object.
 }
 \examples{
 ## Load the example PWM

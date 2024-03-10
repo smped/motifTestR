@@ -26,6 +26,13 @@ test_that("heatmaps work", {
     expect_true(is(p$layers[[1]]$geom, "GeomTile"))
     expect_equal(p$labels, list(x = "bin", y = "name", fill = "p"))
 })
+test_that("clusters work", {
+    p <- plotMatchPos(bm, type = "heat", cluster = TRUE)
+    expect_true(is(p, "patchwork"))
+    expect_true(is(p[[1]]$layers[[1]]$geom, "GeomSegment"))
+    expect_equal(colnames(p[[1]]$data), c("x", "y", "xend", "yend"))
+    expect_true(is(p[[2]]$layers[[1]]$geom, "GeomTile"))
+})
 
 test_that("single input works", {
     p <- plotMatchPos(bm[[1]])
@@ -35,5 +42,6 @@ test_that("single input works", {
 
 test_that("errors are as expected",{
     expect_error(plotMatchPos(bm[[1]], type = "heat"))
+    expect_error(plotMatchPos(bm, type = "heat", heat_fill = scale_fill_discrete()))
     expect_error(plotMatchPos(bm[c(1, 1)]))
 })
