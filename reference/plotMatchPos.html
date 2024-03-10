@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.9</span>
       </span>
     </div>
 
@@ -69,6 +69,9 @@
 <span>  abs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"density"</span>, <span class="st">"cdf"</span>, <span class="st">"heatmap"</span><span class="op">)</span>,</span>
 <span>  geom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smooth"</span>, <span class="st">"line"</span>, <span class="st">"point"</span>, <span class="st">"col"</span><span class="op">)</span>,</span>
+<span>  cluster <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  w <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  heat_fill <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -95,6 +98,20 @@
 <dd><p>Type of geom to be used for line plots. Ignored for heatmaps</p></dd>
 
 
+<dt>cluster</dt>
+<dd><p>logical(1) Cluster motifs when drawing a heatmap. If TRUE a
+dendrogram will be added to the LHS of the plot</p></dd>
+
+
+<dt>w</dt>
+<dd><p>Relative width of the dendrogram on (0, 1)</p></dd>
+
+
+<dt>heat_fill</dt>
+<dd><p>scale_fill_continuous object for heatmaps. If not provided,
+scale_fill_viridis_c() will be added to the heatmap.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to individual geom* functions</p></dd>
 
@@ -110,9 +127,11 @@
     <p>Multiple options are provided for showing the distribution of PWM matches
 within a set of sequences, using either the smoothed probability density,
 the probability CDF or as a heatmap.
-Distances can be shown as symmetrical around the centre or using absolute distances
-from the central position within the sequences.</p>
-<p>Heatmaps are only enabled for comparisons across multiple PWMs</p>
+Distances can be shown as symmetrical around the centre or using absolute
+distances from the central position within the sequences.</p>
+<p>Heatmaps are only enabled for comparisons across multiple PWMs, with
+optional clustering enabled. If adding a dendrogram for clustering,
+the returned plot object will be a patchwork object.</p>
     </div>
 
     <div id="ref-examples">
