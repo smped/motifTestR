@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Motif Analysis Using motifTestR • motifTestR</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -44,21 +44,24 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
+    Vignettes
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/motifAnalysis.html">Motif Analysis Using motifTestR</a>
+      <a href="../articles/motifAnalysis.html">Basic Motif Analysis</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/smped/motifTestR/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+  <a href="https://github.com/smped/motifTestR" class="external-link">
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -130,7 +133,7 @@ two key approaches.</p>
 <p>In order to perform the operations in this vignette, first install
 <code>motifTestR</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"motifTestR"</span><span class="op">)</span></span></code></pre></div>
 <p>Once installed, we can load all required packages, set a default
@@ -390,7 +393,7 @@ values across all motifs will be overlaid (Figure @ref(fig:plot-pos)A),
 however, tailoring using ggplot is simple to produce a wide variety of
 outputs (Figure @ref(fig:plot-pos)B)</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_pos</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_pos</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
 <span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMatchPos.html">plotMatchPos</a></span><span class="op">(</span><span class="va">bm_all</span><span class="op">[</span><span class="va">topMotifs</span><span class="op">]</span>, binwidth <span class="op">=</span> <span class="fl">10</span>, se <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMatchPos.html">plotMatchPos</a></span><span class="op">(</span><span class="va">bm_all</span><span class="op">[</span><span class="va">topMotifs</span><span class="op">]</span>, binwidth <span class="op">=</span> <span class="fl">10</span>, geom <span class="op">=</span> <span class="st">"col"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>se <span class="op">=</span> <span class="cn">FALSE</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -410,7 +413,7 @@ short distance of the centre (~30bp), whilst for ANDR and FOXA1, this
 distance is roughly doubled. Changing the binwidth argument can either
 smooth data or increase the fine resolution.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_abs</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_abs</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
 <span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMatchPos.html">plotMatchPos</a></span><span class="op">(</span><span class="va">bm_all</span><span class="op">[</span><span class="va">topMotifs</span><span class="op">]</span>, abs <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMatchPos.html">plotMatchPos</a></span><span class="op">(</span></span>
@@ -458,7 +461,7 @@ are associated with these regions and choosing control sequences drawn
 from the same proportion of these regions may be a viable strategy.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"zr75_enh"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">overlapsAny</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">overlapsAny</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.8122271</span></span></code></pre>
 <p>First we can annotate each peak by whether there is any overlap with
 an enhancer, or whether the peak belongs to any other region. Next we
@@ -468,7 +471,7 @@ chromosome 1 for consistency. Control regions can be drawn from each
 with proportions that match the test set of sequences.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
-<span>  <span class="fu">overlapsAny</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span>, <span class="st">"enhancer"</span>, <span class="st">"other"</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">overlapsAny</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span>, <span class="st">"enhancer"</span>, <span class="st">"other"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">chr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">bg_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span></span>
@@ -490,7 +493,7 @@ strategies being possible.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"hg19_mask"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">305</span><span class="op">)</span></span>
 <span><span class="va">rm_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeRMRanges-methods.html">makeRMRanges</a></span><span class="op">(</span></span>
-<span>  <span class="fu">splitAsList</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">splitAsList</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span><span class="op">)</span>,</span>
 <span>  <span class="va">bg_ranges</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>,</span>
 <span>  n_iter <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -510,7 +513,7 @@ the <code>mcols</code> element ensure the iteration numbers are passed
 to the sequences, as these are required for this approach.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span>, <span class="va">rm_ranges</span><span class="op">)</span></span>
-<span><span class="fu">mcols</span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">mcols</span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
 <p>If choosing strategies for enrichment testing outside of
 <code>motifTestR</code>, these sequences can be exported as a fasta file
 using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.18/Biostrings" class="external-link">Biostrings</a></em>
@@ -634,10 +637,10 @@ In our test set, peaks were selected based on co-detection of ESR1 and
 ANDR, however the rate of co-occurrence is low, revealing key insights
 into the binding dynamics of these two TFs.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">enrich_res</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">topMotifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">enrich_res</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
 <span><span class="va">ex_pwm</span><span class="op">[</span><span class="va">topMotifs</span><span class="op">]</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/getPwmMatches.html">getPwmMatches</a></span><span class="op">(</span><span class="va">test_seq</span>, mc.cores <span class="op">=</span> <span class="va">cores</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">seq</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">seq</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"upset"</span>, min_size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="motifAnalysis_files/figure-html/plot-overlaps-1.png" alt="Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence." width="700"><p class="caption">
@@ -673,7 +676,7 @@ these peaks for analyses above.</p>
 <span>    <span class="va">base_url</span>, <span class="st">"GSM3511087/suppl/GSM3511087%5FH3K27ac%5Fpeaks%5FED.bed.gz"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">all_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bed_url</span>, <span class="va">import.bed</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">all_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bed_url</span>, <span class="va">import.bed</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">seqlevels</span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">seqnames</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
 <span><span class="co">## Return the ranges with coverage from 2 or more targets</span></span>
@@ -681,7 +684,7 @@ these peaks for analyses above.</p>
 <span>  <span class="va">all_peaks</span>, p <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, method <span class="op">=</span> <span class="st">"coverage"</span>, min_width <span class="op">=</span> <span class="fl">200</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co">## Now subset to the ranges which overlap a peak from every target</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">n</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">n</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/intra-range-methods.html" class="external-link">resize</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">400</span>, fix <span class="op">=</span> <span class="st">'center'</span><span class="op">)</span></span></code></pre></div>
 <p>The full set of PWMs for HOCOMOCOv11 (core-A) provided in
 <code>MotifDb</code> can be obtained using the following. Alternatively,
@@ -859,7 +862,7 @@ A.</em> 116 (4): 1195–1200.
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Stevie Pederson.</p>
+<p>Developed by <a href="https://github.com/smped" class="external-link">Stevie Pederson</a>.</p>
 </div>
 
 <div class="pkgdown">
