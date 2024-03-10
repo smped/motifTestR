@@ -27,26 +27,11 @@ knitr::opts_chunk$set(message = FALSE, crop = NULL)
 
 Bioinformatic analysis of data from ChIP-Seq and ATAC-Seq commonly involves the analysis of sequences within the regions identified is being of interest.
 Whilst these analyses are not restricted to transcription factors, this can often form an important component of this type of analysis.
-Analysis of Transcription Factor Binding Motifs (TFBMs) is often performed using Position Weight Matrices (PWMs) to encode the flexibility in which exact sequence is bound by the particular transcription factor.
+Analysis of Transcription Factor Binding Motifs (TFBMs) is often performed using Position Weight Matrices (PWMs) to encode the flexibility in which exact sequence is bound by the particular transcription factor, and is a computationally demanding task with many popular tools enabling analysis outside of R.
 
-<!-- Managing of TFBMs is well supported in `R` with `r Biocpkg("MotifDb")` providing -->
-<!-- a wide database of PWMs as provided by multiple databases. -->
-<!-- Additional, both `r Biocpkg("TFBSTools")` [@Tan2016-lj] and `r Biocpkg("universalmotif")` enable the import and management of a wide variety  -->
-<!-- of TFBM formats which are able to be sourced directly from HOCOMOCO [@Kulakovskiy2013-jt], JASPAR [@Sandelin2004-mv] or any other source, or even  -->
-<!-- custom databases determined experimentally. -->
-<!-- Visualisation of TFBMs is also well supported in the Bioconductor ecosystem via `r Biocpkg("motifStack")` [@ou2018], `r Biocpkg("TFBSTools")` and  -->
-<!-- `r Biocpkg("seqLogo")`, with good analytic capability also provided by  -->
-<!-- `r Biocpkg("monaLisa")` [@Machlab2022-rg] and `r Biocpkg("PWMEnrich")`. -->
-
-<!-- Many tools provide analytic capability outside of R, such as HOMER [@Heinz2010-dz]  -->
-<!-- and the MEME-Suite [@Bailey2015-wa], which are both widely used to ask varied  -->
-<!-- questions of the data, including motif enrichment, positional enrichment and identification of novel TFBMs.  -->
-<!-- The package `r Biocpkg("memes")` provides an R wrapper to several of the tools  -->
-<!-- within the MEME-suite, whilst `r Githubpkg("robertamezquita/marge")` provides a wrapper to HOMER. -->
-<!-- However, both of these require the external tools to be installed. -->
-
-The tools within `motifTestR` aim to build on and expand the existing resources available to the Bioconductor community, and offer two complementary approaches to TFBM analysis within `XStringSet` objects containing multiple sequences.
-The function `testMotifPos()` identifies motifs with positional bias within a set of sequences, whilst overall enrichment within a set of sequences is enabled by `testMotifEnrich()`.
+The tools within `motifTestR` aim to build on and expand the existing resources available to the Bioconductor community, performing all analyses inside the R environment,
+The package offers two complementary approaches to TFBM analysis within `XStringSet` objects containing multiple sequences.
+The function `testMotifPos()` identifies motifs showing *positional bias* within a set of sequences, whilst *overall enrichment* within a set of sequences is enabled by `testMotifEnrich()`.
 Additional functions aid in the visualisation and preparation of these two key 
 approaches.
 

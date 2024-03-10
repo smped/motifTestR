@@ -31,38 +31,41 @@
 #' @importFrom parallel mclapply
 #' @export
 countPwmMatches <- function(
-    pwm, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
+        pwm, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
 ) {
 
-  args <- c(as.list(environment()), list(...))
-  args <- args[names(args) != "mc.cores"]
-  if (is.list(pwm)) {
-    pwm <- .cleanMotifList(pwm)
-    out <- mclapply(
-      pwm, .countSinglePwmMatches, stringset = stringset, rc = rc,
-      min_score = min_score, mc.cores = mc.cores
-    )
-    out <- unlist(out)
-  }
-  if (is.matrix(pwm)) out <- do.call(".countSinglePwmMatches", args)
-  out
+    args <- c(as.list(environment()), list(...))
+    args <- args[names(args) != "mc.cores"]
+    if (is.list(pwm)) {
+        pwm <- .cleanMotifList(pwm)
+        out <- mclapply(
+            pwm, .countSinglePwmMatches, stringset = stringset, rc = rc,
+            min_score = min_score, mc.cores = mc.cores
+        )
+        out <- unlist(out)
+    }
+    if (is.matrix(pwm)) out <- do.call(".countSinglePwmMatches", args)
+    out
 
 }
 
 #' @import Biostrings
 #' @keywords internal
 .countSinglePwmMatches <- function(
-    pwm, stringset, rc = TRUE, min_score = "80%", ...
+        pwm, stringset, rc = TRUE, min_score = "80%", ...
 ){
-  ## Checks & the map
-  pwm <- .checkPWM(pwm)
-  map <- .viewMapFromXStringset(stringset)
+    ## Checks & the map
+    pwm <- .checkPWM(pwm)
+    map <- .viewMapFromXStringset(stringset)
 
-  # Form the entire XStringSetList into a Views object
-  views <- Views(
-    unlist(stringset), start = map$start, width = map$width, names = map$names
-  )
-  n_matches <- countPWM(pwm, views, ...)
-  if (rc) n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
-  as.integer(sum(n_matches))
+    # Form the entire XStringSetList into a Views object
+    views <- Views(
+        unlist(stringset), start = map$start, width = map$width,
+        names = map$names
+    )
+    n_matches <- countPWM(pwm, views, ...)
+    if (rc)
+        n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
+
+    as.integer(sum(n_matches))
 }

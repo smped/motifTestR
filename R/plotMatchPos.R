@@ -46,67 +46,74 @@
 #' @import ggplot2
 #' @export
 plotMatchPos <- function(
-    matches, binwidth = 10, abs = FALSE, type = c("density", "cdf", "heatmap"),
-    geom = c("smooth", "line", "point", "col"), ...
+        matches, binwidth = 10, abs = FALSE,
+        type = c("density", "cdf", "heatmap"),
+        geom = c("smooth", "line", "point", "col"), ...
 ){
-  .checkMatches(matches)
-  type <- match.arg(type)
-  if (!is(matches, "DataFrame")) {
-    if (is.null(names(matches))) names(matches) <- seq_along(matches)
-    nm <- names(matches)
-    if (any(duplicated(nm)))
-      stop("List elements in matches must have unique names")
-    binned <- lapply(matches, .makeBmBins, binwidth = binwidth, abs = abs)
-    bins <- lapply(binned, \(x){
-      vapply(splitAsList(x, x$bin), \(df) sum(df$weight), numeric(1))
-    })
-    df_list <- lapply(nm, \(x){
-      df <- data.frame(
-        name = x, bin = names(bins[[x]]), total = as.numeric(bins[[x]])
-      )
-      df$p <- df$total / sum(df$total)
-      df$cdf <- cumsum(df$p)
-      df
-    })
-    df <- do.call("rbind", df_list)
-    df$name <- factor(df$name, levels = nm)
-    name <- sym("name")
+    .checkMatches(matches)
+    type <- match.arg(type)
+    if (!is(matches, "DataFrame")) {
+        if (is.null(names(matches))) names(matches) <- seq_along(matches)
+        nm <- names(matches)
+        if (any(duplicated(nm)))
+            stop("List elements in matches must have unique names")
+        binned <- lapply(matches, .makeBmBins, binwidth = binwidth, abs = abs)
+        bins <- lapply(binned, \(x){
+            vapply(splitAsList(x, x$bin), \(df) sum(df$weight), numeric(1))
+        })
+        df_list <- lapply(nm, \(x){
+            df <- data.frame(
+                name = x, bin = names(bins[[x]]), total = as.numeric(bins[[x]])
+            )
+            df$p <- df$total / sum(df$total)
+            df$cdf <- cumsum(df$p)
+            df
+        })
+        df <- do.call("rbind", df_list)
+        df$name <- factor(df$name, levels = nm)
+        name <- sym("name")
 
-  } else {
-    binned <- .makeBmBins(matches, binwidth, abs)
-    bins <- vapply(splitAsList(binned, binned$bin), \(x) sum(x$weight), numeric(1))
-    df <- data.frame(bin = names(bins), total = as.numeric(bins))
-    df$p <- df$total / sum(df$total)
-    df$cdf <- cumsum(df$p)
-    name <- NULL
-  }
-  df$bin_start <- as.numeric(gsub("^.(.+),.+", "\\1", df$bin))
-  df$bin_end <- as.numeric(gsub("^.+,(.+)\\]", "\\1", df$bin))
-  df$bin_centre <- (df$bin_end + df$bin_start) / 2
-  df$bin <- factor(df$bin, unique(df$bin))
-  x <- sym("bin_centre")
-  if (abs) x <- sym("bin_start")
+    } else {
+        binned <- .makeBmBins(matches, binwidth, abs)
+        bins <- vapply(
+            splitAsList(binned, binned$bin), \(x) sum(x$weight), numeric(1)
+        )
+        df <- data.frame(bin = names(bins), total = as.numeric(bins))
+        df$p <- df$total / sum(df$total)
+        df$cdf <- cumsum(df$p)
+        name <- NULL
+    }
+    df$bin_start <- as.numeric(gsub("^.(.+),.+", "\\1", df$bin))
+    df$bin_end <- as.numeric(gsub("^.+,(.+)\\]", "\\1", df$bin))
+    df$bin_centre <- (df$bin_end + df$bin_start) / 2
+    df$bin <- factor(df$bin, unique(df$bin))
+    x <- sym("bin_centre")
+    if (abs) x <- sym("bin_start")
 
-  geom <- paste0("geom_", match.arg(geom))
-  geom_fun <- match.fun(geom)
-  if (type == "density") {
-    plot_aes <- aes({{ x }}, !!sym("p"), colour = {{ name }})
-    if (geom == "geom_col") names(plot_aes)[[3]] <- "fill"
-    plot <- ggplot(df, plot_aes) + geom_fun(...)
-  }
-  if (type == "cdf") {
-    plot <- ggplot(df, aes({{ x }}, !!sym("cdf"), colour = {{ name }})) +
-      geom_fun(...)
-  }
-  if (type == "heatmap") {
-    if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-    plot <- ggplot(df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))) +
-      geom_tile(...) +
-      scale_x_discrete(expand = rep_len(0, 4)) +
-      scale_y_discrete(expand = rep_len(0, 4)) +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-  }
+    geom <- paste0("geom_", match.arg(geom))
+    geom_fun <- match.fun(geom)
+    if (type == "density") {
+        plot_aes <- aes({{ x }}, !!sym("p"), colour = {{ name }})
+        if (geom == "geom_col") names(plot_aes)[[3]] <- "fill"
+        plot <- ggplot(df, plot_aes) + geom_fun(...)
+    }
+    if (type == "cdf") {
+        plot <- ggplot(df, aes({{ x }}, !!sym("cdf"), colour = {{ name }})) +
+            geom_fun(...)
+    }
+    if (type == "heatmap") {
+        if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
+        plot <- ggplot(
+            df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))
+        ) +
+            geom_tile(...) +
+            scale_x_discrete(expand = rep_len(0, 4)) +
+            scale_y_discrete(expand = rep_len(0, 4)) +
+            theme(
+                axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            )
+    }
 
-  plot
+    plot
 
 }

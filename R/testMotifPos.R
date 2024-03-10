@@ -86,50 +86,51 @@
 #' @importFrom stats p.adjust
 #' @export
 testMotifPos <- function(
-    x, stringset, binwidth = 10, abs = FALSE, rc = TRUE, min_score = "80%",
-    break_ties = "all", alt = c("greater", "less", "two.sided"),
-    sort_by = c("p", "none"), mc.cores = 1,
-    ...
+        x, stringset, binwidth = 10, abs = FALSE, rc = TRUE, min_score = "80%",
+        break_ties = "all", alt = c("greater", "less", "two.sided"),
+        sort_by = c("p", "none"), mc.cores = 1,
+        ...
 ) {
 
-  ## Handle single objects by coercing to a list where appropriate
-  valid_cl <- c("matrix", "universalmotif", "DataFrame")
-  if (any(vapply(valid_cl, \(cl) is(x, cl), logical(1)))) x <- list(x)
-  if (!is.list(x))
-    stop("Input should be provided as a list, PWM/matrix or DF of matches")
+    ## Handle single objects by coercing to a list where appropriate
+    valid_cl <- c("matrix", "universalmotif", "DataFrame")
+    if (any(vapply(valid_cl, \(cl) is(x, cl), logical(1)))) x <- list(x)
+    if (!is.list(x))
+        stop("Input should be provided as a list, PWM/matrix or DF of matches")
 
-  ## Handle a list of PWMs
-  isPWM <- vapply(
-    x, \(el) is(el, "matrix") | is(el, "universalmotif"), logical(1)
-  )
-  if (all(isPWM)) {
-    matches <- getPwmMatches(
-      x, stringset, rc, min_score, best_only = TRUE, break_ties, mc.cores, ...
+    ## Handle a list of PWMs
+    isPWM <- vapply(
+        x, \(el) is(el, "matrix") | is(el, "universalmotif"), logical(1)
     )
-  } else {
-    ## Now for a list of matches
-   .checkMatches(x) ## Will fail if not valid
-    matches <- x
-  }
-  if (missing(matches)) stop("Provided input is not in a recognised format")
-  alt <- match.arg(alt)
+    if (all(isPWM)) {
+        matches <- getPwmMatches(
+            x, stringset, rc, min_score, best_only = TRUE, break_ties,
+            mc.cores, ...
+        )
+    } else {
+        ## Now for a list of matches
+        .checkMatches(x) ## Will fail if not valid
+        matches <- x
+    }
+    if (missing(matches)) stop("Provided input is not in a recognised format")
+    alt <- match.arg(alt)
 
-  cols <- c(
-    "start", "end", "centre", "width", "total_matches", "matches_in_region",
-    "expected", "enrichment", "prop_total", "p", "fdr", "consensus_motif"
-  )
+    cols <- c(
+        "start", "end", "centre", "width", "total_matches", "matches_in_region",
+        "expected", "enrichment", "prop_total", "p", "fdr", "consensus_motif"
+    )
 
-  out <- mclapply(
-    matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
-    min_score = min_score, break_ties = break_ties, alt = alt, ...,
-    mc.cores = mc.cores
-  )
-  out <- do.call("rbind", out)
-  out$fdr <- p.adjust(out$p, "fdr")
-  o <- seq_len(nrow(out))
-  sort_by <- match.arg(sort_by)
-  if (sort_by != "none") o <- order(out[[sort_by]])
-  out[o, cols]
+    out <- mclapply(
+        matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
+        min_score = min_score, break_ties = break_ties, alt = alt, ...,
+        mc.cores = mc.cores
+    )
+    out <- do.call("rbind", out)
+    out$fdr <- p.adjust(out$p, "fdr")
+    o <- seq_len(nrow(out))
+    sort_by <- match.arg(sort_by)
+    if (sort_by != "none") o <- order(out[[sort_by]])
+    out[o, cols]
 
 }
 
@@ -137,66 +138,70 @@ testMotifPos <- function(
 #' @importFrom stats binom.test
 #' @keywords internal
 .testSingleMotifPos <- function(
-    matches, binwidth, abs, rc, min_score, break_ties, alt, ...
+        matches, binwidth, abs, rc, min_score, break_ties, alt, ...
 ) {
 
-  ## Setup a well formed output object for easy combining with other tests
-  out_cols <- c(
-    "start", "end", "centre", "width", "total_matches", "matches_in_region",
-    "expected", "enrichment", "prop_total", "p", "consensus_motif"
-  )
-  out <- lapply(out_cols, \(x) integer())
-  out$consensus_motif <- list()
-  names(out) <- out_cols
-  n_matches <- nrow(matches)
-  if (n_matches == 0) return(data.frame(out))
-  matches <- .makeBmBins(matches, binwidth, abs)
-  bins <- levels(matches$bin)
+    ## Setup a well formed output object for easy combining with other tests
+    out_cols <- c(
+        "start", "end", "centre", "width", "total_matches", "matches_in_region",
+        "expected", "enrichment", "prop_total", "p", "consensus_motif"
+    )
+    out <- lapply(out_cols, \(x) integer())
+    out$consensus_motif <- list()
+    names(out) <- out_cols
+    n_matches <- nrow(matches)
+    if (n_matches == 0) return(data.frame(out))
+    matches <- .makeBmBins(matches, binwidth, abs)
+    bins <- levels(matches$bin)
 
-  ## Get the counts & form a df with every bin as a row
-  counts <- vapply(splitAsList(matches, matches$bin), \(x) sum(x$weight), numeric(1))
-  df <- data.frame(bin = names(counts), matches_in_bin = as.integer(counts))
-  bin_coords <- do.call("rbind", strsplit(df$bin, split = ","))
-  bin_coords <- apply(bin_coords, 2, \(x) as.integer(gsub("\\[|\\(|\\]", "", x)))
-  df$start <- bin_coords[, 1]
-  df$end <- bin_coords[, 2]
-  df$bin <- factor(df$bin, levels = bins)
-  ## Given matches are measured from the centre, only bases > d_from_edge
-  ## away from the ends of the range are viable
-  motif_width <- max(width(matches$match))
-  d_from_edge <- (motif_width - 1) / 2
-  valid_pos <- seq(min(df$start) + d_from_edge, max(df$end) - d_from_edge)
-  if (abs) valid_pos <- seq(d_from_edge %% 1, max(df$end) - d_from_edge)
-  df$valid_width <- vapply(
-    seq_len(nrow(df)),
-    \(i) sum(valid_pos > df$start[i] & valid_pos <= df$end[i]), numeric(1)
-  )
-  df$bin_prob <- df$valid_width / sum(df$valid_width)
-  df$expected <- n_matches * df$bin_prob
-  df$p <- vapply(
-    seq_along(df$bin),
-    \(i) {
-      x <- df[i,]
-      binom.test(x$matches_in_bin, n_matches, x$bin_prob, alt)$p.value
-    }, numeric(1)
-  )
+    ## Get the counts & form a df with every bin as a row
+    counts <- vapply(
+        splitAsList(matches, matches$bin), \(x) sum(x$weight), numeric(1)
+    )
+    df <- data.frame(bin = names(counts), matches_in_bin = as.integer(counts))
+    bin_coords <- do.call("rbind", strsplit(df$bin, split = ","))
+    bin_coords <- apply(
+        bin_coords, 2, \(x) as.integer(gsub("\\[|\\(|\\]", "", x))
+    )
+    df$start <- bin_coords[, 1]
+    df$end <- bin_coords[, 2]
+    df$bin <- factor(df$bin, levels = bins)
+    ## Given matches are measured from the centre, only bases > d_from_edge
+    ## away from the ends of the range are viable
+    motif_width <- max(width(matches$match))
+    d_from_edge <- (motif_width - 1) / 2
+    valid_pos <- seq(min(df$start) + d_from_edge, max(df$end) - d_from_edge)
+    if (abs) valid_pos <- seq(d_from_edge %% 1, max(df$end) - d_from_edge)
+    df$valid_width <- vapply(
+        seq_len(nrow(df)),
+        \(i) sum(valid_pos > df$start[i] & valid_pos <= df$end[i]), numeric(1)
+    )
+    df$bin_prob <- df$valid_width / sum(df$valid_width)
+    df$expected <- n_matches * df$bin_prob
+    df$p <- vapply(
+        seq_along(df$bin),
+        \(i) {
+            x <- df[i,]
+            binom.test(x$matches_in_bin, n_matches, x$bin_prob, alt)$p.value
+        }, numeric(1)
+    )
 
-  ## Summarise the output selecting rows with p < hmp
-  hmp <- p.hmp(df$p, L = length(bins))
-  df <- subset(df, df$p < hmp | df$p == min(df$p))
-  out <- data.frame(start = min(df$start), end = max(df$end))
-  out$centre <- (out$start + out$end) / 2
-  out$width <- out$end - out$start
-  out$total_matches <- n_matches
-  out$matches_in_region <- sum(df$matches_in_bin)
-  out$expected <- sum(df$expected)
-  out$enrichment <- out$matches_in_region / out$expected
-  out$prop_total <- out$matches_in_region / out$total_matches
-  out$p <- as.numeric(hmp)
+    ## Summarise the output selecting rows with p < hmp
+    hmp <- p.hmp(df$p, L = length(bins))
+    df <- subset(df, df$p < hmp | df$p == min(df$p))
+    out <- data.frame(start = min(df$start), end = max(df$end))
+    out$centre <- (out$start + out$end) / 2
+    out$width <- out$end - out$start
+    out$total_matches <- n_matches
+    out$matches_in_region <- sum(df$matches_in_bin)
+    out$expected <- sum(df$expected)
+    out$enrichment <- out$matches_in_region / out$expected
+    out$prop_total <- out$matches_in_region / out$total_matches
+    out$p <- as.numeric(hmp)
 
-  ## Setup the consensus motif to return
-  consensus <- consensusMatrix(matches$match)[c("A", "C", "G", "T"),]
-  out$consensus_motif <- list(consensus)
-  out[, out_cols]
+    ## Setup the consensus motif to return
+    consensus <- consensusMatrix(matches$match)[c("A", "C", "G", "T"),]
+    out$consensus_motif <- list(consensus)
+    out[, out_cols]
 }
 
