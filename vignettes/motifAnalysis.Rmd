@@ -1,0 +1,405 @@
+---
+title: "Motif Analysis Using motifTestR"
+author:
+- name: Stevie Pederson
+  affiliation: Black Ochre Data Labs, Telethon Kids Institute
+  email: stephen.pederson@telethonkids.org.au
+package: motifTestR
+bibliography: '`r system.file("references.bib", package = "motifTestR")`'
+output:
+  BiocStyle::html_document
+abstract: |
+  Analysis of transcription factor binding motifs using Position Weight Matrices
+  (PWMs) is a common task in analysis of genomic data.
+  Two key tests for analysis of TFBMs using morifTestR are demonstrated below
+vignette: |
+  %\VignetteIndexEntry{Motif Analysis Using motifTestR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, crop = NULL)
+```
+
+
+# Introduction
+
+Bioinformatic analysis of data from ChIP-Seq and ATAC-Seq commonly involves the analysis of sequences within the regions identified is being of interest.
+Whilst these analyses are not restricted to transcription factors, this can often form an important component of this type of analysis.
+Analysis of Transcription Factor Binding Motifs (TFBMs) is often performed using Position Weight Matrices (PWMs) to encode the flexibility in which exact sequence is bound by the particular transcription factor, and is a computationally demanding task with many popular tools enabling analysis outside of R.
+
+The tools within `motifTestR` aim to build on and expand the existing resources available to the Bioconductor community, performing all analyses inside the R environment,
+The package offers two complementary approaches to TFBM analysis within `XStringSet` objects containing multiple sequences.
+The function `testMotifPos()` identifies motifs showing *positional bias* within a set of sequences, whilst *overall enrichment* within a set of sequences is enabled by `testMotifEnrich()`.
+Additional functions aid in the visualisation and preparation of these two key 
+approaches.
+
+
+# Setup
+
+## Installation
+
+In order to perform the operations in this vignette, first install `motifTestR`.
+
+```r 
+if (!"BiocManager" %in% rownames(installed.packages()))
+  install.packages("BiocManager")
+BiocManager::install("motifTestR")
+```
+
+Once installed, we can load all required packages, set a default plotting theme and setup how many threads to use during the analysis.
+
+```{r load-packages}
+library(motifTestR)
+library(extraChIPs)
+library(rtracklayer)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(parallel)
+library(ggplot2)
+library(patchwork)
+theme_set(theme_bw())
+cores <- 1
+```
+
+
+## Defining a Set of Peaks
+
+```{r, echo = FALSE}
+data("ar_er_peaks")
+```
+
+
+The peaks used in this workflow were obtained from the bed files denoting binding sites of the Androgen Receptor and Estrogen Receptor, which are also marked by H3K27ac, in ZR-75-1 cells under DHT treatment [@Hickey2021-mz].
+The object `ar_er_peaks` contains a subset of `r length(ar_er_peaks)` peaks found within chromosome 1, with all peaks resized to 400bp 
+
+```{r load-examle-peaks}
+data("ar_er_peaks")
+ar_er_peaks
+sq <- seqinfo(ar_er_peaks)
+```
+
+Whilst the example dataset is small for the convenience of an R package, those wishing to work on the complete set of peaks (i.e. not just chromosome 1) may run the code provided in the Appendix to obtain all peaks.
+This will produce a greater number of significant results in subsequent analyses but will also increase running times for all functions.
+
+
+## Obtaining a Set of Sequences for Testing
+
+Now that we have genomic co-ordinates as a set of peaks, we can obtain the sequences that are associated with each peak.
+The source ranges can optionally be added to the sequences as names by coercing the ranges to a character vector.
+
+```{r test-seq}
+test_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, ar_er_peaks)
+names(test_seq) <- as.character(ar_er_peaks)
+```
+
+## Obtaining a List of PWMs for Testing
+
+A small list of PWMs, obtained from `r Biocpkg("MotifDb")` are provided with the package and these will be suitable for all downstream analysis.
+
+```{r ex-pwm}
+data("ex_pwm")
+names(ex_pwm)
+ex_pwm$ESR1
+```
+
+Again, a larger set of motifs may be obtained using or modifying the example code in the Appendix.
+
+# Searching Sequences
+
+## Finding PWM Matches
+
+All PWM matches within the test sequences can be returned for any of the PWMs, with `getPwmMatches()` searching using the PWM and it's reverse complement by default.
+Matches are returned showing their position within the sequence, as well as the distance from the centre of the sequence and the matching section within the larger sequence.
+Whilst there is no strict requirement for sequences of the same width, generally this is good practice for this type of analysis.
+
+```{r match-esr1}
+getPwmMatches(ex_pwm$ESR1, test_seq)
+```
+
+Many sequences will contain multiple matches, and we can subset our results to only the 'best match' by setting `best_only = TRUE`.
+The best match is chosen by the highest score returned for each match.
+If multiple matches return identical scores, all tied matches are returned by default and will be equally down-weighted during positional analysis.
+This can be further controlled by setting `break_ties` to any of c("random", "first", "last", "central"), which will choose randomly, by sequence order or proximity to centre.
+
+```{r best-match-esr1}
+getPwmMatches(ex_pwm$ESR1, test_seq, best_only = TRUE)
+```
+
+We can return all matches for a complete list of PWMs, as a list of DataFrame objects.
+This strategy allows for visualisation of results as well as testing for positional bias.
+
+```{r bm-all}
+bm_all <- getPwmMatches(
+  ex_pwm, test_seq, best_only = TRUE, break_ties = "all",
+  mc.cores = cores
+)
+```
+
+This same strategy of passing a single, or multiple PWMs can be applied even when simply wishing to count the total matches for each PWM.
+Counting may be useful for restricting downstream analysis to the set of motifs with more than a given number of matches.
+
+```{r count-pwm-matches}
+countPwmMatches(ex_pwm, test_seq, mc.cores = cores)
+```
+
+
+# Analysis of Positional Bias
+
+## Testing for Positional Bias
+
+A common tool within MEME-Suite is `centrimo` [@Bailey2012-qz] and `motifTestR` provides a simple, easily interpretable alternative using `testMotifPos()`.
+This function bins the distances from the centre of each sequence and, if no positional bias is expected (i.e. H~0~), matches should be equally distributed between bins.
+Unlike `centrimo`, *no assumption of centrality* is made and any notable deviations from a discrete uniform distribution may be considered as significant.
+
+A test within each bin is performed using `binom.test()` and a single, summarised p-value across all bins is returned using the asymptotically exact harmonic mean p-value (HMP) [@Wilson2019-ln].
+By default, the binomial test is applied for the null hypothesis to detect matches in each bin which are *greater* than expected, however, this can also be set by the user.
+When using the harmonic-mean p-value however, this tends return a more conservative p-value across the entire set of bins.
+
+
+```{r test-motif-pos}
+res_pos <- testMotifPos(bm_all, mc.cores = cores)
+head(res_pos)
+```
+
+The bins returned by the function represent the widest range of bins where the raw p-values were below the HMP.
+Wide ranges tend to be associated with lower significance for a specific PWM.
+
+Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
+
+```{r test-motif-pos-abs}
+res_abs <- testMotifPos(bm_all, abs = TRUE, mc.cores = cores) 
+head(res_abs)
+```
+
+This approach is particularly helpful for detecting co-located transcription factors which can be any distance from the TF which was used to obtain and centre the test set of sequences.
+
+## Viewing Matches
+
+The complete set of matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias.
+By default, smoothed values across all motifs will be overlaid (Figure \@ref(fig:plot-pos)A), however, tailoring using ggplot is simple to produce a wide variety of outputs (Figure \@ref(fig:plot-pos)B)
+
+```{r plot-pos, fig.cap = "Distribution of motif matches around the centres of the set of peaks"}
+topMotifs <- rownames(res_pos)[1:4]
+A <- plotMatchPos(bm_all[topMotifs], binwidth = 10, se = FALSE)
+B <- plotMatchPos(bm_all[topMotifs], binwidth = 10, geom = "col") +
+  geom_smooth(se = FALSE, show.legend = FALSE) +
+  facet_wrap(~name)
+A + B + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom")
+```
+
+Whilst the above will produce figures showing the symmetrical distribution around the peak centres, the distance from the peak centre can also be shown as an absolute distance.
+In Figure \@ref(fig:plot-abs-pos) distances shown as a heatmap (A) or as a CDF (B).
+The latter makes it easy to see that 50% of ESR1 matches occur within a short distance of the centre (~30bp), whilst for ANDR and FOXA1, this distance is roughly doubled.
+Changing the binwidth argument can either smooth data or increase the fine resolution.
+
+
+```{r plot-abs-pos, fig.cap = "Distribution of motif matches shown as a distance from the centre of each sequence"}
+topMotifs <- rownames(res_abs)[1:4]
+A <- plotMatchPos(bm_all[topMotifs], abs = TRUE, type = "heatmap") +
+  scale_fill_viridis_c()
+B <- plotMatchPos(
+  bm_all[topMotifs], abs = TRUE, type = "cdf", geom = "line", binwidth = 5
+)
+A + B + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom")
+```
+
+
+# Testing For Motif Enrichment
+
+As well as providing methods for analysing positional bias within a set of PWM matches, methods to test for enrichment are also implemented in `motifTestR`.
+A common approach when testing for motif enrichment is to obtain a set of random or background sequences which represent a suitable control set to define the null hypothesis (H~0~).
+In `motifTestR`, two alternatives are offered utilising this approach, which both return similar results but involve different levels of computational effort.
+
+The first approach is to sample multiple sets of background sequences and by 'iterating' through to obtain a null distribution for PWM matches and comparing our observed counts against this distribution.
+It has been noticed that this approach commonly produces a set of counts for H~0~ which closely resemble a Poisson distribution, and a second approach offered in `motifTestR` is to sample a suitable large set of background sequences and estimate the parameters for the Poisson distribution for each PWM, and testing against these.
+
+## Defining a Set of Control Sequences
+
+Choosing a suitable set of control sequences can be undertaken by any number of methods.
+`motifTestR` enables a strategy of matching sequences by any number of given features.
+The data object `zr75_enh` contains the candidate enhancers for ZR-75-1 cells defined by v2.0 of the Enhancer Atlas [@gao2019], for chromosome 1 only.
+A high proportion of our peaks are associated with these regions and choosing control sequences drawn from the same proportion of these regions may be a viable strategy.
+
+```{r zr75-enh}
+data("zr75_enh")
+mean(overlapsAny(ar_er_peaks, zr75_enh))
+```
+
+First we can annotate each peak by whether there is any overlap with an enhancer, or whether the peak belongs to any other region.
+Next we can define two sets of GenomicRanges, one representing the enhancers and the other being the remainder of the genome, here restricted to chromosome 1 for consistency.
+Control regions can be drawn from each with proportions that match the test set of sequences.
+
+```{r define-bg-ranges}
+ar_er_peaks$feature <- ifelse(
+  overlapsAny(ar_er_peaks, zr75_enh), "enhancer", "other"
+)
+chr1 <- GRanges(sq)[1]
+bg_ranges <- GRangesList(
+  enhancer = zr75_enh,
+  other = GenomicRanges::setdiff(chr1, zr75_enh)
+)
+```
+
+The provided object `hg19_mask` contains regions of the genome which are rich in Ns, such as centromeres and telomeres.
+Sequences containing Ns produce warning messages when matching PWMs and avoiding these regions may be wise, without introducing any sequence bias.
+These are then passed to `makeRMRanges()` as ranges to be excluded, whilst sampling multiple  random, size-matched ranges corresponding to our test set of ranges with sequences being analysed, and drawn proportionally from matching genomic regions.
+Whilst our example only used candidate enhancers, any type and number of genomic regions can be used, with a limitless number of classification strategies being possible.
+
+```{r rm-ranges}
+data("hg19_mask")
+set.seed(305)
+rm_ranges <- makeRMRanges(
+  splitAsList(ar_er_peaks, ar_er_peaks$feature),
+  bg_ranges, exclude = hg19_mask,
+  n_iter = 100
+)
+```
+
+This has now returned a set of control ranges which are randomly-selected (R) size-matched (M) to our peaks and are drawn from a similar distribution of genomic features.
+By setting `n_iter = 100`, this set will be 100 times larger than our test set and typically this value can be set to 1000 or even 5000 for better estimates of parameters under the null distribution.
+However, this will increase the computational burden for analysis.
+
+If not choosing an iterative strategy, a total number of sampled ranges can also be specified.
+In this case the column `iteration` will not be added to the returned ranges.
+
+In order to perform the analysis, we can now extract the genomic sequences corresponding to our randomly selected control ranges.
+Passing the `mcols` element ensure the iteration numbers are passed to the sequences, as these are required for this approach.
+
+```{r rm-seq}
+rm_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rm_ranges)
+mcols(rm_seq) <- mcols(rm_ranges)
+```
+
+If choosing strategies for enrichment testing outside of `motifTestR`, these sequences can be exported as a fasta file using `writeXStringSet` from the `r Biocpkg("Biostrings")` package.
+
+## Testing For Enrichment
+
+Testing for overall motif enrichment is implemented using multiple strategies, using Poisson, QuasiPoisson, Negative-Binomial or pure Iterative approaches.
+Whilst some PWMs may closely follow a Poisson distribution under H~0~, others may be over-dispersed.
+Each approach has unique advantages and weaknesses as summarised below:
+
+- *Poisson*
+    + BG Sequences can be of any size, unrelated to the test set
+    + Modelling is performed based on the expected number of matches *per sequence*
+    + The fastest approach
+    + Anti-conservative p-values where counts are over-dispersed
+- *QuasiPoisson*
+    + Modelling is performed per *set of sequences* (of identical size to the test set)
+    + Requires BG Sequences to be in 'iterative' blocks
+    + Over-dispersion is a linear function of the mean
+    + Fewer 'iterative blocks' can still model over-dispersion reasonably well
+- *Negative Binomial*
+    + Very similar to QuasiPoisson but models over-dispersion as a quadratic function of the mean
+    + Slightly more conservative than QuasiPoisson
+- *Iterative*
+    + No model assumptions
+    + Requires BG Sequences to be in 'iterative' blocks
+    + P-Values derived from Z-scores (using the Central Limit Theorem)
+    + Sampled p-values from iterations can be used if preferred
+    + Requires the largest number of iterative blocks (>1000) 
+    + Slowest, but most reliable approach
+
+From a per iteration perspective there is little difference between the Iterative and the modelled QuasiPoisson/NB approaches, however the modelled approaches can still return reliable results from a lower number of iterative blocks, lending a clear speed advantage.
+Z-scores returned are only used for statistical testing under the iterative approach and are for indicative purposes only under all other models model.
+
+Whilst no guidelines have been developed for an optimal number of sequences, a control set which is orders of magnitude larger than the test set may be prudent.
+A larger set of control sequences clearly leads to longer analytic time-frames and larger computational resources, so this is left to what is considered appropriate by the researcher, nothing that here, we chose a control set which is 100x larger than our test sequences.
+If choosing an iterative approach and using the iteration-derived p-values, setting a number of iterations based on the resolution required for these values may be important, noting that the lowest possible p-value is 1/n_iterations.
+
+```{r enrich-res}
+enrich_res <- testMotifEnrich(
+  ex_pwm, test_seq, rm_seq, model = "negbinom", mc.cores = cores
+)
+head(enrich_res)
+```
+
+Setting the model to "iteration" instead uses a classical iterative approach to define the null distributions of counts and Z-scores are calculated from these values.
+The returned p-values from this test are taken from the Z-scores directly, with p-values derived from the sampled iterations also returned if preferred by the researcher.
+Whilst requiring greater computational effort, fewer statistical assumptions are made and results may be more conservative than under modelling approaches.
+
+```{r iter-res}
+iter_res <- testMotifEnrich(
+  ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iteration"
+)
+head(iter_res)
+```
+
+Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`.
+In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs.
+
+```{r plot-overlaps, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence."}
+topMotifs <- rownames(enrich_res)[1:4]
+ex_pwm[topMotifs] |>
+  getPwmMatches(test_seq, mc.cores = cores) |>
+  lapply(\(x) x$seq) |>
+  plotOverlaps(type = "upset", min_size = 5)
+```
+
+
+
+# References {.unnumbered}
+
+
+Vignettes are commonly prepared for compiling with limited resources and as such example datasets and analyses may reveal less information than realistically sized data.
+For more comprehensive analysis the following code chunks will allow analysis of the above dataset, but without being restricted to chromosome 1.
+
+To obtain the full set of peaks, simply run the following and use these peaks for analyses above.
+
+```r
+## Not run
+base_url <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3511nnn"
+bed_url <- list(
+  AR = file.path(
+    base_url, "GSM3511083/suppl/GSM3511083%5FAR%5Fpeaks%5FED.bed.gz"
+  ),
+  ER = file.path(
+    base_url, "GSM3511085/suppl/GSM3511085%5FER%5Fpeaks%5FED.bed.gz"
+  ),
+  H3K27ac = file.path(
+    base_url, "GSM3511087/suppl/GSM3511087%5FH3K27ac%5Fpeaks%5FED.bed.gz"
+  )
+)
+all_peaks <- GRangesList(lapply(bed_url, import.bed))
+seqlevels(all_peaks) <- seqnames(sq)
+seqinfo(all_peaks) <- sq
+## Return the ranges with coverage from 2 or more targets
+ar_er_peaks <- makeConsensus(
+  all_peaks, p = 2/3, method = "coverage", min_width = 200
+) |>
+  ## Now subset to the ranges which overlap a peak from every target
+  subset(n == 3) |> 
+  resize(width = 400, fix = 'center')
+```
+
+The full set of PWMs for HOCOMOCOv11 (core-A) provided in `MotifDb` can be obtained using the following.
+Alternatively, query fields can be customised as preferred.
+
+```r
+## Not run
+library(MotifDb)
+ex_pwm <- MotifDb |>
+  subset(organism == "Hsapiens") |>
+  query("HOCOMOCOv11-core-A") |>
+  as.list() 
+names(ex_pwm) <- gsub(".+HOCOMOCOv11-core-A-(.+)_.+", "\\1", names(ex_pwm))
+```
+
+Similarly, a set of candidate enhancers found on all chromosomes can be obtained here.
+If choosing this dataset, note that `bg_ranges` will need to be drawn from the entire genome, not just chromosome 1.
+
+``` r
+## Not run
+zr75_url <- "http://www.enhanceratlas.org/data/download/enhancer/hs/ZR75-1.bed"
+zr75_enh <- import.bed(zr75_url)
+zr75_enh <- granges(zr75_enh)
+seqlevels(zr75_enh) <- seqnames(sq)
+seqinfo(zr75_enh) <- sq
+mean(overlapsAny(ar_er_peaks, zr75_enh))
+```
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

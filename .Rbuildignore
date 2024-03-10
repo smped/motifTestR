@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^Rprof\.out$
+README.md
+TODO.md
+^inst/scripts/N.bed.gz$

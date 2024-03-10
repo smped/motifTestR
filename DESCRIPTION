@@ -1,0 +1,50 @@
+Package: motifTestR
+Title: Perform key tests for binding motifs in sequence data
+Version: 0.1.7
+Authors@R: person("Stevie", "Pederson", 
+  email = "stephen.pederson.au@gmail.com", 
+  role = c("aut", "cre"),
+  comment = c(ORCID = "0000-0001-8197-3303")
+  )
+Description: Taking a set of sequence motifs as PWMs, test a set of sequences
+  for over-representation of these motifs, as well as any positional features
+  within the set of motifs. Enrichment analysis can be undertaken using multiple
+  statistical approaches. The package also contains core functions to prepare 
+  data for analysis, and to visualise results.
+License: GPL-3
+Encoding: UTF-8
+URL: https://github.com/smped/motifTestR
+BugReports: https://github.com/smped/motifTestR/issues
+Depends:
+  Biostrings,
+  GenomicRanges,
+  ggplot2,
+  R (>= 4.3.0),
+Imports:
+  GenomeInfoDb,
+  harmonicmeanp,
+  IRanges,
+  MASS,
+  matrixStats,
+  methods,
+  parallel,
+  rlang,
+  S4Vectors,
+  stats,
+  universalmotif
+Suggests: 
+  AnnotationHub,
+  BiocStyle,
+  BSgenome.Hsapiens.UCSC.hg19,
+  extraChIPs,
+  knitr,
+  MotifDb,
+  patchwork,
+  rmarkdown,
+  rtracklayer,
+  testthat (>= 3.0.0)
+biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
+LazyData: false
+RoxygenNote: 7.3.1
+Config/testthat/edition: 3
+VignetteBuilder: knitr
