@@ -162,7 +162,7 @@ greater than the sequences of interest is advised, with background sets
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load the example peaks &amp; the sequences</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ar_er_peaks"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ar_er_seq"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu">seqinfo</span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Now sample size-matched ranges 10 times larger. In real-world analyses,</span></span></span>
 <span class="r-in"><span><span class="co">## this set should be sampled as at least 1000x larger, ensuring features</span></span></span>
 <span class="r-in"><span><span class="co">## are matched to your requirements. This example masks regions with known N</span></span></span>
@@ -170,11 +170,19 @@ greater than the sequences of interest is advised, with background sets
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"hg19_mask"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">305</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bg_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="makeRMRanges-methods.html">makeRMRanges</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">ar_er_peaks</span>, <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span>  <span class="va">ar_er_peaks</span>, <span class="fu">GRanges</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert ranges to DNAStringSets</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BSgenome</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocIO</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: rtracklayer</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘rtracklayer’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:BiocIO’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     FileForFormat</span>
 <span class="r-in"><span><span class="va">genome</span> <span class="op">&lt;-</span> <span class="va">BSgenome.Hsapiens.UCSC.hg19</span></span></span>
 <span class="r-in"><span><span class="va">bg_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">genome</span>, <span class="va">bg_ranges</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -217,7 +225,7 @@ greater than the sequences of interest is advised, with background sets
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>
