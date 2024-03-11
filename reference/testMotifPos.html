@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.10</span>
       </span>
     </div>
 
@@ -175,6 +175,11 @@ values for start, end, centre, width, matches in region, expected and
 enrichment are across this set of bins.
 The expectation is that where a positional bias is evident, this will be a
 narrow range containing a non-trivial proportion of the total matches.</p>
+<p>It should also be noted that `binom.test()` can return p-values of zero, as
+beyond machine precision. In these instances, zero p-values are excluded from
+calculation of the HMP. This will give a very slight conservative bias, and
+assumes that for these extreme cases, neighbouring bins are highly likely to
+also return extremely low p-values and no significance will be lost.</p>
     </div>
 
     <div id="ref-examples">
