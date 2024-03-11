@@ -118,7 +118,6 @@ plotMatchPos <- function(
 
 }
 
-#' @importFrom ggdendro dendro_data
 #' @importFrom stats hclust dist xtabs as.dendrogram as.formula
 #' @importFrom patchwork plot_layout
 #' @importFrom rlang !! sym
@@ -133,10 +132,13 @@ plotMatchPos <- function(
     ## Create the dendrogram if needed
     if (cluster) {
 
+        if (!requireNamespace('ggdendro', quietly = TRUE))
+            stop("Please install 'ggdendro' to use this function.")
+
         fm <- as.formula("p ~ name + bin")
         mat <- as.matrix(xtabs(fm, df[c("name", "bin", "p")]))
         clust <- hclust(dist(mat), method = "ward.D2")
-        dend <- dendro_data(as.dendrogram(clust))
+        dend <- ggdendro::dendro_data(as.dendrogram(clust))
         levels <- dend$labels$label
         ym <- max(dend$segments$xend)
         dend_aes <- aes(
