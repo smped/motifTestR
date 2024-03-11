@@ -5,3 +5,4 @@
 *Rproj
 Rprof.out
 inst/scripts/N.bed.gz
+tests/testthat/*pdf

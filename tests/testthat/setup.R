@@ -42,7 +42,7 @@ um_db <- c(
                 0.833528, 0.027008, 0.116974, 0.02249, 0.316355, 0.259421, 0.141642,
                 0.282581, 0.248762, 0.187929, 0.420157, 0.143152
             ), dim = c(4L, 17L), dimnames = list(c("A", "C", "G", "T"), NULL)
-        ), "DNA", name = "COT1/RXRB/RXRG/NR4A1/NR2C2"
+        ), "DNA", name = "COT1/RXRB/RXRG/NR4A1/NR2C2", altname = "Test1"
     ),
     universalmotif::create_motif(
         structure(
@@ -58,7 +58,7 @@ um_db <- c(
                 0.127617, 0.535394, 0.130608, 0.177468, 0.15653, 0.216351, 0.306082,
                 0.309073, 0.168495
             ), dim = c(4L, 17L), dimnames = list(c("A", "C", "G", "T"), NULL)
-        ), "DNA", name = "SPIB/SPI1"
+        ), "DNA", name = "SPIB/SPI1", altname = "Test2"
     )
 )
 
