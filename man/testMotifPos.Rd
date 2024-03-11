@@ -93,6 +93,12 @@ values for start, end, centre, width, matches in region, expected and
 enrichment are across this set of bins.
 The expectation is that where a positional bias is evident, this will be a
 narrow range containing a non-trivial proportion of the total matches.
+
+It should also be noted that `binom.test()` can return p-values of zero, as
+beyond machine precision. In these instances, zero p-values are excluded from
+calculation of the HMP. This will give a very slight conservative bias, and
+assumes that for these extreme cases, neighbouring bins are highly likely to
+also return extremely low p-values and no significance will be lost.
 }
 \examples{
 ## Load the example PWM
