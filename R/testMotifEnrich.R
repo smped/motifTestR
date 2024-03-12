@@ -24,6 +24,9 @@
 #' greater than the sequences of interest is advised, with background sets
 #' >1000 times larger being preferred.
 #'
+#' Alternatively, a `quasipoisson()` model is also available to account for
+#' overdispersed counts.
+#'
 #'
 #' @return
 #' A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
@@ -88,7 +91,7 @@
 #' @export
 testMotifEnrich <- function(
         pwm, stringset, bg, var = "iteration",
-        model = c("poisson", "iteration", "quasipoisson", "negbinom"),
+        model = c("poisson", "quasipoisson", "iteration"),
         sort_by = c("p", "none"), mc.cores = 1, ...
 ) {
 
@@ -100,7 +103,7 @@ testMotifEnrich <- function(
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
         poisson = "est_bg_rate", iteration = c("iter_p", "n_iter", "sd_bg"),
-        quasipoisson = c("n_iter", "sd_bg"), negbinom = c("n_iter", "sd_bg")
+        quasipoisson = c("n_iter", "sd_bg")#, negbinom = c("n_iter", "sd_bg")
     )
     cols <- c(cols, mod_cols[[model]])
     ## Run the analysis
@@ -111,8 +114,8 @@ testMotifEnrich <- function(
         out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
     if (model == "quasipoisson")
         out <- .testQuasi(pwm, stringset, bg, var, mc.cores, ...)
-    if (model == "negbinom")
-        out <- .testNB(pwm, stringset, bg, var, mc.cores, ...)
+    # if (model == "negbinom")
+    #     out <- .testNB(pwm, stringset, bg, var, mc.cores, ...)
 
     out$fdr <- p.adjust(out$p, "fdr")
     o <- seq_len(nrow(out))
@@ -120,47 +123,6 @@ testMotifEnrich <- function(
     if (sort_by != "none") o <- order(out[[sort_by]])
     out[o,cols]
 
-}
-
-#' @importFrom parallel mclapply
-#' @importFrom MASS glm.nb
-#' @importFrom matrixStats colSds
-#' @keywords internal
-.testNB <- function(pwm, stringset, bg, var, mc.cores, ...) {
-
-    stopifnot(var %in% colnames(mcols(bg)))
-    n <- length(stringset)
-    matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
-    splitbg <- split(bg, mcols(bg)[[var]])
-    if (!all(vapply(splitbg, length, integer(1)) == n))
-        stop("All iterations must be the same size as the test sequences")
-
-    bg_matches <- mclapply(
-        splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
-        mc.cores = mc.cores
-    )
-    bg_mat <- do.call("rbind", bg_matches)
-    n_iter <- nrow(bg_mat)
-    mean_bg <- colMeans(bg_mat)
-    sd_bg <- colSds(bg_mat)
-    Z <- (matches - mean_bg) / sd_bg
-
-    p <- vapply(
-        seq_along(pwm),
-        \(i) {
-            df <- data.frame(
-                x = c(matches[[i]], bg_mat[,i]),
-                type = c("test", rep_len("control", n_iter))
-            )
-            fit <- glm.nb(x~type, data = df)
-            summary(fit)$coef[2, 4]
-        }, numeric(1)
-    )
-
-    data.frame(
-        sequences = n, matches, expected = mean_bg,
-        enrichment = matches / mean_bg, Z, p, n_iter, sd_bg
-    )
 }
 
 #' @importFrom parallel mclapply
@@ -182,6 +144,7 @@ testMotifEnrich <- function(
     )
     bg_mat <- do.call("rbind", bg_matches)
     n_iter <- nrow(bg_mat)
+    stopifnot(n_iter > 1)
     mean_bg <- colMeans(bg_mat)
     sd_bg <- colSds(bg_mat)
     Z <- (matches - mean_bg) / sd_bg
@@ -225,6 +188,7 @@ testMotifEnrich <- function(
     mean_bg <- colMeans(bg_mat)
     sd_bg <- colSds(bg_mat)
     n_iter <- nrow(bg_mat)
+    stopifnot(n_iter > 1)
     diff <- bg_mat - matrix(
         matches, nrow = n_iter, ncol = length(matches), byrow = TRUE
     )
@@ -262,3 +226,57 @@ testMotifEnrich <- function(
 
 }
 
+# @importFrom parallel mclapply
+# @importFrom MASS glm.nb
+# @importFrom matrixStats colSds
+# @importFrom stats glm.control
+# @keywords internal
+#.testNB <- function(pwm, stringset, bg, var, mc.cores, ...) {
+#
+#     ## Currently disabled while I check my stats...
+#
+#     stopifnot(var %in% colnames(mcols(bg)))
+#     n <- length(stringset)
+#     matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+#     splitbg <- split(bg, mcols(bg)[[var]])
+#     if (!all(vapply(splitbg, length, integer(1)) == n))
+#         stop("All iterations must be the same size as the test sequences")
+#
+#     bg_matches <- mclapply(
+#         splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
+#         mc.cores = mc.cores
+#     )
+#     bg_mat <- do.call("rbind", bg_matches)
+#     n_iter <- nrow(bg_mat)
+#     stopifnot(n_iter > 1)
+#     mean_bg <- colMeans(bg_mat)
+#     sd_bg <- colSds(bg_mat)
+#     Z <- (matches - mean_bg) / sd_bg
+#
+#     p <- vapply(
+#         seq_along(pwm),
+#         \(i) {
+#             df <- data.frame(
+#                 x = c(matches[[i]], bg_mat[,i]),
+#                 type = c("test", rep_len("control", n_iter))
+#             )
+#             ## Return NA if there is an error. This mostly derives from:
+#             ## Error in while ((it <- it + 1) < limit && abs(del) > eps) { :
+#             ## missing value where TRUE/FALSE needed
+#             ## Currently ignoring warnings. May need to add a handler later
+#             tryCatch(
+#                 summary(
+#                     ## Increasing maxit doesn't add much time overhead but
+#                     ## helps with quite a few outliers
+#                     glm.nb(x~type, data = df, control = glm.control(maxit = 100))
+#                 )$coef[2,4],
+#                 error = function(e){NA_real_}
+#             )
+#         }, numeric(1)
+#     )
+#
+#     data.frame(
+#         sequences = n, matches, expected = mean_bg,
+#         enrichment = matches / mean_bg, Z, p, n_iter, sd_bg
+#     )
+# }

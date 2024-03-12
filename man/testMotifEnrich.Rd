@@ -9,7 +9,7 @@ testMotifEnrich(
   stringset,
   bg,
   var = "iteration",
-  model = c("poisson", "iteration", "quasipoisson", "negbinom"),
+  model = c("poisson", "quasipoisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
   ...
@@ -76,6 +76,9 @@ offered as a testing strategy.
 No iterations are required, but a background set of sequences which is far
 greater than the sequences of interest is advised, with background sets
 >1000 times larger being preferred.
+
+Alternatively, a `quasipoisson()` model is also available to account for
+overdispersed counts.
 }
 \examples{
 ## Load the example peaks & the sequences
