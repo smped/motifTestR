@@ -18,7 +18,7 @@ derive a NULL hypothesis"><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.11</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@ derive a NULL hypothesis</p>
 <span>  <span class="va">stringset</span>,</span>
 <span>  <span class="va">bg</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"iteration"</span>,</span>
-<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poisson"</span>, <span class="st">"iteration"</span>, <span class="st">"quasipoisson"</span>, <span class="st">"negbinom"</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poisson"</span>, <span class="st">"quasipoisson"</span>, <span class="st">"iteration"</span><span class="op">)</span>,</span>
 <span>  sort_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -155,6 +155,8 @@ offered as a testing strategy.
 No iterations are required, but a background set of sequences which is far
 greater than the sequences of interest is advised, with background sets
 &gt;1000 times larger being preferred.</p>
+<p>Alternatively, a `quasipoisson()` model is also available to account for
+overdispersed counts.</p>
     </div>
 
     <div id="ref-examples">

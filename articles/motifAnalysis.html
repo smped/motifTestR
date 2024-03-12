@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.11</span>
       </span>
     </div>
 
@@ -523,10 +523,11 @@ package.</p>
 <h3 id="testing-for-enrichment">Testing For Enrichment<a class="anchor" aria-label="anchor" href="#testing-for-enrichment"></a>
 </h3>
 <p>Testing for overall motif enrichment is implemented using multiple
-strategies, using Poisson, QuasiPoisson, Negative-Binomial or pure
-Iterative approaches. Whilst some PWMs may closely follow a Poisson
-distribution under H<sub>0</sub>, others may be over-dispersed. Each
-approach has unique advantages and weaknesses as summarised below:</p>
+strategies, using Poisson, QuasiPoisson or pure Iterative approaches.
+Whilst some PWMs may closely follow a Poisson distribution under
+H<sub>0</sub>, others may be over-dispersed and more suited to a
+Quasi-Poisson approach. Each approach has unique advantages and
+weaknesses as summarised below:</p>
 <ul>
 <li>
 <em>Poisson</em>
@@ -545,17 +546,8 @@ approach has unique advantages and weaknesses as summarised below:</p>
 <li>Modelling is performed per <em>set of sequences</em> (of identical
 size to the test set)</li>
 <li>Requires BG Sequences to be in ‘iterative’ blocks</li>
-<li>Over-dispersion is a linear function of the mean</li>
 <li>Fewer ‘iterative blocks’ can still model over-dispersion reasonably
 well</li>
-</ul>
-</li>
-<li>
-<em>Negative Binomial</em>
-<ul>
-<li>Very similar to QuasiPoisson but models over-dispersion as a
-quadratic function of the mean</li>
-<li>Slightly more conservative than QuasiPoisson</li>
 </ul>
 </li>
 <li>
@@ -572,7 +564,7 @@ Theorem)</li>
 </li>
 </ul>
 <p>From a per iteration perspective there is little difference between
-the Iterative and the modelled QuasiPoisson/NB approaches, however the
+the Iterative and the modelled QuasiPoisson approaches, however the
 modelled approaches can still return reliable results from a lower
 number of iterative blocks, lending a clear speed advantage. Z-scores
 returned are only used for statistical testing under the iterative
@@ -590,21 +582,21 @@ resolution required for these values may be important, noting that the
 lowest possible p-value is 1/n_iterations.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enrich_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/testMotifEnrich.html">testMotifEnrich</a></span><span class="op">(</span></span>
-<span>  <span class="va">ex_pwm</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, model <span class="op">=</span> <span class="st">"negbinom"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
+<span>  <span class="va">ex_pwm</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, model <span class="op">=</span> <span class="st">"quasi"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">enrich_res</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       sequences matches expected enrichment          Z            p</span></span>
-<span><span class="co">## FOXA1       229     334   205.50   1.625304  8.0584819 3.070212e-14</span></span>
-<span><span class="co">## ESR1        229      62    14.00   4.428571 10.5949029 5.303528e-12</span></span>
-<span><span class="co">## ZN281       229      63    44.68   1.410027  1.7312522 1.118451e-01</span></span>
-<span><span class="co">## ANDR        229      61    55.27   1.103673  0.5888032 5.642204e-01</span></span>
-<span><span class="co">## ZN143       229       1     0.58   1.724138  0.4496872 6.650299e-01</span></span>
+<span><span class="co">## ESR1        229      62    14.00   4.428571 10.5949029 1.571145e-15</span></span>
+<span><span class="co">## FOXA1       229     334   205.50   1.625304  8.0584819 3.635468e-12</span></span>
+<span><span class="co">## ZN281       229      63    44.68   1.410027  1.7312522 9.025992e-02</span></span>
+<span><span class="co">## ANDR        229      61    55.27   1.103673  0.5888032 5.596488e-01</span></span>
+<span><span class="co">## ZN143       229       1     0.58   1.724138  0.4496872 6.606112e-01</span></span>
 <span><span class="co">##                fdr n_iter      sd_bg</span></span>
-<span><span class="co">## FOXA1 1.535106e-13    100 15.9459314</span></span>
-<span><span class="co">## ESR1  1.325882e-11    100  4.5304804</span></span>
-<span><span class="co">## ZN281 1.864084e-01    100 10.5819362</span></span>
-<span><span class="co">## ANDR  6.650299e-01    100  9.7316053</span></span>
-<span><span class="co">## ZN143 6.650299e-01    100  0.9339825</span></span></code></pre>
+<span><span class="co">## ESR1  7.855724e-15    100  4.5304804</span></span>
+<span><span class="co">## FOXA1 9.088670e-12    100 15.9459314</span></span>
+<span><span class="co">## ZN281 1.504332e-01    100 10.5819362</span></span>
+<span><span class="co">## ANDR  6.606112e-01    100  9.7316053</span></span>
+<span><span class="co">## ZN143 6.606112e-01    100  0.9339825</span></span></code></pre>
 <p>Setting the model to “iteration” instead uses a classical iterative
 approach to define the null distributions of counts and Z-scores are
 calculated from these values. The returned p-values from this test are
@@ -653,13 +645,15 @@ sequence.
 </div>
 </div>
 <div class="section level2">
-<h2 id="examples-with-larger-datasets">Examples With Larger Datasets<a class="anchor" aria-label="anchor" href="#examples-with-larger-datasets"></a>
+<h2 id="working-larger-datasets">Working Larger Datasets<a class="anchor" aria-label="anchor" href="#working-larger-datasets"></a>
 </h2>
 <p>Vignettes are commonly prepared for compiling with limited resources
 and as such example datasets and analyses may reveal less information
-than realistically sized data. For more comprehensive analysis the
-following code chunks will allow analysis of the above dataset, but
-without being restricted to chromosome 1.</p>
+than realistically sized data. Motif analysis is particularly well-known
+for taking many minutes when working with large datasets. For more
+comprehensive analysis and realistically sized data, the following code
+snippets will allow analysis of the above dataset, but without being
+restricted to chromosome 1.</p>
 <p>To obtain the full set of peaks, simply run the following and use
 these peaks repeating the steps above.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -747,9 +741,9 @@ just chromosome 1.</p>
 <span><span class="co">##  [7] tibble_3.2.1                      SummarizedExperiment_1.33.3      </span></span>
 <span><span class="co">##  [9] Biobase_2.63.0                    MatrixGenerics_1.15.0            </span></span>
 <span><span class="co">## [11] matrixStats_1.2.0                 ggside_0.3.1                     </span></span>
-<span><span class="co">## [13] BiocParallel_1.37.1               motifTestR_0.1.10                </span></span>
+<span><span class="co">## [13] BiocParallel_1.37.1               motifTestR_0.1.11                </span></span>
 <span><span class="co">## [15] ggplot2_3.5.0                     GenomicRanges_1.55.3             </span></span>
-<span><span class="co">## [17] Biostrings_2.71.2                 GenomeInfoDb_1.39.8              </span></span>
+<span><span class="co">## [17] Biostrings_2.71.3                 GenomeInfoDb_1.39.8              </span></span>
 <span><span class="co">## [19] XVector_0.43.1                    IRanges_2.37.1                   </span></span>
 <span><span class="co">## [21] S4Vectors_0.41.4                  BiocGenerics_0.49.1              </span></span>
 <span><span class="co">## [23] BiocStyle_2.31.0                 </span></span>
@@ -762,7 +756,7 @@ just chromosome 1.</p>
 <span><span class="co">##   [9] edgeR_4.1.18               lattice_0.22-5            </span></span>
 <span><span class="co">##  [11] ensembldb_2.27.1           MASS_7.3-60.2             </span></span>
 <span><span class="co">##  [13] backports_1.4.1            magrittr_2.0.3            </span></span>
-<span><span class="co">##  [15] limma_3.59.5               Hmisc_5.1-1               </span></span>
+<span><span class="co">##  [15] limma_3.59.5               Hmisc_5.1-2               </span></span>
 <span><span class="co">##  [17] sass_0.4.8                 rmarkdown_2.26            </span></span>
 <span><span class="co">##  [19] jquerylib_0.1.4            yaml_2.3.8                </span></span>
 <span><span class="co">##  [21] metapod_1.11.1             Gviz_1.47.1               </span></span>
@@ -776,7 +770,7 @@ just chromosome 1.</p>
 <span><span class="co">##  [37] ggrepel_0.9.5              pkgdown_2.0.7.9000        </span></span>
 <span><span class="co">##  [39] codetools_0.2-19           DelayedArray_0.29.9       </span></span>
 <span><span class="co">##  [41] xml2_1.3.6                 ggforce_0.4.2             </span></span>
-<span><span class="co">##  [43] tidyselect_1.2.0           futile.logger_1.4.3       </span></span>
+<span><span class="co">##  [43] tidyselect_1.2.1           futile.logger_1.4.3       </span></span>
 <span><span class="co">##  [45] farver_2.1.1               ComplexUpset_1.3.3        </span></span>
 <span><span class="co">##  [47] universalmotif_1.21.3      BiocFileCache_2.11.1      </span></span>
 <span><span class="co">##  [49] base64enc_0.1-3            GenomicAlignments_1.39.4  </span></span>
@@ -789,7 +783,7 @@ just chromosome 1.</p>
 <span><span class="co">##  [63] dplyr_1.1.4                withr_3.0.0               </span></span>
 <span><span class="co">##  [65] formatR_1.14               BiocManager_1.30.22       </span></span>
 <span><span class="co">##  [67] fastmap_1.1.1              latticeExtra_0.6-30       </span></span>
-<span><span class="co">##  [69] fansi_1.0.6                digest_0.6.34             </span></span>
+<span><span class="co">##  [69] fansi_1.0.6                digest_0.6.35             </span></span>
 <span><span class="co">##  [71] R6_2.5.1                   textshaping_0.3.7         </span></span>
 <span><span class="co">##  [73] colorspace_2.1-0           jpeg_0.1-10               </span></span>
 <span><span class="co">##  [75] dichromat_2.0-0.1          biomaRt_2.59.1            </span></span>

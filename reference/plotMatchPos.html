@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.11</span>
       </span>
     </div>
 
@@ -67,6 +67,7 @@
 <span>  <span class="va">matches</span>,</span>
 <span>  binwidth <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  abs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_totals <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"density"</span>, <span class="st">"cdf"</span>, <span class="st">"heatmap"</span><span class="op">)</span>,</span>
 <span>  geom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smooth"</span>, <span class="st">"line"</span>, <span class="st">"point"</span>, <span class="st">"col"</span><span class="op">)</span>,</span>
 <span>  cluster <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -88,6 +89,11 @@
 
 <dt>abs</dt>
 <dd><p>logical(1) Plot absolute distances from centre</p></dd>
+
+
+<dt>use_totals</dt>
+<dd><p>logical(1). If TRUE, plots will use total counts. The
+default (FALSE) plots probabilities.</p></dd>
 
 
 <dt>type</dt>
