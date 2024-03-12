@@ -275,8 +275,8 @@ If choosing strategies for enrichment testing outside of `motifTestR`, these seq
 
 ## Testing For Enrichment
 
-Testing for overall motif enrichment is implemented using multiple strategies, using Poisson, QuasiPoisson, Negative-Binomial or pure Iterative approaches.
-Whilst some PWMs may closely follow a Poisson distribution under H~0~, others may be over-dispersed.
+Testing for overall motif enrichment is implemented using multiple strategies, using Poisson, QuasiPoisson or pure Iterative approaches.
+Whilst some PWMs may closely follow a Poisson distribution under H~0~, others may be over-dispersed and more suited to a Quasi-Poisson approach.
 Each approach has unique advantages and weaknesses as summarised below:
 
 - *Poisson*
@@ -287,11 +287,7 @@ Each approach has unique advantages and weaknesses as summarised below:
 - *QuasiPoisson*
     + Modelling is performed per *set of sequences* (of identical size to the test set)
     + Requires BG Sequences to be in 'iterative' blocks
-    + Over-dispersion is a linear function of the mean
     + Fewer 'iterative blocks' can still model over-dispersion reasonably well
-- *Negative Binomial*
-    + Very similar to QuasiPoisson but models over-dispersion as a quadratic function of the mean
-    + Slightly more conservative than QuasiPoisson
 - *Iterative*
     + No model assumptions
     + Requires BG Sequences to be in 'iterative' blocks
@@ -300,7 +296,7 @@ Each approach has unique advantages and weaknesses as summarised below:
     + Requires the largest number of iterative blocks (>1000) 
     + Slowest, but most reliable approach
 
-From a per iteration perspective there is little difference between the Iterative and the modelled QuasiPoisson/NB approaches, however the modelled approaches can still return reliable results from a lower number of iterative blocks, lending a clear speed advantage.
+From a per iteration perspective there is little difference between the Iterative and the modelled QuasiPoisson approaches, however the modelled approaches can still return reliable results from a lower number of iterative blocks, lending a clear speed advantage.
 Z-scores returned are only used for statistical testing under the iterative approach and are for indicative purposes only under all other models model.
 
 Whilst no guidelines have been developed for an optimal number of sequences, a control set which is orders of magnitude larger than the test set may be prudent.
@@ -309,7 +305,7 @@ If choosing an iterative approach and using the iteration-derived p-values, sett
 
 ```{r enrich-res}
 enrich_res <- testMotifEnrich(
-  ex_pwm, test_seq, rm_seq, model = "negbinom", mc.cores = cores
+  ex_pwm, test_seq, rm_seq, model = "quasi", mc.cores = cores
 )
 head(enrich_res)
 ```
@@ -336,10 +332,11 @@ ex_pwm[topMotifs] |>
   plotOverlaps(type = "upset", min_size = 5)
 ```
 
-# Examples With Larger Datasets
+# Working Larger Datasets
 
 Vignettes are commonly prepared for compiling with limited resources and as such example datasets and analyses may reveal less information than realistically sized data.
-For more comprehensive analysis the following code chunks will allow analysis of the above dataset, but without being restricted to chromosome 1.
+Motif analysis is particularly well-known for taking many minutes when working with large datasets.
+For more comprehensive analysis and realistically sized data, the following code snippets will allow analysis of the above dataset, but without being restricted to chromosome 1.
 
 To obtain the full set of peaks, simply run the following and use these peaks repeating the steps above.
 

@@ -8,6 +8,7 @@ plotMatchPos(
   matches,
   binwidth = 10,
   abs = FALSE,
+  use_totals = FALSE,
   type = c("density", "cdf", "heatmap"),
   geom = c("smooth", "line", "point", "col"),
   cluster = FALSE,
@@ -22,6 +23,9 @@ plotMatchPos(
 \item{binwidth}{Width of bins to use when plotting}
 
 \item{abs}{logical(1) Plot absolute distances from centre}
+
+\item{use_totals}{logical(1). If TRUE, plots will use total counts. The
+default (FALSE) plots probabilities.}
 
 \item{type}{Plot match density, the CDF or a binned heatmap}
 

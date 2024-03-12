@@ -20,6 +20,8 @@
 #' @param matches Output from \link{getPwmMatches}
 #' @param binwidth Width of bins to use when plotting
 #' @param abs logical(1) Plot absolute distances from centre
+#' @param use_totals logical(1). If TRUE, plots will use total counts. The
+#' default (FALSE) plots probabilities.
 #' @param type Plot match density, the CDF or a binned heatmap
 #' @param geom Type of geom to be used for line plots. Ignored for heatmaps
 #' @param cluster logical(1) Cluster motifs when drawing a heatmap. If TRUE a
@@ -53,7 +55,7 @@
 #' @import ggplot2
 #' @export
 plotMatchPos <- function(
-        matches, binwidth = 10, abs = FALSE,
+        matches, binwidth = 10, abs = FALSE, use_totals = FALSE,
         type = c("density", "cdf", "heatmap"),
         geom = c("smooth", "line", "point", "col"),
         cluster = FALSE, w = 0.1, heat_fill = NULL, ...
@@ -97,11 +99,12 @@ plotMatchPos <- function(
     df$bin <- factor(df$bin, unique(df$bin))
     x <- sym("bin_centre")
     if (abs) x <- sym("bin_start")
+    yval <- ifelse(use_totals, "total", "p")
 
     geom <- paste0("geom_", match.arg(geom))
     geom_fun <- match.fun(geom)
     if (type == "density") {
-        plot_aes <- aes({{ x }}, !!sym("p"), colour = {{ name }})
+        plot_aes <- aes({{ x }}, !!sym(yval), colour = {{ name }})
         if (geom == "geom_col") names(plot_aes)[[3]] <- "fill"
         plot <- ggplot(df, plot_aes) + geom_fun(...)
     }
@@ -111,7 +114,7 @@ plotMatchPos <- function(
     }
     if (type == "heatmap") {
         if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-        plot <- .createHeatmap(df, cluster, w, heat_fill, ...)
+        plot <- .createHeatmap(df, cluster, yval, w, heat_fill, ...)
     }
 
     plot
@@ -122,7 +125,7 @@ plotMatchPos <- function(
 #' @importFrom patchwork plot_layout
 #' @importFrom rlang !! sym
 #' @keywords internal
-.createHeatmap <- function(df, cluster, w, fill_scale, ...) {
+.createHeatmap <- function(df, cluster, yval, w, fill_scale, ...) {
 
     levels <- unique(df$name)
     if (is.null(fill_scale)) fill_scale <- scale_fill_viridis_c()
@@ -136,7 +139,7 @@ plotMatchPos <- function(
             stop("Please install 'ggdendro' to use this function.")
 
         fm <- as.formula("p ~ name + bin")
-        mat <- as.matrix(xtabs(fm, df[c("name", "bin", "p")]))
+        mat <- as.matrix(xtabs(fm, df[c("name", "bin", yval)]))
         clust <- hclust(dist(mat), method = "ward.D2")
         dend <- ggdendro::dendro_data(as.dendrogram(clust))
         levels <- dend$labels$label
@@ -162,7 +165,7 @@ plotMatchPos <- function(
     # Always create the heatmap...
     df$name <- factor(df$name, levels = levels)
     plot <- ggplot(
-        df, aes(!!sym("bin"), !!sym("name"), fill = !!sym("p"))
+        df, aes(!!sym("bin"), !!sym("name"), fill = !!sym(yval))
     ) +
         geom_tile(...) +
         scale_x_discrete(expand = rep_len(0, 4)) +
