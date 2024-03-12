@@ -1,7 +1,7 @@
 pandoc: 3.1.1
 pkgdown: 2.0.7.9000
-pkgdown_sha: 1924ebf3b65bc037c9ece195ecd7869f1d203e94
+pkgdown_sha: 6fc98fa6773df431471b2b28ba59361d647fafc2
 articles:
   motifAnalysis: motifAnalysis.html
-last_built: 2024-03-12T06:55Z
+last_built: 2024-03-12T13:50Z
 
