@@ -138,7 +138,7 @@ plotMatchPos <- function(
         if (!requireNamespace('ggdendro', quietly = TRUE))
             stop("Please install 'ggdendro' to use this function.")
 
-        fm <- as.formula("p ~ name + bin")
+        fm <- as.formula(paste(yval, "~ name + bin"))
         mat <- as.matrix(xtabs(fm, df[c("name", "bin", yval)]))
         clust <- hclust(dist(mat), method = "ward.D2")
         dend <- ggdendro::dendro_data(as.dendrogram(clust))
