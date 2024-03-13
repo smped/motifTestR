@@ -233,7 +233,8 @@ testMotifEnrich <- function(
 # @keywords internal
 #.testNB <- function(pwm, stringset, bg, var, mc.cores, ...) {
 #
-#     ## Currently disabled while I check my stats...
+#     ## Currently disabled while I check in more detail
+#     ## Convergence issues may be tricky to deal with...
 #
 #     stopifnot(var %in% colnames(mcols(bg)))
 #     n <- length(stringset)
