@@ -7,7 +7,9 @@ author:
 package: motifTestR
 bibliography: '`r system.file("references.bib", package = "motifTestR")`'
 output:
-  BiocStyle::html_document
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 2
 abstract: |
   Analysis of transcription factor binding motifs using Position Weight Matrices
   (PWMs) is a common task in analysis of genomic data.
