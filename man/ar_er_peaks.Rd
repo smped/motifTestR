@@ -20,6 +20,9 @@ A set of ChIP-Seq peaks where AR and ER were both detected
 The subset of peaks found on chr1, and which contained signal from AR and ER,
 along with H3K27ac signal were taken from GSE123767.
 Peaks were resized to a uniform width of 400bp after downloading
+
+Generation of these ranges is documented in
+`system.file("scripts/ar_er_peaks.R", package = "motifTestR")`
 }
 \examples{
 data("ar_er_peaks")
