@@ -5,6 +5,9 @@
 #' @details
 #' This object contains 5 PWMs taken from HOCOMOCOv11-coreA for examples and testing
 #'
+#' Generation of this motif list is documented in
+#' `system.file("scripts/ex_pwm.R", package = "motifTestR")`
+#'
 #' @usage data("ex_pwm")
 #'
 #' @examples
@@ -24,6 +27,9 @@
 #' The subset of peaks found on chr1, and which contained signal from AR and ER,
 #' along with H3K27ac signal were taken from GSE123767.
 #' Peaks were resized to a uniform width of 400bp after downloading
+#'
+#' Generation of these ranges is documented in
+#' `system.file("scripts/ar_er_peaks.R", package = "motifTestR")`
 #'
 #' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123767}
 #'
@@ -45,6 +51,8 @@
 #' These sequences represent the sequences obtained from
 #' BSgenome.Hsapiens.UCSC.hg19 for thw peaks supplied as `ar_er_peaks`
 #'
+#' Generation of these sequences is documented in
+#' `system.file("scripts/ar_er_peaks.R", package = "motifTestR")`
 #'
 #' @usage data("ar_er_seq")
 #'
@@ -66,6 +74,9 @@
 #' regions containing Ns from the UCSC 2bit file, and regions with Ns in the
 #' BSgenome.Hsapiens.UCSC.hg19 were retained.
 #'
+#' Generation of these ranges is documented in
+#' `system.file("scripts/hg19_mask.R", package = "motifTestR")`
+#'
 #' @source The package AnnotationHub and
 #' \url{https://hgdownload.cse.ucsc.edu/goldenpath/hg19/bigZips/hg19.fa.masked.gz}
 #'
@@ -85,6 +96,10 @@
 #' @details
 #' These enhancers are the chr1 subset of enhancer regions for ZR-75-1 cells as
 #' identified by EnhancerAtlas 2.0
+#'
+#' #' Generation of these ranges is documented in
+#' `system.file("scripts/zr75_enh.R", package = "motifTestR")`
+#'
 #'
 #' @source \url{http://www.enhanceratlas.org/index.php}
 #'

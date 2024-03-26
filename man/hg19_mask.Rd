@@ -22,6 +22,9 @@ The regions defined as centromeres or telomeres in hg19, taken from
 AnnotationHub objects "AH107360" and "AH107361". These were combined with
 regions containing Ns from the UCSC 2bit file, and regions with Ns in the
 BSgenome.Hsapiens.UCSC.hg19 were retained.
+
+Generation of these ranges is documented in
+`system.file("scripts/hg19_mask.R", package = "motifTestR")`
 }
 \examples{
 data("hg19_mask")

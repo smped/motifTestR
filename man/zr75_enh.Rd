@@ -19,6 +19,9 @@ The chr1 subset of candidate enhancers for ZR-75-1 cells
 \details{
 These enhancers are the chr1 subset of enhancer regions for ZR-75-1 cells as
 identified by EnhancerAtlas 2.0
+
+#' Generation of these ranges is documented in
+`system.file("scripts/zr75_enh.R", package = "motifTestR")`
 }
 \examples{
 data("zr75_enh")
