@@ -64,3 +64,10 @@ test_that("testMotifPos errors correctly", {
     expect_error(testMotifPos(""))
     expect_error(testMotifPos(c(list(""), ex_pwm)))
 })
+
+test_that("Same width sequences are enforced", {
+    matches$seq_width[1] <- 100
+    expect_error(testMotifPos(matches))
+    mixed_width <- c(stringset, as(stringset[[1]][1:200], "DNAStringSet"))
+    expect_error(testMotifPos(ex_pwm, mixed_width))
+})
