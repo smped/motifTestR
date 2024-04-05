@@ -131,13 +131,13 @@ testMotifEnrich <- function(
 #' @keywords internal
 .testQuasi <- function(pwm, stringset, bg, var, mc.cores, ...) {
 
-    stopifnot(var %in% colnames(mcols(bg)))
     n <- length(stringset)
-    matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+    stopifnot(var %in% colnames(mcols(bg)))
     splitbg <- split(bg, mcols(bg)[[var]])
     if (!all(vapply(splitbg, length, integer(1)) == n))
         stop("All iterations must be the same size as the test sequences")
 
+    matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
     bg_matches <- mclapply(
         splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
         mc.cores = mc.cores
