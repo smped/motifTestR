@@ -9,7 +9,7 @@ testMotifEnrich(
   stringset,
   bg,
   var = "iteration",
-  model = c("poisson", "quasipoisson", "iteration"),
+  model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
   ...
@@ -35,14 +35,14 @@ number}
 }
 \value{
 A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
-`Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
-`n_iter` and `iter_p` (Iterations).
+and `p`, with additional columns `Z`, `est_bg_rate` (Poisson), `odds_ratio`
+(Hypergeometric) or `Z`, `sd_bg`, `n_iter` and `iter_p` (Iterations).
 The numbers of sequences and matches refer to the test set of sequences,
 whilst expected is the expected number of matches under the Poisson or
 iterative null distribution. The ratio of matches to expected is given as
-`enrichment`, along with the Z score an p-value. The Z score is only
-representative under the Poisson model, but is used to estimate p-values
-under the iterative approach.
+`enrichment`, along with the Z score and p-value. Whilst the Z score is only
+representative under the Poisson model, it is used to directly estimate
+p-values under the iterative approach.
 Under this latter approach, the sd of the matches found in the background
 sequences is also given, along with the number of iterations and the p-values
 from permutations testing the one-sided hypothesis hypothesis for enrichment.
@@ -70,15 +70,22 @@ Limit Theorem for the Z score, this can be a time consuming and
 computationally demanding task.
 
 Testing on real datasets has revealed the the background set of counts
-commonly follows a Poisson distribution across multiple iterations.
+can often follow a Poisson distribution across multiple iterations.
 As a less time-consuming and computationally-demanding approach, is also
 offered as a testing strategy.
 No iterations are required, but a background set of sequences which is far
 greater than the sequences of interest is advised, with background sets
 >1000 times larger being preferred.
 
-Alternatively, a `quasipoisson()` model is also available to account for
-overdispersed counts.
+Alternatively, a quasipoisson model is also available to account for
+overdispersed counts, and this may be more widely applicable than using a
+Poisson test. Under this approach, background sequences are divided into
+sets of exactly the same size as the test set (i.e. iterations) and these
+are used to estimate the parameters of the underlying model.
+
+When comparing a test set of sequences against a directly and specifically
+matched background set of sequences, a one-sided hypergeometric test is also
+implemented.
 }
 \examples{
 ## Load the example peaks & the sequences

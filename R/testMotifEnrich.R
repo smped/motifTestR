@@ -17,27 +17,34 @@
 #' computationally demanding task.
 #'
 #' Testing on real datasets has revealed the the background set of counts
-#' commonly follows a Poisson distribution across multiple iterations.
+#' can often follow a Poisson distribution across multiple iterations.
 #' As a less time-consuming and computationally-demanding approach, is also
 #' offered as a testing strategy.
 #' No iterations are required, but a background set of sequences which is far
 #' greater than the sequences of interest is advised, with background sets
 #' >1000 times larger being preferred.
 #'
-#' Alternatively, a `quasipoisson()` model is also available to account for
-#' overdispersed counts.
+#' Alternatively, a quasipoisson model is also available to account for
+#' overdispersed counts, and this may be more widely applicable than using a
+#' Poisson test. Under this approach, background sequences are divided into
+#' sets of exactly the same size as the test set (i.e. iterations) and these
+#' are used to estimate the parameters of the underlying model.
+#'
+#' When comparing a test set of sequences against a directly and specifically
+#' matched background set of sequences, a one-sided hypergeometric test is also
+#' implemented.
 #'
 #'
 #' @return
 #' A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
-#' `Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
-#' `n_iter` and `iter_p` (Iterations).
+#' and `p`, with additional columns `Z`, `est_bg_rate` (Poisson), `odds_ratio`
+#' (Hypergeometric) or `Z`, `sd_bg`, `n_iter` and `iter_p` (Iterations).
 #' The numbers of sequences and matches refer to the test set of sequences,
 #' whilst expected is the expected number of matches under the Poisson or
 #' iterative null distribution. The ratio of matches to expected is given as
-#' `enrichment`, along with the Z score an p-value. The Z score is only
-#' representative under the Poisson model, but is used to estimate p-values
-#' under the iterative approach.
+#' `enrichment`, along with the Z score and p-value. Whilst the Z score is only
+#' representative under the Poisson model, it is used to directly estimate
+#' p-values under the iterative approach.
 #' Under this latter approach, the sd of the matches found in the background
 #' sequences is also given, along with the number of iterations and the p-values
 #' from permutations testing the one-sided hypothesis hypothesis for enrichment.
@@ -91,7 +98,7 @@
 #' @export
 testMotifEnrich <- function(
         pwm, stringset, bg, var = "iteration",
-        model = c("poisson", "quasipoisson", "iteration"),
+        model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
         sort_by = c("p", "none"), mc.cores = 1, ...
 ) {
 
@@ -103,9 +110,10 @@ testMotifEnrich <- function(
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
         poisson = "est_bg_rate", iteration = c("iter_p", "n_iter", "sd_bg"),
-        quasipoisson = c("n_iter", "sd_bg")#, negbinom = c("n_iter", "sd_bg")
+        hypergeometric = "odds_ratio", quasipoisson = c("n_iter", "sd_bg")
     )
     cols <- c(cols, mod_cols[[model]])
+    if (model == "hypergeometric") cols <- setdiff(cols, "Z")
     ## Run the analysis
     if (is.matrix(pwm)) pwm <- list(pwm)
     pwm <- .cleanMotifList(pwm)
@@ -114,14 +122,68 @@ testMotifEnrich <- function(
         out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
     if (model == "quasipoisson")
         out <- .testQuasi(pwm, stringset, bg, var, mc.cores, ...)
-    # if (model == "negbinom")
-    #     out <- .testNB(pwm, stringset, bg, var, mc.cores, ...)
+    if (model == "hypergeometric")
+        out <- .testHyper(pwm, stringset, bg, mc.cores, ...)
 
     out$fdr <- p.adjust(out$p, "fdr")
     o <- seq_len(nrow(out))
     sort_by <- match.arg(sort_by)
     if (sort_by != "none") o <- order(out[[sort_by]])
     out[o,cols]
+
+}
+
+#' @importFrom parallel mclapply
+#' @importFrom stats phyper
+.testHyper <- function(pwm, stringset, bg, mc.cores, ...){
+
+    ## Check there's no overlap between the two by removing shared sequences
+    ss <- setdiff(stringset, bg)
+    bg <- setdiff(bg, stringset)
+    if (length(ss) != length(stringset)) {
+        msg <- paste(
+            "Shared sequences found in the test and background set.",
+            "These have been excluded from both"
+        )
+        message(msg)
+        stopifnot(length(ss) > 0)
+    }
+    n_ss <- length(ss)
+    n_bg <- length(bg)
+
+    ## Find & count the sequences with a match in both sets
+    matches_ss <- getPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
+    n_matches_ss <- mclapply(
+        matches_ss, \(x) length(unique(x$seq)), mc.cores = mc.cores
+    )
+    n_matches_ss <- unlist(n_matches_ss)
+    matches_bg <- getPwmMatches(pwm, bg, mc.cores = mc.cores, ...)
+    n_matches_bg <- mclapply(
+        matches_bg, \(x) length(unique(x$seq)), mc.cores = mc.cores
+    )
+    n_matches_bg <- unlist(n_matches_bg)
+    or_denom <- (n_ss - n_matches_ss) / (n_bg - n_matches_bg)
+    or <- (n_matches_ss / n_matches_bg) / or_denom
+
+    ## Perform a 1-sided hypergeometric test
+    p_vals <- mclapply(
+        seq_along(pwm),
+        \(i) {
+            q <- n_matches_ss[[i]]
+            k <- q + n_matches_bg[[i]]
+            phyper(q - 1, m = n_ss, n = n_bg, k = k, lower.tail = FALSE)
+        },
+        mc.cores = mc.cores
+    )
+
+    ## Return the output
+    data.frame(
+        sequences = n_ss, matches = n_matches_ss,
+        expected = n_ss * n_matches_bg / n_bg,
+        enrichment = (n_matches_ss / n_ss) / (n_matches_bg / n_bg),
+        p = unlist(p_vals),
+        odds_ratio = or
+    )
 
 }
 
