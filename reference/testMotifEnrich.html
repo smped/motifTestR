@@ -18,7 +18,7 @@ derive a NULL hypothesis"><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.5</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@ derive a NULL hypothesis</p>
 <span>  <span class="va">stringset</span>,</span>
 <span>  <span class="va">bg</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"iteration"</span>,</span>
-<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poisson"</span>, <span class="st">"quasipoisson"</span>, <span class="st">"iteration"</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quasipoisson"</span>, <span class="st">"hypergeometric"</span>, <span class="st">"poisson"</span>, <span class="st">"iteration"</span><span class="op">)</span>,</span>
 <span>  sort_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -117,14 +117,14 @@ number</p></dd>
     
 
 <p>A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
-`Z` and `p`, with additional columns `est_bg_rate` (Poisson) or `sd_bg`,
-`n_iter` and `iter_p` (Iterations).
+and `p`, with additional columns `Z`, `est_bg_rate` (Poisson), `odds_ratio`
+(Hypergeometric) or `Z`, `sd_bg`, `n_iter` and `iter_p` (Iterations).
 The numbers of sequences and matches refer to the test set of sequences,
 whilst expected is the expected number of matches under the Poisson or
 iterative null distribution. The ratio of matches to expected is given as
-`enrichment`, along with the Z score an p-value. The Z score is only
-representative under the Poisson model, but is used to estimate p-values
-under the iterative approach.
+`enrichment`, along with the Z score and p-value. Whilst the Z score is only
+representative under the Poisson model, it is used to directly estimate
+p-values under the iterative approach.
 Under this latter approach, the sd of the matches found in the background
 sequences is also given, along with the number of iterations and the p-values
 from permutations testing the one-sided hypothesis hypothesis for enrichment.</p>
@@ -149,14 +149,20 @@ Whilst relying on few distributional assumptions and relying on the Central
 Limit Theorem for the Z score, this can be a time consuming and
 computationally demanding task.</p>
 <p>Testing on real datasets has revealed the the background set of counts
-commonly follows a Poisson distribution across multiple iterations.
+can often follow a Poisson distribution across multiple iterations.
 As a less time-consuming and computationally-demanding approach, is also
 offered as a testing strategy.
 No iterations are required, but a background set of sequences which is far
 greater than the sequences of interest is advised, with background sets
 &gt;1000 times larger being preferred.</p>
-<p>Alternatively, a `quasipoisson()` model is also available to account for
-overdispersed counts.</p>
+<p>Alternatively, a quasipoisson model is also available to account for
+overdispersed counts, and this may be more widely applicable than using a
+Poisson test. Under this approach, background sequences are divided into
+sets of exactly the same size as the test set (i.e. iterations) and these
+are used to estimate the parameters of the underlying model.</p>
+<p>When comparing a test set of sequences against a directly and specifically
+matched background set of sequences, a one-sided hypergeometric test is also
+implemented.</p>
     </div>
 
     <div id="ref-examples">
@@ -227,7 +233,7 @@ overdispersed counts.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
 
       </footer></div>
