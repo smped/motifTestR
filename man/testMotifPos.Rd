@@ -21,7 +21,7 @@ testMotifPos(
 \arguments{
 \item{x}{A Position Weight Matrix, universalmotif object or list thereof.
 Alternatively can be a single DataFrame or list of DataFrames as returned
-by \link{getPwmMatches} with `best_only = TRUE`}
+by \link{getPwmMatches} with \code{best_only = TRUE}}
 
 \item{stringset}{An XStringSet. Not required if matches are supplied as x}
 
@@ -44,9 +44,9 @@ by \link{getPwmMatches} with `best_only = TRUE`}
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }
 \value{
-A data.frame with columns `start`, `end`, `centre`, `width`, `total_matches`,
-`matches_in_region`, `expected`, `enrichment`, `prop_total`, `p`
-and `consensus_motif`
+A data.frame with columns \code{start}, \code{end}, \code{centre}, \code{width}, \code{total_matches},
+\code{matches_in_region}, \code{expected}, \code{enrichment}, \code{prop_total}, \code{p}
+and \code{consensus_motif}
 The total matches represent the total number of matches within the set of
 sequences, whilst the number observed in the final region are also given,
 along with the proportion of the total this represents.
@@ -69,20 +69,20 @@ the centre of a range, this function intends to detect this signal, as a
 rejection of the null hypothesis.
 
 Input can be provided as the output from \link{getPwmMatches} setting
-`best_only = TRUE` if these matches have already been identified.
-If choosing to provide this object to the argument `matches`, nothing is required
-for the arguments `pwm`, `stringset`, `rc`, `min_score` or `break_ties`
-Otherwise, a Position Weight Matrix (PWM) and an `XStringSet` are required,
+\code{best_only = TRUE} if these matches have already been identified.
+If choosing to provide this object to the argument \code{matches}, nothing is required
+for the arguments \code{pwm}, \code{stringset}, \code{rc}, \code{min_score} or \code{break_ties}
+Otherwise, a Position Weight Matrix (PWM) and an \code{XStringSet} are required,
 along with the relevant arguments, with best matches identified within the
 function.
 
 The set of best matches are then grouped into bins along the range, with the
 central bin containing zero, and tallied.
-Setting `abs` to `TRUE` will set all positions from the centre as
-*absolute values*, returning counts purely as bins with distances from zero,
+Setting \code{abs} to \code{TRUE} will set all positions from the centre as
+\emph{absolute values}, returning counts purely as bins with distances from zero,
 marking this as an inclusive lower bound.
 Motif alignments are assigned into bins based on the central position of the
-match, as provided in the column `from_centre` when calling
+match, as provided in the column \code{from_centre} when calling
 \link{getPwmMatches}.
 
 The \link[stats]{binom.test} is performed on each bin using the alternative
@@ -94,7 +94,7 @@ enrichment are across this set of bins.
 The expectation is that where a positional bias is evident, this will be a
 narrow range containing a non-trivial proportion of the total matches.
 
-It should also be noted that `binom.test()` can return p-values of zero, as
+It should also be noted that \code{binom.test()} can return p-values of zero, as
 beyond machine precision. In these instances, zero p-values are excluded from
 calculation of the HMP. This will give a very slight conservative bias, and
 assumes that for these extreme cases, neighbouring bins are highly likely to
