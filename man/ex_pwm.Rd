@@ -17,7 +17,7 @@ Example Position Weight Matrices
 This object contains 5 PWMs taken from HOCOMOCOv11-coreA for examples and testing
 
 Generation of this motif list is documented in
-`system.file("scripts/ex_pwm.R", package = "motifTestR")`
+\code{system.file("scripts/ex_pwm.R", package = "motifTestR")}
 }
 \examples{
 data("ex_pwm")

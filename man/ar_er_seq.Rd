@@ -15,10 +15,10 @@ The genomic sequences obtained from the ar_er_peaks
 }
 \details{
 These sequences represent the sequences obtained from
-BSgenome.Hsapiens.UCSC.hg19 for thw peaks supplied as `ar_er_peaks`
+BSgenome.Hsapiens.UCSC.hg19 for thw peaks supplied as \code{ar_er_peaks}
 
 Generation of these sequences is documented in
-`system.file("scripts/ar_er_peaks.R", package = "motifTestR")`
+\code{system.file("scripts/ar_er_peaks.R", package = "motifTestR")}
 }
 \examples{
 data("ar_er_seq")

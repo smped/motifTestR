@@ -34,16 +34,16 @@ Ignored when all matches are returned (the default)}
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }
 \value{
-A DataFrame with columns: `seq`, `score`, `direction`, `start`,
-`end`, `fromCentre`, `seq_width`, and `match`
+A DataFrame with columns: \code{seq}, \code{score}, \code{direction}, \code{start},
+\code{end}, \code{fromCentre}, \code{seq_width}, and \code{match}
 
 The first three columns describe the sequence with matches, the score of
 the match and whether the match was found using the forward or reverse PWM.
-The columns `start`, `end` and `width` describe the where the match was found
-in the sequence, whilst `from_centre` defines the distance between the centre
+The columns \code{start}, \code{end} and \code{width} describe the where the match was found
+in the sequence, whilst \code{from_centre} defines the distance between the centre
 of the match and the centre of the sequence being queried.
 The final column contains the matching fragment of the sequence as an
-`XStringSet`.
+\code{XStringSet}.
 
 When passing a list of PWMs, a list of the above DataFrames will be returned.
 }
@@ -55,12 +55,12 @@ Taking a set of sequences as an XStringSet, find all matches above the
 supplied score (i.e. threshold) for a single Position Weight Matrix (PWM),
 generally representing a transcription factor binding motif.
 By default, matches are performed using the PWM as provided and the reverse
-complement, however this can easily be disable by setting `rc = FALSE`.
+complement, however this can easily be disable by setting \code{rc = FALSE}.
 
 The function relies heavily on \link[Biostrings]{matchPWM} and
 \link[IRanges]{Views} for speed.
 
-When choosing to return the best match (`best_only = TRUE`), only the match
+When choosing to return the best match (\code{best_only = TRUE}), only the match
 with the highest score is returned for each sequence.
 Should there be tied scores, the best match can be chosen as either the first,
 last, most central, all tied matches, or choosing one at random (the default).

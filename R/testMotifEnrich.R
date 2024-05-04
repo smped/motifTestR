@@ -5,34 +5,75 @@
 #' derive a NULL hypothesis
 #'
 #' @details
-#' This function offers two alternatives for assessing the enrichment of a motif
-#' within a set of sequences, in comparison to a background set of sequences.
-#' Enrichment using an iterative model assumes that the background sequences
-#' can be subset using a column in their `mcols()` element and these are
-#' iterated through to derive a mean and sd operating under the null hypothesis.
-#' These values are then used in a Z test to provide an estimate of motif
-#' enrichment.
-#' Whilst relying on few distributional assumptions and relying on the Central
-#' Limit Theorem for the Z score, this can be a time consuming and
-#' computationally demanding task.
+#' This function offers four alternative models for assessing the enrichment of
+#' a motif within a set of sequences, in comparison to a background set of
+#' sequences.
+#' Selection of the BG sequences plays an important role and, in conjunction
+#' with the question being addressed, determines the most appropriate model to
+#' use for testing, as described below.
 #'
-#' Testing on real datasets has revealed the the background set of counts
-#' can often follow a Poisson distribution across multiple iterations.
-#' As a less time-consuming and computationally-demanding approach, is also
-#' offered as a testing strategy.
-#' No iterations are required, but a background set of sequences which is far
-#' greater than the sequences of interest is advised, with background sets
-#' >1000 times larger being preferred.
+#' It should also be noted that the larger the BG set of sequences, the larger
+#' the computational burden, and results can take far longer to return. For
+#' many millions of background sequences, this may run beyond an hour
 #'
-#' Alternatively, a quasipoisson model is also available to account for
-#' overdispersed counts, and this may be more widely applicable than using a
-#' Poisson test. Under this approach, background sequences are divided into
-#' sets of exactly the same size as the test set (i.e. iterations) and these
-#' are used to estimate the parameters of the underlying model.
+#' ## Descriptions of Models and Use Cases
 #'
-#' When comparing a test set of sequences against a directly and specifically
-#' matched background set of sequences, a one-sided hypergeometric test is also
-#' implemented.
+#' ### Hypergeometric Tests
+#'
+#' Hypergeometric tests are best suited to the use case where the test set of
+#' sequences represents a subset of a larger set, with a specific feature or
+#' behaviour, whilst the BG set may be the remainder of the set without that
+#' feature. For example, the test set may represent ChIP-Seq binding sites
+#' where signal changes in response to treatment, whilst the BG set represents
+#' the sites where no changed signal was observed. Testing is one-sided, for
+#' enrichment of motifs within the test set.
+#'
+#' Due to these relatively smaller sized datasets, setting
+#' model = "hypergeometric", will generally return results quickly
+#'
+#' ### Poisson Tests
+#'
+#' This approach requires a set of background sequences which should be much
+#' larger than the test set of sequences.
+#' The parameters for a Poisson model are estimated in a per-sequence manner on
+#' the set of BG sequences, and the observed rate of motif-matches within the
+#' test set is then tested using \link[stats]{poisson.test}.
+#'
+#' This approach assumes that all matches follow a Poisson distribution, which
+#' is often true, but data can also be overdispersed. Given that this model can
+#' also return results relatively quickly, is it primarily suitable for data
+#' exploration, but not for final results.
+#'
+#' ### Quasi-Poisson Test
+#'
+#' The quasipoisson model allows for over-dispersion and will return more
+#' conservative results than using the standard Poisson model.
+#' Under the method currently implemented here, BG sequences should be divided
+#' into blocks (i.e. iterations), identical in size to the test set of sequences.
+#' Model parameters are estimated per iteration across the BG set of sequences,
+#' with the rate of matches in the test being compared against these.
+#'
+#' It is expected that the BG set will matched for the features of interest and
+#' chosen using \link{makeRMRanges} with a large number of iterations, e.g.
+#' n_iter = 1000.
+#' Due to this parameterisation, quasipoisson approaches can be computationally
+#' time-consuming, as this is effectively an iterative approach.
+#'
+#' ### Iteration
+#'
+#' Setting the model as "iteration" performs a non-parametric analysis, with
+#' the exception of returning Z-scores under the Central Limit Theorem.
+#' Mean and SD of matches is found for each iteration, and used to return Z
+#' scores, with p-values returned from both a Z-test and from comparing
+#' observed values directly to sampled values obtained from the BG sequences.
+#' Sampled values are calculated directly and as such, are limited in precision.
+#'
+#' As for the QuasiPoisson model, a very large number of iterations is expected
+#' to be used, to ensure the CLT holds, again making this a computationally
+#' demanding test.
+#' Each iteration/block is expected to be identically-sized to the test set,
+#' and matched for any features as appropriate using [makeRMRanges()].
+#'
 #'
 #'
 #' @return
@@ -63,7 +104,9 @@
 #' number
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
-#' @param ... Passed internally to \link[Biostrings]{countPWM}
+#' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
+#'
+#' @seealso [makeRMRanges()], [getPwmMatches()], [countPwmMatches()]
 #'
 #' @examples
 #' ## Load the example peaks & the sequences
@@ -271,8 +314,8 @@ testMotifEnrich <- function(
 .testPois <- function(pwm, test_seq, bg_seq, mc.cores, ...){
 
     n_seq <- length(test_seq)
-    matches <- countPwmMatches(pwm, test_seq, mc.cores = mc.cores)
-    n_bg <- countPwmMatches(pwm, bg_seq, mc.cores = mc.cores)
+    matches <- countPwmMatches(pwm, test_seq, mc.cores = mc.cores, ...)
+    n_bg <- countPwmMatches(pwm, bg_seq, mc.cores = mc.cores, ...)
     est_bg_rate <- n_bg / length(bg_seq)
     expected <- est_bg_rate * n_seq
     ## Running vapply seems faster than mclappy here
@@ -288,58 +331,3 @@ testMotifEnrich <- function(
 
 }
 
-# @importFrom parallel mclapply
-# @importFrom MASS glm.nb
-# @importFrom matrixStats colSds
-# @importFrom stats glm.control
-# @keywords internal
-#.testNB <- function(pwm, stringset, bg, var, mc.cores, ...) {
-#
-#     ## Currently disabled while I check in more detail
-#     ## Convergence issues may be tricky to deal with...
-#
-#     stopifnot(var %in% colnames(mcols(bg)))
-#     n <- length(stringset)
-#     matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
-#     splitbg <- split(bg, mcols(bg)[[var]])
-#     if (!all(vapply(splitbg, length, integer(1)) == n))
-#         stop("All iterations must be the same size as the test sequences")
-#
-#     bg_matches <- mclapply(
-#         splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
-#         mc.cores = mc.cores
-#     )
-#     bg_mat <- do.call("rbind", bg_matches)
-#     n_iter <- nrow(bg_mat)
-#     stopifnot(n_iter > 1)
-#     mean_bg <- colMeans(bg_mat)
-#     sd_bg <- colSds(bg_mat)
-#     Z <- (matches - mean_bg) / sd_bg
-#
-#     p <- vapply(
-#         seq_along(pwm),
-#         \(i) {
-#             df <- data.frame(
-#                 x = c(matches[[i]], bg_mat[,i]),
-#                 type = c("test", rep_len("control", n_iter))
-#             )
-#             ## Return NA if there is an error. This mostly derives from:
-#             ## Error in while ((it <- it + 1) < limit && abs(del) > eps) { :
-#             ## missing value where TRUE/FALSE needed
-#             ## Currently ignoring warnings. May need to add a handler later
-#             tryCatch(
-#                 summary(
-#                     ## Increasing maxit doesn't add much time overhead but
-#                     ## helps with quite a few outliers
-#                     glm.nb(x~type, data = df, control = glm.control(maxit = 100))
-#                 )$coef[2,4],
-#                 error = function(e){NA_real_}
-#             )
-#         }, numeric(1)
-#     )
-#
-#     data.frame(
-#         sequences = n, matches, expected = mean_bg,
-#         enrichment = matches / mean_bg, Z, p, n_iter, sd_bg
-#     )
-# }
