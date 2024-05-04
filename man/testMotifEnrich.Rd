@@ -31,16 +31,16 @@ number}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
-\item{...}{Passed internally to \link[Biostrings]{countPWM}}
+\item{...}{Passed to \link{getPwmMatches} or \link{countPwmMatches}}
 }
 \value{
-A data.frame with columns: `sequences`, `matches`, `expected`, `enrichment`,
-and `p`, with additional columns `Z`, `est_bg_rate` (Poisson), `odds_ratio`
-(Hypergeometric) or `Z`, `sd_bg`, `n_iter` and `iter_p` (Iterations).
+A data.frame with columns: \code{sequences}, \code{matches}, \code{expected}, \code{enrichment},
+and \code{p}, with additional columns \code{Z}, \code{est_bg_rate} (Poisson), \code{odds_ratio}
+(Hypergeometric) or \code{Z}, \code{sd_bg}, \code{n_iter} and \code{iter_p} (Iterations).
 The numbers of sequences and matches refer to the test set of sequences,
 whilst expected is the expected number of matches under the Poisson or
 iterative null distribution. The ratio of matches to expected is given as
-`enrichment`, along with the Z score and p-value. Whilst the Z score is only
+\code{enrichment}, along with the Z score and p-value. Whilst the Z score is only
 representative under the Poisson model, it is used to directly estimate
 p-values under the iterative approach.
 Under this latter approach, the sd of the matches found in the background
@@ -48,7 +48,7 @@ sequences is also given, along with the number of iterations and the p-values
 from permutations testing the one-sided hypothesis hypothesis for enrichment.
 
 It may also be worth noting that if producing background sequences using
-\link{makeRMRanges} with `replace = TRUE` and `force_ol = TRUE`, the
+\link{makeRMRanges} with \code{replace = TRUE} and \code{force_ol = TRUE}, the
 iterative model corresponds to a bootstrap, given that the test sequences
 will overlap the background sequences and background ranges are able to be
 sampled with replacement.
@@ -58,34 +58,78 @@ Test for motif enrichment within a set of sequences using a background set to
 derive a NULL hypothesis
 }
 \details{
-This function offers two alternatives for assessing the enrichment of a motif
-within a set of sequences, in comparison to a background set of sequences.
-Enrichment using an iterative model assumes that the background sequences
-can be subset using a column in their `mcols()` element and these are
-iterated through to derive a mean and sd operating under the null hypothesis.
-These values are then used in a Z test to provide an estimate of motif
-enrichment.
-Whilst relying on few distributional assumptions and relying on the Central
-Limit Theorem for the Z score, this can be a time consuming and
-computationally demanding task.
+This function offers four alternative models for assessing the enrichment of
+a motif within a set of sequences, in comparison to a background set of
+sequences.
+Selection of the BG sequences plays an important role and, in conjunction
+with the question being addressed, determines the most appropriate model to
+use for testing, as described below.
 
-Testing on real datasets has revealed the the background set of counts
-can often follow a Poisson distribution across multiple iterations.
-As a less time-consuming and computationally-demanding approach, is also
-offered as a testing strategy.
-No iterations are required, but a background set of sequences which is far
-greater than the sequences of interest is advised, with background sets
->1000 times larger being preferred.
+It should also be noted that the larger the BG set of sequences, the larger
+the computational burden, and results can take far longer to return. For
+many millions of background sequences, this may run beyond an hour
+\subsection{Descriptions of Models and Use Cases}{
+\subsection{Hypergeometric Tests}{
 
-Alternatively, a quasipoisson model is also available to account for
-overdispersed counts, and this may be more widely applicable than using a
-Poisson test. Under this approach, background sequences are divided into
-sets of exactly the same size as the test set (i.e. iterations) and these
-are used to estimate the parameters of the underlying model.
+Hypergeometric tests are best suited to the use case where the test set of
+sequences represents a subset or a larger set, with a specific feature or
+behaviour, whilst the BG set may be the remainder of the set without that
+feature. For example, the test set may represent ChIP-Seq binding sites
+where signal changes in response to treatment, whilst the BG set represents
+the sites where no changed signal was observed. Testing is one-sided, for
+enrichment of motifs within the test set.
 
-When comparing a test set of sequences against a directly and specifically
-matched background set of sequences, a one-sided hypergeometric test is also
-implemented.
+Due to these relatively smaller sized datasets, setting
+model = "hypergeometric", will generally return results quickly
+}
+
+\subsection{Poisson Tests}{
+
+This approach requires a set of background sequences which should be much
+larger than the test set of sequences.
+The parameters for a Poisson model are estimated in a per-sequence manner on
+the set of BG sequences, and the observed rate of motif-matches within the
+test set is then tested using \link[stats]{poisson.test}.
+
+This approach assumes that all matches follow a Poisson distribution, which
+is often true, but data can also be overdispersed. Given that this model can
+also return results relatively quickly, is it primarily suitable for data
+exploration, but not for final results.
+}
+
+\subsection{Quasi-Poisson Test}{
+
+The quasipoisson model allows for over-dispersion and will return more
+conservative results than using the standard Poisson model.
+Under the method currently implemented here, BG sequences should be divided
+into blocks (i.e. iterations), identical in size to the test set of sequences.
+Model parameters are estimated per iteration across the BG set of sequences,
+with the rate of matches in the test being compared against these.
+
+It is expected that the BG set will matched for the features of interest and
+chosen using \link{makeRMRanges} with a large number of iterations, e.g.
+n_iter = 1000.
+Due to this parameterisation, quasipoisson approaches can be computationally
+time-consuming, as this is effectively an iterative approach.
+}
+
+\subsection{Iteration}{
+
+Setting the model as "iteration" performs a non-parametric analysis, with
+the exception of returning Z-scores under the Central Limit Theorem.
+Mean and SD of matches is found for each iteration, and used to return Z
+scores, with p-values returned from both a Z-test and from comparing
+observed values directly to sampled values obatained from the BG sequences.
+Sampled values are calculated directly and as such, are limited in precision.
+
+As for the QuasiPoisson model, a very large number of iterations is expected
+to be used, to ensure the CLT holds, again making this a computationally
+demanding test.
+Each iteration/block is expected to be identically-sized to the test set,
+and matched for any features as appropriate using \code{\link[=makeRMRanges]{makeRMRanges()}}.
+}
+
+}
 }
 \examples{
 ## Load the example peaks & the sequences
@@ -116,4 +160,7 @@ testMotifEnrich(esr1, ar_er_seq, bg_seq, model = "poisson")
 testMotifEnrich(ex_pwm, ar_er_seq, bg_seq, model = "poisson")
 
 
+}
+\seealso{
+\code{\link[=makeRMRanges]{makeRMRanges()}}, \code{\link[=getPwmMatches]{getPwmMatches()}}, \code{\link[=countPwmMatches]{countPwmMatches()}}
 }

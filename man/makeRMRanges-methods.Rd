@@ -65,10 +65,10 @@ Form a set of ranges from y which (near) exactly match those in x for use as
 a background set requiring matching
 }
 \details{
-This function uses the width distribution of the 'test' ranges (i.e. `x`) to
+This function uses the width distribution of the 'test' ranges (i.e. \code{x}) to
 randomly sample a set of ranges with matching width from the ranges provided
-in `y`. The width distribution will clearly be exact when a set of
-fixed-width ranges is passed to `x`, whilst random sampling may yield some
+in \code{y}. The width distribution will clearly be exact when a set of
+fixed-width ranges is passed to \code{x}, whilst random sampling may yield some
 variability when matching ranges of variable width.
 
 When both x and y are GRanges objects, they are implcitly assumed to both
@@ -76,22 +76,22 @@ represent similar ranges, such as those overlapping a promoter or enhancer.
 When passing two GRangesList objects, both objects are expected to contain
 ranges annotated as belonging to key features, such that the list elements in
 y must encompass all elements in x.
-For example if `x` contains two elements named 'promoter' and 'intron', `y`
+For example if \code{x} contains two elements named 'promoter' and 'intron', \code{y}
 should also contain elements named 'promoter' and 'intron' and these will
-be sampled as matching ranges for the same element in `x`. If elements of
-`x` and `y` are not named, they are assumed to be in matching order.
+be sampled as matching ranges for the same element in \code{x}. If elements of
+\code{x} and \code{y} are not named, they are assumed to be in matching order.
 
 The default behaviour is to assume that randomly-generated ranges are for
 iteration, and as such, ranges are randomly formed in multiples of the number
-of 'test' ranges provided in `x`. The column `iteration` will be added to the
+of 'test' ranges provided in \code{x}. The column \code{iteration} will be added to the
 returned ranges.
-Placing any number into the `n_total` argument will instead select a total
-number of ranges as specified here. In this case, no `iteration` column will
+Placing any number into the \code{n_total} argument will instead select a total
+number of ranges as specified here. In this case, no \code{iteration} column will
 be included in the returned ranges.
 
 Sampling is assumed to be with replacement as this is most suitable for
 bootstrapping and related procedures, although this can be disabled by
-setting `replace = FALSE`
+setting \code{replace = FALSE}
 }
 \examples{
 ## Load the example peaks

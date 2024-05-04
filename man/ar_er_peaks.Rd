@@ -22,7 +22,7 @@ along with H3K27ac signal were taken from GSE123767.
 Peaks were resized to a uniform width of 400bp after downloading
 
 Generation of these ranges is documented in
-`system.file("scripts/ar_er_peaks.R", package = "motifTestR")`
+\code{system.file("scripts/ar_er_peaks.R", package = "motifTestR")}
 }
 \examples{
 data("ar_er_peaks")

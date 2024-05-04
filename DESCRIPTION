@@ -46,5 +46,6 @@ Suggests:
 biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
 LazyData: false
 RoxygenNote: 7.3.1
+Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
