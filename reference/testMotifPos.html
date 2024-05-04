@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
     <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A Position Weight Matrix, universalmotif object or list thereof.
 Alternatively can be a single DataFrame or list of DataFrames as returned
-by <a href="getPwmMatches.html">getPwmMatches</a> with `best_only = TRUE`</p></dd>
+by <a href="getPwmMatches.html">getPwmMatches</a> with <code>best_only = TRUE</code></p></dd>
 
 
 <dt id="arg-stringset">stringset<a class="anchor" aria-label="anchor" href="#arg-stringset"></a></dt>
@@ -130,10 +130,14 @@ by <a href="getPwmMatches.html">getPwmMatches</a> with `best_only = TRUE`</p></d
     <h2>Value</h2>
     
 
-<p>A data.frame with columns `start`, `end`, `centre`, `width`, `total_matches`,
-`matches_in_region`, `expected`, `enrichment`, `prop_total`, `p`
-and `consensus_motif`
-The total matches represent the total number of matches within the set of
+<p>A data.frame with columns <code>start</code>, <code>end</code>, <code>centre</code>, <code>width</code>, <code>total_matches</code>,
+<code>matches_in_region</code>, <code>expected</code>, <code>enrichment</code>, <code>prop_total</code>, <code>p</code></p>
+
+
+<p>and <code>consensus_motif</code></p>
+
+
+<p>The total matches represent the total number of matches within the set of
 sequences, whilst the number observed in the final region are also given,
 along with the proportion of the total this represents.
 Enrichment is simply the ratio of observed to expected based on the
@@ -153,19 +157,19 @@ Conversely, if there is positional bias, typically but not necessarily near
 the centre of a range, this function intends to detect this signal, as a
 rejection of the null hypothesis.</p>
 <p>Input can be provided as the output from <a href="getPwmMatches.html">getPwmMatches</a> setting
-`best_only = TRUE` if these matches have already been identified.
-If choosing to provide this object to the argument `matches`, nothing is required
-for the arguments `pwm`, `stringset`, `rc`, `min_score` or `break_ties`
-Otherwise, a Position Weight Matrix (PWM) and an `XStringSet` are required,
+<code>best_only = TRUE</code> if these matches have already been identified.
+If choosing to provide this object to the argument <code>matches</code>, nothing is required
+for the arguments <code>pwm</code>, <code>stringset</code>, <code>rc</code>, <code>min_score</code> or <code>break_ties</code>
+Otherwise, a Position Weight Matrix (PWM) and an <code>XStringSet</code> are required,
 along with the relevant arguments, with best matches identified within the
 function.</p>
 <p>The set of best matches are then grouped into bins along the range, with the
 central bin containing zero, and tallied.
-Setting `abs` to `TRUE` will set all positions from the centre as
-*absolute values*, returning counts purely as bins with distances from zero,
+Setting <code>abs</code> to <code>TRUE</code> will set all positions from the centre as
+<em>absolute values</em>, returning counts purely as bins with distances from zero,
 marking this as an inclusive lower bound.
 Motif alignments are assigned into bins based on the central position of the
-match, as provided in the column `from_centre` when calling
+match, as provided in the column <code>from_centre</code> when calling
 <a href="getPwmMatches.html">getPwmMatches</a>.</p>
 <p>The <a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test</a> is performed on each bin using the alternative
 hypothesis, with the returned p-values across all bins combined using the
@@ -175,7 +179,7 @@ values for start, end, centre, width, matches in region, expected and
 enrichment are across this set of bins.
 The expectation is that where a positional bias is evident, this will be a
 narrow range containing a non-trivial proportion of the total matches.</p>
-<p>It should also be noted that `binom.test()` can return p-values of zero, as
+<p>It should also be noted that <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code> can return p-values of zero, as
 beyond machine precision. In these instances, zero p-values are excluded from
 calculation of the HMP. This will give a very slight conservative bias, and
 assumes that for these extreme cases, neighbouring bins are highly likely to

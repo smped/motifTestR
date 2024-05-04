@@ -18,7 +18,7 @@ a background set requiring matching"><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -148,30 +148,30 @@ GRangesList</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function uses the width distribution of the 'test' ranges (i.e. `x`) to
+    <p>This function uses the width distribution of the 'test' ranges (i.e. <code>x</code>) to
 randomly sample a set of ranges with matching width from the ranges provided
-in `y`. The width distribution will clearly be exact when a set of
-fixed-width ranges is passed to `x`, whilst random sampling may yield some
+in <code>y</code>. The width distribution will clearly be exact when a set of
+fixed-width ranges is passed to <code>x</code>, whilst random sampling may yield some
 variability when matching ranges of variable width.</p>
 <p>When both x and y are GRanges objects, they are implcitly assumed to both
 represent similar ranges, such as those overlapping a promoter or enhancer.
 When passing two GRangesList objects, both objects are expected to contain
 ranges annotated as belonging to key features, such that the list elements in
 y must encompass all elements in x.
-For example if `x` contains two elements named 'promoter' and 'intron', `y`
+For example if <code>x</code> contains two elements named 'promoter' and 'intron', <code>y</code>
 should also contain elements named 'promoter' and 'intron' and these will
-be sampled as matching ranges for the same element in `x`. If elements of
-`x` and `y` are not named, they are assumed to be in matching order.</p>
+be sampled as matching ranges for the same element in <code>x</code>. If elements of
+<code>x</code> and <code>y</code> are not named, they are assumed to be in matching order.</p>
 <p>The default behaviour is to assume that randomly-generated ranges are for
 iteration, and as such, ranges are randomly formed in multiples of the number
-of 'test' ranges provided in `x`. The column `iteration` will be added to the
+of 'test' ranges provided in <code>x</code>. The column <code>iteration</code> will be added to the
 returned ranges.
-Placing any number into the `n_total` argument will instead select a total
-number of ranges as specified here. In this case, no `iteration` column will
+Placing any number into the <code>n_total</code> argument will instead select a total
+number of ranges as specified here. In this case, no <code>iteration</code> column will
 be included in the returned ranges.</p>
 <p>Sampling is assumed to be with replacement as this is most suitable for
 bootstrapping and related procedures, although this can be disabled by
-setting `replace = FALSE`</p>
+setting <code>replace = FALSE</code></p>
     </div>
 
     <div id="ref-examples">

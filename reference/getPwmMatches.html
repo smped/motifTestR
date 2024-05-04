@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -114,17 +114,18 @@ Ignored when all matches are returned (the default)</p></dd>
     <h2>Value</h2>
     
 
-<p>A DataFrame with columns: `seq`, `score`, `direction`, `start`,
-`end`, `fromCentre`, `seq_width`, and `match`</p>
+<p>A DataFrame with columns: <code>seq</code>, <code>score</code>, <code>direction</code>, <code>start</code>,
+<code>end</code>, <code>fromCentre</code>, <code>seq_width</code>, and <code>match</code></p>
+
 
 
 <p>The first three columns describe the sequence with matches, the score of
 the match and whether the match was found using the forward or reverse PWM.
-The columns `start`, `end` and `width` describe the where the match was found
-in the sequence, whilst `from_centre` defines the distance between the centre
+The columns <code>start</code>, <code>end</code> and <code>width</code> describe the where the match was found
+in the sequence, whilst <code>from_centre</code> defines the distance between the centre
 of the match and the centre of the sequence being queried.
 The final column contains the matching fragment of the sequence as an
-`XStringSet`.</p>
+<code>XStringSet</code>.</p>
 
 
 <p>When passing a list of PWMs, a list of the above DataFrames will be returned.</p>
@@ -135,10 +136,10 @@ The final column contains the matching fragment of the sequence as an
 supplied score (i.e. threshold) for a single Position Weight Matrix (PWM),
 generally representing a transcription factor binding motif.
 By default, matches are performed using the PWM as provided and the reverse
-complement, however this can easily be disable by setting `rc = FALSE`.</p>
+complement, however this can easily be disable by setting <code>rc = FALSE</code>.</p>
 <p>The function relies heavily on <a href="https://rdrr.io/pkg/Biostrings/man/matchPWM.html" class="external-link">matchPWM</a> and
 <a href="https://rdrr.io/pkg/IRanges/man/Views-class.html" class="external-link">Views</a> for speed.</p>
-<p>When choosing to return the best match (`best_only = TRUE`), only the match
+<p>When choosing to return the best match (<code>best_only = TRUE</code>), only the match
 with the highest score is returned for each sequence.
 Should there be tied scores, the best match can be chosen as either the first,
 last, most central, all tied matches, or choosing one at random (the default).</p>
