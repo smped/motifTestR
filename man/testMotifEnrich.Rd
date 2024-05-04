@@ -72,7 +72,7 @@ many millions of background sequences, this may run beyond an hour
 \subsection{Hypergeometric Tests}{
 
 Hypergeometric tests are best suited to the use case where the test set of
-sequences represents a subset or a larger set, with a specific feature or
+sequences represents a subset of a larger set, with a specific feature or
 behaviour, whilst the BG set may be the remainder of the set without that
 feature. For example, the test set may represent ChIP-Seq binding sites
 where signal changes in response to treatment, whilst the BG set represents
@@ -119,7 +119,7 @@ Setting the model as "iteration" performs a non-parametric analysis, with
 the exception of returning Z-scores under the Central Limit Theorem.
 Mean and SD of matches is found for each iteration, and used to return Z
 scores, with p-values returned from both a Z-test and from comparing
-observed values directly to sampled values obatained from the BG sequences.
+observed values directly to sampled values obtained from the BG sequences.
 Sampled values are calculated directly and as such, are limited in precision.
 
 As for the QuasiPoisson model, a very large number of iterations is expected
