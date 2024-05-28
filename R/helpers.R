@@ -24,7 +24,10 @@
 #' @importClassesFrom universalmotif universalmotif
 .cleanMotifList <- function(x) {
     if (all(vapply(x, is, logical(1), "universalmotif"))) {
-        nm <- vapply(x, slot, character(1), "altname") # Less duplication than name
+        nm <- unlist(lapply(x, slot, "altname")) # Less duplication than name
+        if (all(is.na(nm))) { # Handle the case where altname is empty (NA)
+            nm <- vapply(x, slot, character(1), "name")
+        }
         x <- lapply(x, slot, "motif")
         names(x) <- nm
     }
