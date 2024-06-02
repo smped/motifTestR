@@ -197,11 +197,11 @@ testMotifPos <- function(
             binom.test(x$matches_in_bin, n_matches, x$bin_prob, alt)$p.value
         }, numeric(1)
     )
-
-    ## Summarise the output selecting rows with p < hmp
-    ## Zeroes are possible so exclude them from the HMP, which will add a
-    ## small conservative bias
-    hmp <- p.hmp(df$p[df$p > 0], L = length(bins))
+    ## It is entirely possible for this to return p < Machine precision
+    ## This will cause the HMP to fail so setting to the lowest Machine
+    ## precision will be conservative, but a bit of a hack.
+    df$p[df$p < .Machine$double.xmin] <- .Machine$double.xmin
+    hmp <- p.hmp(df$p, L = length(bins))
     df <- subset(df, df$p < hmp | df$p == min(df$p))
     out <- data.frame(start = min(df$start), end = max(df$end))
     out$centre <- (out$start + out$end) / 2
