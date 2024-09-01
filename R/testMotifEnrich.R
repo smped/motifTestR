@@ -42,7 +42,8 @@
 #' This approach assumes that all matches follow a Poisson distribution, which
 #' is often true, but data can also be overdispersed. Given that this model can
 #' also return results relatively quickly, is it primarily suitable for data
-#' exploration, but not for final results.
+#' exploration, such as quickly checking for expected behaviours, but not for
+#' final results.
 #'
 #' ### Quasi-Poisson Test
 #'
@@ -51,7 +52,9 @@
 #' Under the method currently implemented here, BG sequences should be divided
 #' into blocks (i.e. iterations), identical in size to the test set of sequences.
 #' Model parameters are estimated per iteration across the BG set of sequences,
-#' with the rate of matches in the test being compared against these.
+#' with the rate of matches in the test set being compared against these blocks.
+#' This ensures more conservative results that if analysing test and bg
+#' sequences as collections of individual sequences.
 #'
 #' It is expected that the BG set will matched for the features of interest and
 #' chosen using \link{makeRMRanges} with a large number of iterations, e.g.

@@ -45,7 +45,7 @@ Suggests:
   testthat (>= 3.0.0)
 biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
 LazyData: false
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
