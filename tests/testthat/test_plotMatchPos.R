@@ -24,7 +24,8 @@ test_that("col plots work", {
 test_that("heatmaps work", {
     p <- plotMatchPos(bm, type = "heat")
     expect_true(is(p$layers[[1]]$geom, "GeomTile"))
-    expect_equal(p$labels, list(x = "bin", y = "name", fill = "p"))
+    labs <- vapply(p$scales$scales[1:2], \(x) x$name, character(1))
+    expect_equal(labs, c("Bin Centre", "Name"))
 })
 test_that("clusters work", {
     p <- plotMatchPos(bm, type = "heat", cluster = TRUE)
