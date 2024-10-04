@@ -114,7 +114,7 @@ plotMatchPos <- function(
     }
     if (type == "heatmap") {
         if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-        plot <- .createHeatmap(df, cluster, yval, w, heat_fill, ...)
+        plot <- .createHeatmap(df, cluster, yval, w, heat_fill, width = binwidth)
     }
 
     plot
@@ -131,7 +131,7 @@ plotMatchPos <- function(
     if (is.null(fill_scale)) fill_scale <- scale_fill_viridis_c()
     stopifnot(is(fill_scale, "ScaleContinuous"))
     stopifnot(w > 0 & w < 1)
-    ylab <- "name"
+    ylab <- "Name"
     ## Create the dendrogram if needed
     if (cluster) {
 
@@ -165,15 +165,12 @@ plotMatchPos <- function(
     # Always create the heatmap...
     df$name <- factor(df$name, levels = levels)
     plot <- ggplot(
-        df, aes(!!sym("bin"), !!sym("name"), fill = !!sym(yval))
+        df, aes(!!sym("bin_centre"), !!sym("name"), fill = !!sym(yval))
     ) +
         geom_tile(...) +
-        scale_x_discrete(expand = rep_len(0, 4)) +
+        scale_x_continuous(expand = rep_len(0, 4), name = "Bin Centre") +
         scale_y_discrete(expand = rep_len(0, 4), name = ylab) +
-        fill_scale +
-        theme(
-            axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
-        )
+        fill_scale
     if (!cluster) return(plot)
     dend_plot + plot + plot_layout(widths = c(w, 1 - w))
 
