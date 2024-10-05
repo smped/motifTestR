@@ -99,12 +99,14 @@ getPwmMatches <- function(
         ...
 ){
 
-    ## Checks & the map
+    ## Checks
     pwm <- .checkPWM(pwm)
     stopifnot(is(stringset, "XStringSet"))
-    map <- .viewMapFromXStringset(stringset)
+    ## Handle empty stringsets
+    if (!length(stringset)) return(.emptyPwmDF(nm_type))
 
     # Form the entire XStringSetList into a Views object
+    map <- .viewMapFromXStringset(stringset)
     views <- Views(
         unlist(stringset), start = map$start, width = map$width,
         names = map$names

@@ -113,3 +113,35 @@
     matches$bin <- cut(matches$from_centre, breaks = all_breaks, include.lowest = TRUE)
     matches
 }
+
+#' @importFrom IRanges Views
+#' @import Biostrings
+#' @keywords internal
+.hasPwmMatch <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...) {
+    ## Returns a logical vector the same length as the input stringset
+    ## Checks & the map
+    pwm <- .checkPWM(pwm)
+    stopifnot(is(stringset, "XStringSet"))
+
+    ## Handle empty stringsets
+    n <- length(stringset)
+    seq_with_hits <- NULL
+
+    if (n > 0) {
+        map <- .viewMapFromXStringset(stringset)
+        # Form the entire XStringSetList into a Views object
+        views <- Views(
+            unlist(stringset), start = map$start, width = map$width,
+            names = map$names
+        )
+        hits <- matchPWM(pwm, views, min.score = min_score, ...)
+        if (rc) {
+            rev_pwm <- reverseComplement(pwm)
+            hits_rev <- matchPWM(rev_pwm, views, min.score = min_score, ...)
+            hits <- c(hits, hits_rev)
+        }
+        seq_with_hits <- findInterval(start(hits), map$start)
+    }
+    seq_len(n) %in% seq_with_hits
+
+}
