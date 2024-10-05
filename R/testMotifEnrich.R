@@ -184,8 +184,9 @@ testMotifEnrich <- function(
 .testHyper <- function(pwm, stringset, bg, mc.cores, ...){
 
     ## Check there's no overlap between the two by removing shared sequences
-    ss <- setdiff(stringset, bg)
-    bg <- setdiff(bg, stringset)
+    cl <- class(stringset)
+    ss <- as(setdiff(stringset, bg), cl)
+    bg <- as(setdiff(bg, stringset), cl)
     if (length(ss) != length(stringset)) {
         msg <- paste(
             "Shared sequences found in the test and background set.",
@@ -197,17 +198,17 @@ testMotifEnrich <- function(
     n_ss <- length(ss)
     n_bg <- length(bg)
 
-    ## Find & count the sequences with a match in both sets
-    matches_ss <- getPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
-    n_matches_ss <- mclapply(
-        matches_ss, \(x) length(unique(x$seq)), mc.cores = mc.cores
+    ## Perhaps a better approach would be to simply return the count or seqs with
+    ## a match instead of going through all the rigmarole of forming a DataFrame
+    matches_ss <- mclapply(
+        pwm, .hasPwmMatch, stringset = ss, ..., mc.cores = mc.cores
     )
-    n_matches_ss <- unlist(n_matches_ss)
-    matches_bg <- getPwmMatches(pwm, bg, mc.cores = mc.cores, ...)
-    n_matches_bg <- mclapply(
-        matches_bg, \(x) length(unique(x$seq)), mc.cores = mc.cores
+    n_matches_ss <- vapply(matches_ss, sum, integer(1))
+    matches_bg <- mclapply(
+        pwm, .hasPwmMatch, stringset = bg, ..., mc.cores = mc.cores
     )
-    n_matches_bg <- unlist(n_matches_bg)
+    n_matches_bg <- vapply(matches_bg, sum, integer(1))
+
     or_denom <- (n_ss - n_matches_ss) / (n_bg - n_matches_bg)
     or <- (n_matches_ss / n_matches_bg) / or_denom
 
@@ -232,6 +233,7 @@ testMotifEnrich <- function(
     )
 
 }
+
 
 #' @importFrom parallel mclapply
 #' @importFrom stats glm quasipoisson
