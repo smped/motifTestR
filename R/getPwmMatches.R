@@ -73,7 +73,6 @@ getPwmMatches <- function(
     args <- args[names(args) != "mc.cores"]
     nm_type <- "integer"
     if (!is.null(names(stringset))) nm_type <- "character"
-    args$nm_type <- nm_type
     if (is.list(pwm)) {
         pwm <- .cleanMotifList(pwm)
         out <- mclapply(
@@ -82,6 +81,7 @@ getPwmMatches <- function(
             break_ties = break_ties, nm_type = nm_type, mc.cores = mc.cores
         )
     } else {
+        args$nm_type <- nm_type
         out <- do.call(".getSinglePwmMatches", args)
     }
     out

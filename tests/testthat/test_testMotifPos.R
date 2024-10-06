@@ -14,8 +14,8 @@ test_that("testMotifPos returns symmetrical peaks as expected",{
     expect_equal(
         res[,1:6],
         data.frame(
-            start = -155, end = 155, centre = 0, width = 310,
-            total_matches = 7, matches_in_region = 5
+            start = 35, end = 45, centre = 40, width = 10,
+            total_matches = 1, matches_in_region = 1
         )
     )
     expect_true(is(res$consensus_motif[[1]], "matrix"))
@@ -24,7 +24,7 @@ test_that("testMotifPos returns symmetrical peaks as expected",{
 
 test_that("setting abs = TRUE behaves as expected", {
     bins <- .makeBmBins(matches, binwidth = 10, abs = TRUE)
-    expect_equal(bins$weight, c(0.5, 0.5, rep_len(1, 5)))
+    expect_equal(bins$weight, 1)
     exp_bins <- c(
         "[0,10]", "(10,20]", "(20,30]", "(30,40]", "(40,50]", "(50,60]",
         "(60,70]", "(70,80]", "(80,90]", "(90,100]", "(100,110]", "(110,120]",
@@ -50,7 +50,7 @@ test_that("Passing to getPwmMatches works", {
 test_that("List input works", {
     res <- testMotifPos(ex_pwm, seq, sort_by = "none")
     expect_true(is(res, "data.frame"))
-    expect_equal(rownames(res), names(ex_pwm))
+    expect_equal(rownames(res), names(ex_pwm)[-4])
     expect_true(all(exp_cols %in% colnames(res)))
     expect_true("fdr" %in% colnames(res))
 })

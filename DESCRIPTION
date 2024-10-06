@@ -22,6 +22,7 @@ Depends:
   R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
+  graphics,
   harmonicmeanp,
   IRanges,
   matrixStats,

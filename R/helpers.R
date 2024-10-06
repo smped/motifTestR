@@ -1,13 +1,22 @@
 #' @importFrom methods slot is
 #' @importClassesFrom universalmotif universalmotif
+#' @importFrom universalmotif create_motif convert_type
 #' @keywords internal
-.checkPWM <- function(pwm){
-    if (is(pwm, "universalmotif")) pwm <- slot(pwm, "motif")
-    colsums <- round(colSums(pwm), 4) # Precision error
-    if (!all(colsums == 1))
-        stop("PWMs must be a matrix with columns that sum to 1")
-    stopifnot(all(rownames(pwm) == c("A", "C", "G", "T")))
-    pwm
+.checkPWM <- function(motif){
+    ## Convert any PPM/PCM matrices to PWM
+    ## May break a few things downstream
+    if (is.matrix(motif)) {
+        nsites <- 100
+        if (is.integer(motif)) nsites <- max(matrixStats::colSums2(motif))
+        motif <- create_motif(
+            motif, nsites = nsites, pseudocount = 1, type = "PPM"
+        )
+    }
+    stopifnot(is(motif, "universalmotif"))
+    if (slot(motif, "pseudocount") == 0)
+        warning("Zero pseudocounts may lead to a PWM with infinite values")
+    pwm <- convert_type(motif, "PWM")
+    slot(pwm, "motif")
 }
 
 #' @keywords internal
@@ -24,12 +33,25 @@
 #' @importClassesFrom universalmotif universalmotif
 .cleanMotifList <- function(x) {
     if (all(vapply(x, is, logical(1), "universalmotif"))) {
-        nm <- unlist(lapply(x, slot, "altname")) # Less duplication than name
-        if (all(is.na(nm))) { # Handle the case where altname is empty (NA)
-            nm <- vapply(x, slot, character(1), "name")
+        ## Add the name as the motif name, swicthing to altname where required
+        n <- length(x)
+        nm <- vapply(x, slot, character(1), "name")
+        if (length(unique(nm)) < n) {
+            message("Found non-unique values in the name slot. Trying altname")
+            nm <- unlist(lapply(x, slot, "altname"))
+            if (length(unique(nm)) < n) {
+                msg <- "Non-unique values in the altname slot. Please resolve"
+                stop(msg)
+            }
         }
         x <- lapply(x, slot, "motif")
         names(x) <- nm
+
+        # nm <- unlist(lapply(x, slot, "altname")) # Less duplication than name
+        # if (all(is.na(nm))) { # Handle the case where altname is empty (NA)
+        #     nm <- vapply(x, slot, character(1), "name")
+        # }
+        # names(x) <- nm
     }
     ## Now check everything is a matrix
     all_mat <- vapply(

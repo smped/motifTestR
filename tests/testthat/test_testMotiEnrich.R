@@ -16,9 +16,9 @@ test_that("Basic Poisson analysis works", {
 })
 
 test_that("Lists are tested", {
-    res <- testMotifEnrich(um_db, test_set, bg_set, model = "poisson")
+    res <- testMotifEnrich(um_db, test_set, bg_set, model = "poisson", sort_by = "none")
     expect_true(is(res, "data.frame"))
-    expect_equal(rownames(res), vapply(um_db, slot, character(1), "altname"))
+    expect_equal(rownames(res), vapply(um_db, slot, character(1), "name"))
 })
 
 test_that("Iteration works", {
