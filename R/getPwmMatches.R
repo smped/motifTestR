@@ -165,7 +165,7 @@ getPwmMatches <- function(
 
 #' @importFrom S4Vectors splitAsList
 #' @keywords internal
-.getBestMatch <- function(df, ties){
+.getBestMatch <- function(df, ties, score_col = "score"){
 
     if (nrow(df) == 0) return(df)
 
@@ -177,11 +177,11 @@ getPwmMatches <- function(
 
     ## Pick the best match using the values we have
     if (ties != "all") {
-        o <- order(df$seq, -df$score, pos)
+        o <- order(df$seq, -df[[score_col]], pos)
         df <- df[o,]
         df <- df[!duplicated(df$seq), ]
     } else {
-        split_scores <- split(df$score, cumsum(!duplicated(df$seq)))
+        split_scores <- split(df[[score_col]], cumsum(!duplicated(df$seq)))
         keep <- as.logical(unlist(lapply(split_scores, \(x) x == max(x))))
         df <- df[keep,]
     }
