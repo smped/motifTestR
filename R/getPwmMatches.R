@@ -8,7 +8,7 @@
 #' supplied score (i.e. threshold) for a single Position Weight Matrix (PWM),
 #' generally representing a transcription factor binding motif.
 #' By default, matches are performed using the PWM as provided and the reverse
-#' complement, however this can easily be disable by setting `rc = FALSE`.
+#' complement, however this can easily be disabled by setting `rc = FALSE`.
 #'
 #' The function relies heavily on \link[Biostrings]{matchPWM} and
 #' \link[IRanges]{Views} for speed.
@@ -29,7 +29,7 @@
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
 #' @return A DataFrame with columns: `seq`, `score`, `direction`, `start`,
-#' `end`, `fromCentre`, `seq_width`, and `match`
+#' `end`, `from_centre`, `seq_width`, and `match`
 #'
 #' The first three columns describe the sequence with matches, the score of
 #' the match and whether the match was found using the forward or reverse PWM.

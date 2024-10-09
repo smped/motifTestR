@@ -2,6 +2,7 @@
 
 export(clusterMotifs)
 export(countPwmMatches)
+export(getClusterMatches)
 export(getPwmMatches)
 export(makeRMRanges)
 export(plotMatchPos)
