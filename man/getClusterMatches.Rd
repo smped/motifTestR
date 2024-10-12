@@ -2,6 +2,7 @@
 % Please edit documentation in R/getClusterMatches.R
 \name{getClusterMatches}
 \alias{getClusterMatches}
+\alias{countClusterMatches}
 \title{Find matches from a PWM cluster within an XStringSet}
 \usage{
 getClusterMatches(
@@ -11,6 +12,15 @@ getClusterMatches(
   min_score = "80\%",
   best_only = FALSE,
   break_ties = c("all", "random", "first", "last", "central"),
+  mc.cores = 1,
+  ...
+)
+
+countClusterMatches(
+  cl,
+  stringset,
+  rc = TRUE,
+  min_score = "80\%",
   mc.cores = 1,
   ...
 )
@@ -35,8 +45,9 @@ Ignored when all matches are returned (the default)}
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }
 \value{
-A list of DataFrames with columns: \code{seq}, \code{score}, \code{direction},
-\code{start}, \code{end}, \code{from_centre}, \code{seq_width}, \code{motif} and \code{match}
+Output from getClusterMatches will be a list of DataFrames with columns:
+\code{seq}, \code{score}, \code{direction}, \code{start}, \code{end}, \code{from_centre}, \code{seq_width},
+\code{motif} and \code{match}
 
 The first three columns describe the sequence with matches, the score of
 the match and whether the match was found using the forward or reverse PWM.
@@ -48,6 +59,9 @@ position, again noting that when matches overlap, only the one with the
 highest relative score is returned.
 The final column contains the matching fragment of the sequence as an
 \code{XStringSet}.
+
+Output from countClusterMatches will be a simple integer vector the same
+length as the number of clusters
 }
 \description{
 Find matches from a PWM cluster within a set of sequences

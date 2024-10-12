@@ -111,12 +111,12 @@ getPwmMatches <- function(
         unlist(stringset), start = map$start, width = map$width,
         names = map$names
     )
-    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE, ...)
+    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE)
     mcols(hits)$direction <- rep_len("F", length(hits))
     if (rc) {
         rev_pwm <- reverseComplement(pwm)
         hits_rev <- matchPWM(
-            rev_pwm, views, min.score = min_score, with.score = TRUE, ...
+            rev_pwm, views, min.score = min_score, with.score = TRUE
         )
         mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
         hits <- c(hits, hits_rev)

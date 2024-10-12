@@ -38,8 +38,10 @@
 #' @param mc.cores Passed to \link[parallel]{mclapply} if passing multiple PWMs
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
-#' @return A list of DataFrames with columns: `seq`, `score`, `direction`,
-#' `start`, `end`, `from_centre`, `seq_width`, `motif` and `match`
+#' @return
+#' Output from getClusterMatches will be a list of DataFrames with columns:
+#' `seq`, `score`, `direction`, `start`, `end`, `from_centre`, `seq_width`,
+#' `motif` and `match`
 #'
 #' The first three columns describe the sequence with matches, the score of
 #' the match and whether the match was found using the forward or reverse PWM.
@@ -52,11 +54,14 @@
 #' The final column contains the matching fragment of the sequence as an
 #' `XStringSet`.
 #'
+#' Output from countClusterMatches will be a simple integer vector the same
+#' length as the number of clusters
 #'
 #' @importFrom parallel mclapply
-#' @importFrom methods slot
+#' @importFrom methods slot is
 #' @importClassesFrom universalmotif universalmotif
 #' @export
+#' @rdname getClusterMatches
 getClusterMatches <- function(
         cl, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
         break_ties = c("all", "random", "first", "last", "central"),
@@ -69,29 +74,30 @@ getClusterMatches <- function(
     args <- args[names(args) != "mc.cores"]
     nm_type <- "integer"
     if (!is.null(names(stringset))) nm_type <- "character"
+    if (!length(cl)) return(list())
     out <- NULL
     if (
         all(vapply(cl, is, logical(1), "list")) |
         all(vapply(cl, is, logical(1), "universalmotif"))
     ) {
+        nm <- names(cl)
+        out <- vector("list", length(cl))
+        names(out) <- nm
         ret_cols <- c(
             "seq", "score", "direction", "start", "end", "from_centre",
             "seq_width", "motif", "match"
         )
         cl <- lapply(cl, .cleanMotifList)
-        nm <- names(cl)
-        if (is.null(nm)) nm <- seq_along(cl)
         single_pwm <- vapply(cl, length, integer(1)) == 1
-        out <- vector("list", length(cl))
         out[single_pwm] <- mclapply(
             cl[single_pwm],
             \(x) {
                 DF <- .getSinglePwmMatches(
                     x[[1]], stringset = stringset, rc = rc,
                     min_score = min_score, best_only = best_only,
-                    break_ties = break_ties, nm_type = nm_type,
+                    break_ties = break_ties, nm_type = nm_type
                 )
-                DF$motif <- names(x)
+                DF$motif <- rep_len(names(x), nrow(DF))
                 DF[ret_cols]
             },  mc.cores = mc.cores
         )
@@ -110,7 +116,51 @@ getClusterMatches <- function(
     out
 
 }
+#' @importFrom methods is
+#' @export
+#' @rdname getClusterMatches
+countClusterMatches <- function(
+        cl, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
+) {
 
+    stopifnot(is.list(cl))
+    args <- c(as.list(environment()), list(...))
+    args <- args[names(args) != "mc.cores"]
+    args$counts_only <- TRUE
+    out <- NULL
+    if (!length(cl)) return(out)
+    if (
+        all(vapply(cl, is, logical(1), "list")) |
+        all(vapply(cl, is, logical(1), "universalmotif"))
+    ) {
+        cl <- lapply(cl, .cleanMotifList)
+        nm <- names(cl)
+        single_pwm <- vapply(cl, length, integer(1)) == 1
+        out <- vector("list", length(cl))
+        names(out) <- nm
+        out[single_pwm] <- mclapply(
+            cl[single_pwm],
+            \(x) {
+                .countSinglePwmMatches(x[[1]], stringset, rc, min_score)
+            },  mc.cores = mc.cores
+        )
+        out[!single_pwm] <- mclapply(
+            cl[!single_pwm],
+            .getClusterPwmMatches, stringset = stringset, rc = rc,
+            min_score = min_score, counts_only = TRUE, mc.cores = mc.cores
+        )
+        out <- unlist(out)
+
+    }
+    if (all(vapply(cl, is, logical(1), "matrix"))) {
+        ## This is essentially for a single cluster
+        out <- do.call(".getClusterPwmMatches", args)
+    }
+
+    if (is.null(out)) message("Could not determine clusters")
+    out
+
+}
 
 
 #' @import Biostrings
@@ -118,8 +168,8 @@ getClusterMatches <- function(
 #' @importFrom S4Vectors mcols<- queryHits subjectHits
 #' @keywords internal
 .getClusterPwmMatches <- function(
-        cl, stringset, rc, min_score, best_only = FALSE, break_ties, nm_type,
-        counts_only = FALSE, ...
+        cl, stringset, rc, min_score, best_only = FALSE, break_ties,
+        nm_type = "integer", counts_only = FALSE, ...
 ){
 
     ## Checks
@@ -128,7 +178,11 @@ getClusterMatches <- function(
     ## Handle empty stringsets
     empty_df <- .emptyPwmDF(nm_type)
     empty_df$motif <- character()
-    if (!length(stringset)) return(empty_df)
+    cols <- c(
+        "seq", "score", "direction", "start", "end", "from_centre",
+        "seq_width", "motif", "match"
+    )
+    if (!length(stringset)) return(empty_df[cols])
 
     # Form the entire XStringSetList into a Views object & find all hits
     map <- .viewMapFromXStringset(stringset)
@@ -181,10 +235,6 @@ getClusterMatches <- function(
     w <- width(final_hits)
 
     ## Form the output
-    cols <- c(
-        "seq", "score", "direction", "start", "end", "from_centre",
-        "seq_width", "motif", "match"
-    )
     out <- mcols(final_hits)
     out$direction <- factor(out$direction, levels = c("F", "R"))
     out$seq <- hits_to_map
