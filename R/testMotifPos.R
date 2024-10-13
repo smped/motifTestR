@@ -119,9 +119,6 @@ testMotifPos <- function(
     } else {
         ## Now for a list of matches
         .checkMatches(x) ## Will fail if not valid
-        ## Also check for sequences of the same width
-        same_width <- vapply(x, \(x) length(unique(x$seq_width)) <= 1, logical(1))
-        stopifnot(all(same_width))
         matches <- x
     }
     if (missing(matches)) stop("Provided input is not in a recognised format")

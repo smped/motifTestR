@@ -1,6 +1,6 @@
 Package: motifTestR
 Title: Perform key tests for binding motifs in sequence data
-Version: 1.1.4
+Version: 1.1.5
 Authors@R: person("Stevie", "Pederson", 
   email = "stephen.pederson.au@gmail.com", 
   role = c("aut", "cre"),
@@ -22,6 +22,7 @@ Depends:
   R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
+  graphics,
   harmonicmeanp,
   IRanges,
   matrixStats,

@@ -63,7 +63,7 @@ countPwmMatches <- function(
         unlist(stringset), start = map$start, width = map$width,
         names = map$names
     )
-    n_matches <- countPWM(pwm, views, ...)
+    n_matches <- countPWM(pwm, views, min.score = min_score, ...)
     if (rc)
         n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
 

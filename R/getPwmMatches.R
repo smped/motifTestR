@@ -8,7 +8,7 @@
 #' supplied score (i.e. threshold) for a single Position Weight Matrix (PWM),
 #' generally representing a transcription factor binding motif.
 #' By default, matches are performed using the PWM as provided and the reverse
-#' complement, however this can easily be disable by setting `rc = FALSE`.
+#' complement, however this can easily be disabled by setting `rc = FALSE`.
 #'
 #' The function relies heavily on \link[Biostrings]{matchPWM} and
 #' \link[IRanges]{Views} for speed.
@@ -29,7 +29,7 @@
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
 #' @return A DataFrame with columns: `seq`, `score`, `direction`, `start`,
-#' `end`, `fromCentre`, `seq_width`, and `match`
+#' `end`, `from_centre`, `seq_width`, and `match`
 #'
 #' The first three columns describe the sequence with matches, the score of
 #' the match and whether the match was found using the forward or reverse PWM.
@@ -73,7 +73,6 @@ getPwmMatches <- function(
     args <- args[names(args) != "mc.cores"]
     nm_type <- "integer"
     if (!is.null(names(stringset))) nm_type <- "character"
-    args$nm_type <- nm_type
     if (is.list(pwm)) {
         pwm <- .cleanMotifList(pwm)
         out <- mclapply(
@@ -82,6 +81,7 @@ getPwmMatches <- function(
             break_ties = break_ties, nm_type = nm_type, mc.cores = mc.cores
         )
     } else {
+        args$nm_type <- nm_type
         out <- do.call(".getSinglePwmMatches", args)
     }
     out
@@ -111,12 +111,12 @@ getPwmMatches <- function(
         unlist(stringset), start = map$start, width = map$width,
         names = map$names
     )
-    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE, ...)
+    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE)
     mcols(hits)$direction <- rep_len("F", length(hits))
     if (rc) {
         rev_pwm <- reverseComplement(pwm)
         hits_rev <- matchPWM(
-            rev_pwm, views, min.score = min_score, with.score = TRUE, ...
+            rev_pwm, views, min.score = min_score, with.score = TRUE
         )
         mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
         hits <- c(hits, hits_rev)
@@ -165,7 +165,7 @@ getPwmMatches <- function(
 
 #' @importFrom S4Vectors splitAsList
 #' @keywords internal
-.getBestMatch <- function(df, ties){
+.getBestMatch <- function(df, ties, score_col = "score"){
 
     if (nrow(df) == 0) return(df)
 
@@ -177,11 +177,11 @@ getPwmMatches <- function(
 
     ## Pick the best match using the values we have
     if (ties != "all") {
-        o <- order(df$seq, -df$score, pos)
+        o <- order(df$seq, -df[[score_col]], pos)
         df <- df[o,]
         df <- df[!duplicated(df$seq), ]
     } else {
-        split_scores <- split(df$score, cumsum(!duplicated(df$seq)))
+        split_scores <- split(df[[score_col]], cumsum(!duplicated(df$seq)))
         keep <- as.logical(unlist(lapply(split_scores, \(x) x == max(x))))
         df <- df[keep,]
     }

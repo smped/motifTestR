@@ -1,6 +1,6 @@
 test_that("countPwmMatches behaves as expected",{
-    expect_true(countPwmMatches(esr1, stringset) == 7)
-    expect_true(countPwmMatches(esr1, stringset, rc = FALSE) == 5)
+    expect_true(countPwmMatches(esr1, stringset) == 1)
+    expect_true(countPwmMatches(esr1, stringset, rc = FALSE) == 0)
 })
 
 test_that("countPwmMatches accepts a list", {

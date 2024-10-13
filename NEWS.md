@@ -5,3 +5,7 @@
 # motifTestR 0.99.0
 
 * Submitted to Bioconductor
+
+# motifTestR 1.1.5
+
+* Added clusterMotifs, testClusterPos and testClusterEnrich
