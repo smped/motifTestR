@@ -1,7 +1,3 @@
-set.seed(305)
-data("hg19_mask")
-bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], exclude = hg19_mask, n_iter = 10)
-
 ## Convert ranges to DNAStringSets
 test_set <- ar_er_seq
 bg_set <- getSeq(genome, bg_ranges)

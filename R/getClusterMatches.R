@@ -211,7 +211,7 @@ countClusterMatches <- function(
     ## Combine Hits
     ir <- lapply(c(hits, hits_rev), slot, "ranges")
     all_hits <- unlist(IRangesList(ir))
-    if (length(all_hits) == 0) return(empty_df)
+    if (length(all_hits) == 0 & !counts_only) return(empty_df)
 
     ## Add mcols if we have hits
     mcols(all_hits) <- unlist(DataFrameList(lapply(c(hits, hits_rev), mcols)))

@@ -181,7 +181,9 @@ testMotifEnrich <- function(
 
 #' @importFrom parallel mclapply
 #' @importFrom stats phyper
-.testHyper <- function(pwm, stringset, bg, mc.cores, ...){
+.testHyper <- function(
+        x, stringset, bg, mc.cores, type = c("pwm", "cluster"), ...
+){
 
     ## Check there's no overlap between the two by removing shared sequences
     cl <- class(stringset)
@@ -198,15 +200,25 @@ testMotifEnrich <- function(
     n_ss <- length(ss)
     n_bg <- length(bg)
 
-    ## Perhaps a better approach would be to simply return the count or seqs with
-    ## a match instead of going through all the rigmarole of forming a DataFrame
-    matches_ss <- mclapply(
-        pwm, .hasPwmMatch, stringset = ss, ..., mc.cores = mc.cores
-    )
+    type <- match.arg(type)
+
+    if (type == "pwm") {
+        matches_ss <- mclapply(
+            x, .hasPwmMatch, stringset = ss, ..., mc.cores = mc.cores
+        )
+        matches_bg <- mclapply(
+            x, .hasPwmMatch, stringset = bg, ..., mc.cores = mc.cores
+        )
+    }
+    if (type == "cluster") {
+        matches_ss <- mclapply(
+            x, .hasClusterMatch, stringset = ss, ..., mc.cores = mc.cores
+        )
+        matches_bg <- mclapply(
+            x, .hasClusterMatch, stringset = bg, ..., mc.cores = mc.cores
+        )
+    }
     n_matches_ss <- vapply(matches_ss, sum, integer(1))
-    matches_bg <- mclapply(
-        pwm, .hasPwmMatch, stringset = bg, ..., mc.cores = mc.cores
-    )
     n_matches_bg <- vapply(matches_bg, sum, integer(1))
 
     or_denom <- (n_ss - n_matches_ss) / (n_bg - n_matches_bg)
@@ -214,7 +226,7 @@ testMotifEnrich <- function(
 
     ## Perform a 1-sided hypergeometric test
     p_vals <- mclapply(
-        seq_along(pwm),
+        seq_along(x),
         \(i) {
             q <- n_matches_ss[[i]]
             k <- q + n_matches_bg[[i]]
@@ -239,7 +251,9 @@ testMotifEnrich <- function(
 #' @importFrom stats glm quasipoisson
 #' @importFrom matrixStats colSds
 #' @keywords internal
-.testQuasi <- function(pwm, stringset, bg, var, mc.cores, ...) {
+.testQuasi <- function(
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), ...
+) {
 
     n <- length(stringset)
     stopifnot(var %in% colnames(mcols(bg)))
@@ -247,11 +261,21 @@ testMotifEnrich <- function(
     if (!all(vapply(splitbg, length, integer(1)) == n))
         stop("All iterations must be the same size as the test sequences")
 
-    matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
-    bg_matches <- mclapply(
-        splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
-        mc.cores = mc.cores
-    )
+    type <- match.arg(type)
+    if (type == "pwm") {
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
+    if (type == "cluster") {
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
     bg_mat <- do.call("rbind", bg_matches)
     n_iter <- nrow(bg_mat)
     stopifnot(n_iter > 1)
@@ -260,7 +284,7 @@ testMotifEnrich <- function(
     Z <- (matches - mean_bg) / sd_bg
 
     p <- vapply(
-        seq_along(pwm),
+        seq_along(x),
         \(i) {
             df <- data.frame(
                 x = c(matches[[i]], bg_mat[,i]),
@@ -281,19 +305,30 @@ testMotifEnrich <- function(
 #' @importFrom stats pchisq
 #' @importFrom matrixStats colSds
 #' @keywords internal
-.testIter <- function(pwm, stringset, bg, var, mc.cores, ...) {
+.testIter <- function(
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), ...
+) {
 
     stopifnot(var %in% colnames(mcols(bg)))
     n <- length(stringset)
-    matches <- countPwmMatches(pwm, stringset, mc.cores = mc.cores, ...)
     splitbg <- split(bg, mcols(bg)[[var]])
     if (!all(vapply(splitbg, length, integer(1)) == n))
         stop("All iterations must be the same size as the test sequences")
-
-    bg_matches <- mclapply(
-        splitbg, \(x) countPwmMatches(pwm, x, mc.cores = 1, ...),
-        mc.cores = mc.cores
-    )
+    type <- match.arg(type)
+    if (type == "pwm") {
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
+    if (type == "cluster") {
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
     bg_mat <- do.call("rbind", bg_matches)
     mean_bg <- colMeans(bg_mat)
     sd_bg <- colSds(bg_mat)
@@ -316,16 +351,25 @@ testMotifEnrich <- function(
 
 #' @importFrom stats poisson.test
 #' @keywords internal
-.testPois <- function(pwm, test_seq, bg_seq, mc.cores, ...){
+.testPois <- function(
+        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), ...
+){
 
     n_seq <- length(test_seq)
-    matches <- countPwmMatches(pwm, test_seq, mc.cores = mc.cores, ...)
-    n_bg <- countPwmMatches(pwm, bg_seq, mc.cores = mc.cores, ...)
+    type <- match.arg(type)
+    if (type == "pwm") {
+        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...)
+        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...)
+    }
+    if (type == "cluster") {
+        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...)
+        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...)
+    }
     est_bg_rate <- n_bg / length(bg_seq)
     expected <- est_bg_rate * n_seq
     ## Running vapply seems faster than mclappy here
     p <- vapply(
-        seq_along(pwm),
+        seq_along(x),
         \(i) poisson.test(matches[i], n_seq, est_bg_rate[i])$p.value,
         numeric(1)
     )

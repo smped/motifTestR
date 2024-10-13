@@ -27,6 +27,10 @@ data("ar_er_seq")
 sq <- seqinfo(ar_er_peaks)
 seq <- ar_er_seq
 
+set.seed(305)
+data("hg19_mask")
+bg_ranges <- makeRMRanges(ar_er_peaks, GRanges(sq)[1], exclude = hg19_mask, n_iter = 10)
+
 um_db <- c(
     universalmotif::create_motif(
         structure(
