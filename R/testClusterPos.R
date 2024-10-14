@@ -81,9 +81,10 @@ testClusterPos <- function(
 
     if (is(x, "DataFrame")) x <- list(x)
     is_DF <- vapply(x, is, logical(1), "DataFrame")
+    matches <- NULL
     if (all(is_DF)) {
         ## If we have a list of best matches
-        check <- lapply(x, .checkMatches)
+        check <- .checkMatches(x)
         matches <- x
     } else {
         ## Otherwise, obtain the list of best match DFs
@@ -96,6 +97,7 @@ testClusterPos <- function(
             cl, stringset, rc, min_score, TRUE, break_ties, mc.cores, ...
         )
     }
+    if (is.null(matches)) stop("Couldn't determine structure of input")
 
     out <- mclapply(
         matches, .testSingleClusterPos, binwidth = binwidth, abs = abs, rc = rc,
