@@ -18,7 +18,7 @@ derive a NULL hypothesis"><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">motifTestR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.5</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@ derive a NULL hypothesis"><!-- mathjax --><script src="https://cdnjs.cloudflare.
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Test motif enrichment using a background set of sequences</h1>
-    <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/gh-actions/R/testMotifEnrich.R" class="external-link"><code>R/testMotifEnrich.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/HEAD/R/testMotifEnrich.R" class="external-link"><code>R/testMotifEnrich.R</code></a></small>
     <div class="hidden name"><code>testMotifEnrich.Rd</code></div>
     </div>
 
@@ -241,14 +241,6 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert ranges to DNAStringSets</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BSgenome</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocIO</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: rtracklayer</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘rtracklayer’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:BiocIO’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     FileForFormat</span>
 <span class="r-in"><span><span class="va">genome</span> <span class="op">&lt;-</span> <span class="va">BSgenome.Hsapiens.UCSC.hg19</span></span></span>
 <span class="r-in"><span><span class="va">bg_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">genome</span>, <span class="va">bg_ranges</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -257,24 +249,24 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 <span class="r-in"><span><span class="va">esr1</span> <span class="op">&lt;-</span> <span class="va">ex_pwm</span><span class="op">$</span><span class="va">ESR1</span></span></span>
 <span class="r-in"><span><span class="fu">testMotifEnrich</span><span class="op">(</span><span class="va">esr1</span>, <span class="va">ar_er_seq</span>, <span class="va">bg_seq</span>, model <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sequences matches expected enrichment        Z            p          fdr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       229      62     12.3    5.04065 14.17111 6.735011e-24 6.735011e-24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   est_bg_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.05371179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       229       6      0.1         60 18.65744 1.274899e-09 1.274899e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    est_bg_rate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.0004366812</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Test all motifs</span></span></span>
 <span class="r-in"><span><span class="fu">testMotifEnrich</span><span class="op">(</span><span class="va">ex_pwm</span>, <span class="va">ar_er_seq</span>, <span class="va">bg_seq</span>, model <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       sequences matches expected enrichment          Z            p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1       229     334    178.4  1.8721973 11.6496310 2.693669e-25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1        229      62     12.3  5.0406504 14.1711088 6.735011e-24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281       229      63     48.9  1.2883436  2.0163443 5.287479e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143       229       1      0.6  1.6666667  0.5163978 4.511884e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR        229      61     64.9  0.9399076 -0.4841080 7.092503e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                fdr est_bg_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1 1.346835e-24 0.779039301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1  1.683753e-23 0.053711790</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281 8.812465e-02 0.213537118</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143 5.639855e-01 0.002620087</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR  7.092503e-01 0.283406114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1       229      42      6.5   6.461538 13.9242456 1.748383e-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1        229       6      0.1  60.000000 18.6574382 1.274899e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281       229       3      1.8   1.666667  0.8944272 2.693789e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR        229       1      0.5   2.000000  0.7071068 3.934693e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143       229       0      0.0        NaN        NaN 1.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                fdr  est_bg_rate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1 8.741915e-20 0.0283842795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1  3.187247e-09 0.0004366812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281 4.489649e-01 0.0078602620</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR  4.918367e-01 0.0021834061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143 1.000000e+00 0.0000000000</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -291,7 +283,7 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
