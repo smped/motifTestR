@@ -74,13 +74,15 @@
     msg <- paste(reqdCols, collapse = ",")
 
     if (is(matches, "DataFrame")) {
-        wd <- unique(matches$seq_width)
-        stopifnot(length(wd) == 1) # Enforce a fixed width
         stopifnot(all(reqdCols %in% colnames(matches)))
         types <- vapply(matches, \(x) is(x)[[1]], character(1))
         stopifnot(
             identical(types[names(colTypes)], colTypes)
         )
+        if (nrow(matches)) {
+            wd <- unique(matches$seq_width)
+            stopifnot(length(wd) == 1) # Enforce a fixed width
+        }
     } else {
         stopifnot(is(matches, "list") & !is(matches, "data.frame"))
         hasCols <- vapply(

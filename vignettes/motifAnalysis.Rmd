@@ -334,7 +334,49 @@ ex_pwm[topMotifs] |>
   plotOverlaps(type = "upset", min_size = 5)
 ```
 
-# Working Larger Datasets
+# Working with Clustered Motifs
+
+TFBMs often contain a high level of similarity to other TFBMs, especially those within large but closely related families, such as the GATA or STAT families.
+It can be difficult to ascertain which member of a family is truly bound to a site from inspecting the sequence data alone.
+`motifTestR` offers a simple strategy for reducing the level of redundancy within a set of results by grouping highly similar motifs into a *cluster* and testing for enrichment, or position bias for any TFBM within that cluster.
+The methodology enabled within `motifTestR` allows for the use of any of the methods provided in the package `r Biocpkg("universalmotif)`.
+
+Whilst the example set of TFBMs is slightly artificial motifs can still be grouped into clusters.
+If using a larger database of TFBMs a lower threshold may be more appropriate, however for this dataset, three clusters are able to be formed. 
+There is no ideal method to group PWMs into clusters and manual inspection of any clusters produced is currently the best strategy for this process.
+Names are not strictly required for downstream analysis, but can help with interpretability
+
+```{r ex-cl}
+cl <- clusterMotifs(ex_pwm, thresh = 0.5, plot = TRUE, labels = NULL)
+ex_cl <- split(ex_pwm, cl)
+names(ex_cl) <- vapply(split(names(cl), cl), paste, character(1), collapse = "/")
+```
+
+These clusters can now be tested for positional bias using `testClusterPos()`.
+Matches are the unique sites with a match to *any* PWM within the cluster, and overlapping sites from matches to multiple PWMs are counted as a single match.
+A list of *best matches* can be produced in an analogous way to for individual PWMs, using `getClusterMatches()` instead of `getPwmMatches()`
+
+```{r cl-matches}
+cl_matches <- getClusterMatches(ex_cl, test_seq, best_only = TRUE)
+cl_matches
+```
+
+These can then be passed to `testClusterPos()`, which works in a very similar manner to `testMotifPos()`
+
+```{r test-cluster-pos}
+testClusterPos(cl_matches, test_seq)
+```
+
+All methods implemented for testing enrichment against a set of background sequences can also be used for clusters of motifs
+
+```{r test-cluster-enrich}
+testClusterEnrich(
+  ex_cl, test_seq, rm_seq, model = "quasi", mc.cores = cores
+)
+```
+
+
+# Working With Larger Datasets
 
 Vignettes are commonly prepared for compiling with limited resources and as such example datasets and analyses may reveal less information than realistically sized data.
 Motif analysis is particularly well-known for taking many minutes when working with large datasets.
