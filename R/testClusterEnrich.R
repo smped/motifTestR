@@ -50,8 +50,8 @@
 #' bg_seq <- getSeq(genome, bg_ranges)
 #'
 #' ## Test for enrichment of clustered motifs
-#' data("ex_pwm")
-#' cl <- list(A = ex_pwm[1], B = ex_pwm[2:3])
+#' data("ex_pfm")
+#' cl <- list(A = ex_pfm[1], B = ex_pfm[2:3])
 #' testClusterEnrich(cl, ar_er_seq, bg_seq, model = "poisson")
 #'
 #'

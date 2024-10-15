@@ -56,15 +56,15 @@ a cluster, rather than returning individual results
 }
 \examples{
 # Load the example motifs
-data("ex_pwm")
+data("ex_pfm")
 
 # Return a vector with each motif assigned a cluster
 # The default uses Pearson's Correlation Coefficient
-clusterMotifs(ex_pwm)
+clusterMotifs(ex_pfm)
 
 # Preview the settings noting that showing labels can clutter the plot
 # with large numbers of motifs. The defaults for Euclidean distance
 # show the threshold may need raising
-clusterMotifs(ex_pwm, plot = TRUE, labels = NULL, method = "EUCL")
+clusterMotifs(ex_pfm, plot = TRUE, labels = NULL, method = "EUCL")
 
 }

@@ -4,7 +4,7 @@ test_that("countPwmMatches behaves as expected",{
 })
 
 test_that("countPwmMatches accepts a list", {
-    n <- countPwmMatches(ex_pwm, stringset)
+    n <- countPwmMatches(ex_pfm, stringset)
     expect_true(length(n) == 5)
-    expect_equal(names(n), names(ex_pwm))
+    expect_equal(names(n), names(ex_pfm))
 })

@@ -60,8 +60,8 @@ the returned plot object will be a patchwork object.
 }
 \examples{
 ## Load the example PWM
-data("ex_pwm")
-esr1 <- ex_pwm$ESR1
+data("ex_pfm")
+esr1 <- ex_pfm$ESR1
 
 ## Load the example sequences from the peaks
 data("ar_er_seq")

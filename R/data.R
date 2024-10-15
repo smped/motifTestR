@@ -1,22 +1,22 @@
-#' @title Example Position Weight Matrices
+#' @title Example Position Frequency Matrices
 #'
-#' @description Example Position Weight Matrices
+#' @description Example Position Frequency Matrices
 #'
 #' @details
-#' This object contains 5 PWMs taken from HOCOMOCOv11-coreA for examples and testing
+#' This object contains 5 PFMs taken from HOCOMOCOv11-coreA for examples and testing
 #'
 #' Generation of this motif list is documented in
-#' `system.file("scripts/ex_pwm.R", package = "motifTestR")`
+#' `system.file("scripts/ex_pfm.R", package = "motifTestR")`
 #'
-#' @usage data("ex_pwm")
+#' @usage data("ex_pfm")
 #'
 #' @examples
-#' data("ex_pwm")
-#' ex_pwm$ESR1
+#' data("ex_pfm")
+#' ex_pfm$ESR1
 #'
-#' @name ex_pwm
-#' @rdname ex_pwm
-"ex_pwm"
+#' @name ex_pfm
+#' @rdname ex_pfm
+"ex_pfm"
 
 #' @title A set of peaks with AR and ER detected
 #'
@@ -24,8 +24,8 @@
 #' A set of ChIP-Seq peaks where AR and ER were both detected
 #'
 #' @details
-#' The subset of peaks found on chr1, and which contained signal from AR and ER,
-#' along with H3K27ac signal were taken from GSE123767.
+#' The subset of peaks found on chr1, and which contained signal from at least
+#' two of AR ER or H3K27ac, and taken from GSE123767.
 #' Peaks were resized to a uniform width of 400bp after downloading
 #'
 #' Generation of these ranges is documented in

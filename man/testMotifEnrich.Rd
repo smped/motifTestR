@@ -155,12 +155,12 @@ genome <- BSgenome.Hsapiens.UCSC.hg19
 bg_seq <- getSeq(genome, bg_ranges)
 
 ## Test for enrichment of the ESR1 motif
-data("ex_pwm")
-esr1 <- ex_pwm$ESR1
+data("ex_pfm")
+esr1 <- ex_pfm$ESR1
 testMotifEnrich(esr1, ar_er_seq, bg_seq, model = "poisson")
 
 ## Test all motifs
-testMotifEnrich(ex_pwm, ar_er_seq, bg_seq, model = "poisson")
+testMotifEnrich(ex_pfm, ar_er_seq, bg_seq, model = "poisson")
 
 
 }

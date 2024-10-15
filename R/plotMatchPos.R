@@ -33,8 +33,8 @@
 #'
 #' @examples
 #' ## Load the example PWM
-#' data("ex_pwm")
-#' esr1 <- ex_pwm$ESR1
+#' data("ex_pfm")
+#' esr1 <- ex_pfm$ESR1
 #'
 #' ## Load the example sequences from the peaks
 #' data("ar_er_seq")
@@ -114,7 +114,9 @@ plotMatchPos <- function(
     }
     if (type == "heatmap") {
         if (is.null(name)) stop("Heatmaps not inplemented for a single PWM")
-        plot <- .createHeatmap(df, cluster, yval, w, heat_fill, width = binwidth)
+        plot <- .createHeatmap(
+            df, cluster, yval, w, heat_fill, width = binwidth, abs = abs
+        )
     }
 
     plot
@@ -125,13 +127,14 @@ plotMatchPos <- function(
 #' @importFrom patchwork plot_layout
 #' @importFrom rlang !! sym
 #' @keywords internal
-.createHeatmap <- function(df, cluster, yval, w, fill_scale, ...) {
+.createHeatmap <- function(df, cluster, yval, w, fill_scale, abs, ...) {
 
     levels <- unique(df$name)
     if (is.null(fill_scale)) fill_scale <- scale_fill_viridis_c()
     stopifnot(is(fill_scale, "ScaleContinuous"))
     stopifnot(w > 0 & w < 1)
-    ylab <- "Name"
+    xlab <- "bin_centre"
+    if (abs) xlab <- "bin_start"
     ## Create the dendrogram if needed
     if (cluster) {
 
@@ -168,8 +171,8 @@ plotMatchPos <- function(
         df, aes(!!sym("bin_centre"), !!sym("name"), fill = !!sym(yval))
     ) +
         geom_tile(...) +
-        scale_x_continuous(expand = rep_len(0, 4), name = "Bin Centre") +
-        scale_y_discrete(expand = rep_len(0, 4), name = ylab) +
+        scale_x_continuous(expand = rep_len(0, 4), name = xlab) +
+        scale_y_discrete(expand = rep_len(0, 4)) +
         fill_scale
     if (!cluster) return(plot)
     dend_plot + plot + plot_layout(widths = c(w, 1 - w))

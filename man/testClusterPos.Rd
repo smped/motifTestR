@@ -75,12 +75,12 @@ for the larger analysis.
 }
 \examples{
 ## Load the example PWM
-data("ex_pwm")
+data("ex_pfm")
 ## Load the example sequences
 data("ar_er_seq")
 
 ## Cluster the motifs
-cl <- list(A = ex_pwm[1], B = ex_pwm[2:3])
+cl <- list(A = ex_pfm[1], B = ex_pfm[2:3])
 
 ## Get the best match and use this data
 matches <- getClusterMatches(cl, ar_er_seq, best_only = TRUE)

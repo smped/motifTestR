@@ -1,4 +1,4 @@
-cl <- list(A = ex_pwm[1], B = ex_pwm[2:3], C = ex_pwm[4:5])
+cl <- list(A = ex_pfm[1], B = ex_pfm[2:3], C = ex_pfm[4:5])
 
 test_that("countClusterMatches returnes expexted values", {
     counts <- countClusterMatches(cl, ar_er_seq)
@@ -6,7 +6,7 @@ test_that("countClusterMatches returnes expexted values", {
     expect_equal(names(counts), c("A", "B", "C"))
     expect_null(countClusterMatches(cl[0], ar_er_seq))
 
-    counts <- countClusterMatches(ex_pwm, ar_er_seq)
+    counts <- countClusterMatches(ex_pfm, ar_er_seq)
     expect_equal(length(counts), 1L)
 
     expect_message(
@@ -23,7 +23,7 @@ test_that("getClusterMatches returns expected values", {
     expect_equal(names(res), c("A", "B", "C"))
     expect_equal(getClusterMatches(cl[0], ar_er_seq), list())
 
-    res <- getClusterMatches(ex_pwm, ar_er_seq)
+    res <- getClusterMatches(ex_pfm, ar_er_seq)
     expect_true(is(res, "DataFrame"))
     nm <- c(
         "seq", "score", "direction", "start", "end", "from_centre",
@@ -42,7 +42,7 @@ test_that("getClusterMatches returns expected values", {
         "Could not determine clusters"
     )
 
-    empty <- getClusterMatches(ex_pwm, ar_er_seq[0])
+    empty <- getClusterMatches(ex_pfm, ar_er_seq[0])
     expect_equal(colnames(empty), nm)
     expect_equal(nrow(empty), 0)
 

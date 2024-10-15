@@ -1,4 +1,4 @@
-bm <- getPwmMatches(ex_pwm[1:2], seq, best_only = TRUE, break_ties = "all")
+bm <- getPwmMatches(ex_pfm[1:2], seq, best_only = TRUE, break_ties = "all")
 
 test_that("Defaults work", {
     p <- plotMatchPos(bm, se = FALSE)
