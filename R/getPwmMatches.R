@@ -89,7 +89,7 @@ getPwmMatches <- function(
 }
 
 #' @import Biostrings
-#' @importFrom IRanges Views
+#' @importFrom IRanges Views IRanges
 #' @importFrom S4Vectors DataFrame mcols mcols<-
 #' @importFrom methods as is
 #' @importFrom stats setNames
@@ -120,6 +120,7 @@ getPwmMatches <- function(
         )
         mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
         hits <- c(hits, hits_rev)
+        hits <- hits[!duplicated(IRanges(hits))] # Remove strict palindromic hits
     }
 
     ## Setup the return object as empty for any cases without matches

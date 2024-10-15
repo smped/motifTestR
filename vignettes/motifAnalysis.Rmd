@@ -296,6 +296,7 @@ Each approach has unique advantages and weaknesses as summarised below:
     + Modelling is performed based on the expected number of matches *per sequence*
     + The fastest approach
     + Anti-conservative p-values where counts are over-dispersed
+    + Appropriate for quick & dirty checks
 - *QuasiPoisson*
     + Modelling is performed per *set of sequences* (of identical size to the test set)
     + Requires BG Sequences to be in 'iterative' blocks

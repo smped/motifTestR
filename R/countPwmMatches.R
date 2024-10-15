@@ -65,7 +65,10 @@ countPwmMatches <- function(
     )
     n_matches <- countPWM(pwm, views, min.score = min_score, ...)
     if (rc)
-        n_matches <- c(n_matches, countPWM(reverseComplement(pwm), views, ...))
+        n_matches <- c(
+            n_matches,
+            countPWM(reverseComplement(pwm), views, min.score = min_score, ...)
+        )
 
     as.integer(sum(n_matches))
 }
