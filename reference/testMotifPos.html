@@ -21,7 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/motifAnalysis.html">Basic Motif Analysis</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/smped/motifTestR"><span class="fa fa-github fa-lg"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/smped/motifTestR" aria-label="View on github"><span class="fa fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -171,17 +171,25 @@ also return extremely low p-values and no significance will be lost.</p>
 <span class="r-in"><span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="getPwmMatches.html">getPwmMatches</a></span><span class="op">(</span><span class="va">esr1</span>, <span class="va">ar_er_seq</span>, best_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Test for enrichment in any position</span></span></span>
 <span class="r-in"><span><span class="fu">testMotifPos</span><span class="op">(</span><span class="va">matches</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   start end centre width total_matches matches_in_region expected enrichment prop_total         p       fdr consensus_motif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -195 135    -30   330            22                22  9.03876   2.433962          1 0.8370445 0.8370445    15, 0, 7....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   start end centre width total_matches matches_in_region expected enrichment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -195 135    -30   330            22                22  9.03876   2.433962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   prop_total         p       fdr consensus_motif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          1 0.8370445 0.8370445    15, 0, 7....</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Provide a list of PWMs, testing for distance from zero</span></span></span>
 <span class="r-in"><span><span class="fu">testMotifPos</span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">ar_er_seq</span>, abs <span class="op">=</span> <span class="cn">TRUE</span>, binwidth <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       start end centre width total_matches matches_in_region expected enrichment prop_total           p        fdr consensus_motif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1    10  20     15    10           107                16 5.487179   2.915888  0.1495327 0.002314982 0.01157491    0, 0, 0,....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143    20  40     30    20            15                 8 1.578947   5.066667  0.5333333 0.086140631 0.21535158    3, 1, 6,....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1      0 140     70   140            22                16 7.979275   2.005195  0.7272727 0.657021567 0.94718429    15, 0, 7....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR     10 140     75   130             8                 8 2.916667   2.742857  1.0000000 0.900392478 0.94718429    0, 0, 0,....</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281    10 180     95   170            13                11 6.062176   1.814530  0.8461538 0.947184286 0.94718429    2, 1, 9,....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       start end centre width total_matches matches_in_region expected</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1    10  20     15    10           107                16 5.487179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143    20  40     30    20            15                 8 1.578947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1      0 140     70   140            22                16 7.979275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR     10 140     75   130             8                 8 2.916667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281    10 180     95   170            13                11 6.062176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       enrichment prop_total           p        fdr consensus_motif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FOXA1   2.915888  0.1495327 0.002314982 0.01157491    0, 0, 0,....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN143   5.066667  0.5333333 0.086140631 0.21535158    3, 1, 6,....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ESR1    2.005195  0.7272727 0.657021567 0.94718429    15, 0, 7....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ANDR    2.742857  1.0000000 0.900392478 0.94718429    0, 0, 0,....</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ZN281   1.814530  0.8461538 0.947184286 0.94718429    2, 1, 9,....</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
