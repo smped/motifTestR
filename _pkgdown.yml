@@ -1,6 +1,6 @@
 template:
-  params:
-    bootswatch: simplex
+  bootstrap: 5
+  bootswatch: simplex
 
 authors:
   Stevie Pederson:
