@@ -5,7 +5,7 @@
 \alias{ar_er_seq}
 \title{Sequences from peaks with AR and ER detected}
 \format{
-An object of class \code{DNAStringSet} of length 229.
+An object of class \code{DNAStringSet} of length 849.
 }
 \usage{
 data("ar_er_seq")

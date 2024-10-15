@@ -48,9 +48,9 @@ test_that("Passing to getPwmMatches works", {
 })
 
 test_that("List input works", {
-    res <- testMotifPos(ex_pwm, seq, sort_by = "none")
+    res <- testMotifPos(ex_pfm, seq, sort_by = "none")
     expect_true(is(res, "data.frame"))
-    expect_equal(rownames(res), names(ex_pwm)[-4])
+    expect_equal(rownames(res), names(ex_pfm))
     expect_true(all(exp_cols %in% colnames(res)))
     expect_true("fdr" %in% colnames(res))
 })
@@ -62,12 +62,12 @@ test_that("testMotifPos errors correctly", {
     expect_equal(colnames(empty), exp_cols)
     expect_error(testMotifPos(esr1, stringset, binwidth = 500))
     expect_error(testMotifPos(""))
-    expect_error(testMotifPos(c(list(""), ex_pwm)))
+    expect_error(testMotifPos(c(list(""), ex_pfm)))
 })
 
 test_that("Same width sequences are enforced", {
     matches$seq_width[1] <- 100
     expect_error(testMotifPos(matches))
     mixed_width <- c(stringset, as(stringset[[1]][1:200], "DNAStringSet"))
-    expect_error(testMotifPos(ex_pwm, mixed_width))
+    expect_error(testMotifPos(ex_pfm, mixed_width))
 })

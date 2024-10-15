@@ -67,8 +67,8 @@ last, most central, all tied matches, or choosing one at random (the default).
 }
 \examples{
 ## Load the example PWM
-data("ex_pwm")
-esr1 <- ex_pwm$ESR1
+data("ex_pfm")
+esr1 <- ex_pfm$ESR1
 
 ## Load the example Peaks
 data("ar_er_seq")
@@ -80,6 +80,6 @@ getPwmMatches(esr1, ar_er_seq)
 getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 
 ## Apply multiple PWMs as a list
-getPwmMatches(ex_pwm, ar_er_seq, best_only = TRUE)
+getPwmMatches(ex_pfm, ar_er_seq, best_only = TRUE)
 
 }

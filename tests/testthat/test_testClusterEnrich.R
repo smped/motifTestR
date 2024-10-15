@@ -3,7 +3,7 @@ test_set <- ar_er_seq
 bg_set <- getSeq(genome, bg_ranges)
 mcols(bg_set) <- mcols(bg_ranges)
 
-cl <- list(A = ex_pwm[1], B = ex_pwm[2:3], C = ex_pwm[4:5])
+cl <- list(A = ex_pfm[1], B = ex_pfm[2:3], C = ex_pfm[4:5])
 
 test_that("Basic Poisson analysis works", {
     res <- testClusterEnrich(cl, test_set, bg_set, model = "poisson")
@@ -50,6 +50,6 @@ test_that("clusterMotifPos also works as expected", {
     expect_true(all(res$start >= 0))
 
     expect_equal(nrow(testClusterPos(matches[[1]])), 1L)
-    expect_error(testClusterPos(ex_pwm, ar_er_seq), "All clusters should.+")
+    expect_error(testClusterPos(ex_pfm, ar_er_seq), "All clusters should.+")
     expect_error(testClusterPos(cl[1], ar_er_seq), "All clusters cannot.+")
 })

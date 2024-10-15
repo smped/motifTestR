@@ -43,8 +43,8 @@
 #'
 #' @examples
 #' ## Load the example PWM
-#' data("ex_pwm")
-#' esr1 <- ex_pwm$ESR1
+#' data("ex_pfm")
+#' esr1 <- ex_pfm$ESR1
 #'
 #' ## Load the example Peaks
 #' data("ar_er_seq")
@@ -56,7 +56,7 @@
 #' getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 #'
 #' ## Apply multiple PWMs as a list
-#' getPwmMatches(ex_pwm, ar_er_seq, best_only = TRUE)
+#' getPwmMatches(ex_pfm, ar_er_seq, best_only = TRUE)
 #'
 #' @importFrom parallel mclapply
 #' @importFrom methods slot
@@ -89,7 +89,7 @@ getPwmMatches <- function(
 }
 
 #' @import Biostrings
-#' @importFrom IRanges Views
+#' @importFrom IRanges Views IRanges
 #' @importFrom S4Vectors DataFrame mcols mcols<-
 #' @importFrom methods as is
 #' @importFrom stats setNames
@@ -120,6 +120,7 @@ getPwmMatches <- function(
         )
         mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
         hits <- c(hits, hits_rev)
+        hits <- hits[!duplicated(IRanges(hits))] # Remove strict palindromic hits
     }
 
     ## Setup the return object as empty for any cases without matches

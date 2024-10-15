@@ -5,7 +5,7 @@
 \alias{ar_er_peaks}
 \title{A set of peaks with AR and ER detected}
 \format{
-An object of class \code{GRanges} of length 229.
+An object of class \code{GRanges} of length 849.
 }
 \source{
 \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123767}
@@ -17,8 +17,8 @@ data("ar_er_peaks")
 A set of ChIP-Seq peaks where AR and ER were both detected
 }
 \details{
-The subset of peaks found on chr1, and which contained signal from AR and ER,
-along with H3K27ac signal were taken from GSE123767.
+The subset of peaks found on chr1, and which contained signal from at least
+two of AR ER or H3K27ac, and taken from GSE123767.
 Peaks were resized to a uniform width of 400bp after downloading
 
 Generation of these ranges is documented in

@@ -102,8 +102,8 @@ also return extremely low p-values and no significance will be lost.
 }
 \examples{
 ## Load the example PWM
-data("ex_pwm")
-esr1 <- ex_pwm$ESR1
+data("ex_pfm")
+esr1 <- ex_pfm$ESR1
 
 ## Load the example sequences
 data("ar_er_seq")
@@ -114,7 +114,7 @@ matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 testMotifPos(matches)
 
 ## Provide a list of PWMs, testing for distance from zero
-testMotifPos(ex_pwm, ar_er_seq, abs = TRUE, binwidth = 10)
+testMotifPos(ex_pfm, ar_er_seq, abs = TRUE, binwidth = 10)
 
 
 }

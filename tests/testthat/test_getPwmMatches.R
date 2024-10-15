@@ -21,22 +21,22 @@ test_that("No matches are returned correctly", {
 
 test_that("Choosing only the best matches works", {
     ## Test the default first
-    stringset <- ar_er_seq[17]
+    stringset <- ar_er_seq[2]
     best <- getPwmMatches(esr1, stringset, best_only = TRUE)
     expect_true(nrow(best) == 1)
-    expect_true(best$start == 148)
+    expect_true(best$start == 99)
     ## Now modify & check other options in the private function
     all <- getPwmMatches(esr1, stringset)
-    all$score <- 5
-    expect_true(.getBestMatch(all, "first")$start == 148)
-    expect_true(.getBestMatch(all, "central")$start == 221)
-    expect_true(.getBestMatch(all, "last")$start == 371)
+    all$score <- 5 # Bodge up a tie
+    expect_true(.getBestMatch(all, "first")$start == 99)
+    expect_true(.getBestMatch(all, "central")$start == 186)
+    expect_true(.getBestMatch(all, "last")$start == 186)
     expect_equal(nrow(.getBestMatch(all, "all")), nrow(all))
 
 })
 
 test_that("Passing a list also produces a list",{
-    multi <- getPwmMatches(ex_pwm[1:2], stringset)
+    multi <- getPwmMatches(ex_pfm[1:2], stringset)
     expect_true(is(multi, "list"))
     expect_true(length(multi) == 2)
     expect_true(all(vapply(multi, is, logical(1), "DataFrame")))

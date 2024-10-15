@@ -60,6 +60,7 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 library(parallel)
 library(ggplot2)
 library(patchwork)
+library(universalmotif)
 theme_set(theme_bw())
 cores <- 1
 ```
@@ -67,7 +68,7 @@ cores <- 1
 
 ## Defining a Set of Peaks
 
-```{r, echo = FALSE}
+```{r load-ar-er-peaks, echo = FALSE}
 data("ar_er_peaks")
 ```
 
@@ -97,12 +98,13 @@ names(test_seq) <- as.character(ar_er_peaks)
 
 ## Obtaining a List of PWMs for Testing
 
-A small list of PWMs, obtained from `r Biocpkg("MotifDb")` are provided with the package and these will be suitable for all downstream analysis.
+A small list of Position Frequency Matrices (PFMs), obtained from `r Biocpkg("MotifDb")` are provided with the package and these will be suitable for all downstream analysis.
+All functions will convert PFMs to PWMs internally.
 
 ```{r ex-pwm}
-data("ex_pwm")
-names(ex_pwm)
-ex_pwm$ESR1
+data("ex_pfm")
+names(ex_pfm)
+ex_pfm$ESR1
 ```
 
 Again, a larger set of motifs may be obtained using or modifying the example code at the end of the vignette
@@ -116,7 +118,8 @@ Matches are returned showing their position within the sequence, as well as the 
 Whilst there is no strict requirement for sequences of the same width, generally this is good practice for this type of analysis.
 
 ```{r match-esr1}
-getPwmMatches(ex_pwm$ESR1, test_seq)
+score_thresh <- "70%"
+getPwmMatches(ex_pfm$ESR1, test_seq, min_score = score_thresh)
 ```
 
 Many sequences will contain multiple matches, and we can subset our results to only the 'best match' by setting `best_only = TRUE`.
@@ -125,7 +128,7 @@ If multiple matches return identical scores, all tied matches are returned by de
 This can be further controlled by setting `break_ties` to any of c("random", "first", "last", "central"), which will choose randomly, by sequence order or proximity to centre.
 
 ```{r best-match-esr1}
-getPwmMatches(ex_pwm$ESR1, test_seq, best_only = TRUE)
+getPwmMatches(ex_pfm$ESR1, test_seq, min_score = score_thresh, best_only = TRUE)
 ```
 
 We can return all matches for a complete list of PWMs, as a list of DataFrame objects.
@@ -133,7 +136,7 @@ This strategy allows for visualisation of results as well as testing for positio
 
 ```{r bm-all}
 bm_all <- getPwmMatches(
-  ex_pwm, test_seq, best_only = TRUE, break_ties = "all",
+  ex_pfm, test_seq, min_score = score_thresh, best_only = TRUE, break_ties = "all",
   mc.cores = cores
 )
 ```
@@ -142,7 +145,7 @@ This same strategy of passing a single, or multiple PWMs can be applied even whe
 Counting may be useful for restricting downstream analysis to the set of motifs with more than a given number of matches.
 
 ```{r count-pwm-matches}
-countPwmMatches(ex_pwm, test_seq, mc.cores = cores)
+countPwmMatches(ex_pfm, test_seq, min_score = score_thresh, mc.cores = cores)
 ```
 
 
@@ -150,8 +153,8 @@ countPwmMatches(ex_pwm, test_seq, mc.cores = cores)
 
 ## Testing for Positional Bias
 
-A common tool within MEME-Suite is `centrimo` [@Bailey2012-qz] and `motifTestR` provides a simple, easily interpretable alternative using `testMotifPos()`.
-This function bins the distances from the centre of each sequence and, if no positional bias is expected (i.e. H~0~), matches should be equally distributed between bins.
+A commonly used tool within the MEME-Suite is `centrimo` [@Bailey2012-qz] and `motifTestR` provides a simple, easily interpretable alternative approach using `testMotifPos()`.
+This function bins the distances from the centre of each sequence with the central bin being symmetrical around zero, and if no positional bias is expected (i.e. H~0~), matches should be equally distributed between bins.
 Unlike `centrimo`, *no assumption of centrality* is made and any notable deviations from a discrete uniform distribution may be considered as significant.
 
 A test within each bin is performed using `binom.test()` and a single, summarised p-value across all bins is returned using the asymptotically exact harmonic mean p-value (HMP) [@Wilson2019-ln].
@@ -166,8 +169,9 @@ head(res_pos)
 
 The bins returned by the function represent the widest range of bins where the raw p-values were below the HMP.
 Wide ranges tend to be associated with lower significance for a specific PWM.
+This is a further point of divergence from `centrimo` in that results are dependent on the pre-determined bin-size and the region of enrichment is formed using p-values.
 
-Due to the two-stranded nature of DNA, the distance from zero cn also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
+Due to the two-stranded nature of DNA, the distance from zero can also be assessed by setting `abs = TRUE` and in this case the first bin begins at zero.
 
 ```{r test-motif-pos-abs}
 res_abs <- testMotifPos(bm_all, abs = TRUE, mc.cores = cores) 
@@ -181,10 +185,14 @@ This approach is particularly helpful for detecting co-located transcription fac
 The complete set of matches returned as a list above can be simply passed to `ggplot2` for visualisation, in order to asses whether any PWM appears to have a positional bias.
 By default, smoothed values across all motifs will be overlaid (Figure 1A), however, tailoring using ggplot is simple to produce a wide variety of outputs (Figure 1B)
 
-```{r plot-pos, fig.cap = "Distribution of motif matches around the centres of the set of peaks"}
-topMotifs <- rownames(res_pos)[1:4]
+```{r plot-pos, fig.cap = "Distribution of motif matches around the centres of the set of peaks", fig.alt="Two panel plot with the left panel showing the probability distribution of motif matches for ESR1, ANDR and FOXA1 within the set of test sequences as coloured lines. The right panel shows the counts within each 10bp bin around the centre of the sequences with a loess curve overlaid"}
+topMotifs <- res_pos |>
+    subset(fdr < 0.05) |>
+    rownames()
 A <- plotMatchPos(bm_all[topMotifs], binwidth = 10, se = FALSE)
-B <- plotMatchPos(bm_all[topMotifs], binwidth = 10, geom = "col") +
+B <- plotMatchPos(
+    bm_all[topMotifs], binwidth = 10, geom = "col", use_totals = TRUE
+) +
   geom_smooth(se = FALSE, show.legend = FALSE) +
   facet_wrap(~name)
 A + B + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom")
@@ -196,8 +204,10 @@ The latter makes it easy to see that 50% of ESR1 matches occur within a short di
 Changing the binwidth argument can either smooth data or increase the fine resolution.
 
 
-```{r plot-abs-pos, fig.cap = "Distribution of motif matches shown as a distance from the centre of each sequence"}
-topMotifs <- rownames(res_abs)[1:4]
+```{r plot-abs-pos, fig.cap = "Distribution of motif matches shown as a distance from the centre of each sequence", fig.alt="Two panel plot with the left panel showing the distances from the sequence centres of the best matches for FOXA1, ANDR and ESR1. The right panel shows the CDF of these matches as a line plot"}
+topMotifs <- res_abs |>
+    subset(fdr < 0.05) |>
+    rownames()
 A <- plotMatchPos(bm_all[topMotifs], abs = TRUE, type = "heatmap") +
   scale_fill_viridis_c()
 B <- plotMatchPos(
@@ -286,6 +296,7 @@ Each approach has unique advantages and weaknesses as summarised below:
     + Modelling is performed based on the expected number of matches *per sequence*
     + The fastest approach
     + Anti-conservative p-values where counts are over-dispersed
+    + Appropriate for quick & dirty checks
 - *QuasiPoisson*
     + Modelling is performed per *set of sequences* (of identical size to the test set)
     + Requires BG Sequences to be in 'iterative' blocks
@@ -307,18 +318,18 @@ If choosing an iterative approach and using the iteration-derived p-values, sett
 
 ```{r enrich-res}
 enrich_res <- testMotifEnrich(
-  ex_pwm, test_seq, rm_seq, model = "quasi", mc.cores = cores
+  ex_pfm, test_seq, rm_seq, min_score = score_thresh, model = "quasi", mc.cores = cores
 )
 head(enrich_res)
 ```
 
 Setting the model to "iteration" instead uses a classical iterative approach to define the null distributions of counts and Z-scores are calculated from these values.
-The returned p-values from this test are taken from the Z-scores directly, with p-values derived from the sampled iterations also returned if preferred by the researcher.
+The returned p-values from this test are taken from the Z-scores directly, with p-values derived from the sampled iterations also returned if preferred for use in results by the researcher.
 Whilst requiring greater computational effort, fewer statistical assumptions are made and results may be more conservative than under modelling approaches.
 
 ```{r iter-res}
 iter_res <- testMotifEnrich(
-  ex_pwm, test_seq, rm_seq, mc.cores = cores, model = "iteration"
+  ex_pfm, test_seq, rm_seq, min_score = score_thresh, mc.cores = cores, model = "iteration"
 )
 head(iter_res)
 ```
@@ -326,52 +337,68 @@ head(iter_res)
 Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`.
 In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs.
 
-```{r plot-overlaps, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence."}
-topMotifs <- rownames(enrich_res)[1:4]
-ex_pwm[topMotifs] |>
-  getPwmMatches(test_seq, mc.cores = cores) |>
+```{r plot-overlaps, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence.", fig.alt = "UpSet plot showing the sequences which match one or more of the PWMs in the example dataset."}
+ex_pfm |>
+  getPwmMatches(test_seq, min_score = score_thresh, mc.cores = cores) |>
   lapply(\(x) x$seq) |>
-  plotOverlaps(type = "upset", min_size = 5)
+  plotOverlaps(type = "upset")
 ```
 
 # Working with Clustered Motifs
 
 TFBMs often contain a high level of similarity to other TFBMs, especially those within large but closely related families, such as the GATA or STAT families.
 It can be difficult to ascertain which member of a family is truly bound to a site from inspecting the sequence data alone.
+
+As a simple example, when looking at the above UpSet plot, about half of the sequences where a match to the ANDR motif was found also contain a FOXA1 motif.
+Does this mean that both are bound to the sequence, or have the same sequences simply been matched to both PWMs?
+As we can see there is quite some similarity in the core regions of the two binding motifs
+
+```{r compare-andr-foxa1, fig.cap = "Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions.", fig.alt="Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions."}
+c("ANDR", "FOXA1") |>
+    lapply(
+        \(x) create_motif(ex_pfm[[x]], name = x, type = "PPM")
+    ) |>
+    view_motifs()
+```
+
+
 `motifTestR` offers a simple strategy for reducing the level of redundancy within a set of results by grouping highly similar motifs into a *cluster* and testing for enrichment, or position bias for any TFBM within that cluster.
-The methodology enabled within `motifTestR` allows for the use of any of the methods provided in the package `r Biocpkg("universalmotif")`.
+The methodology enabled within `motifTestR` allows for the use of any of the methods provided in the package `r Biocpkg("universalmotif")` [@Tremblay2024.
 
 Whilst the example set of TFBMs is slightly artificial motifs can still be grouped into clusters.
-If using a larger database of TFBMs a lower threshold may be more appropriate, however for this dataset, three clusters are able to be formed. 
+If using a larger database of TFBMs a lower threshold may be more appropriate, however for this dataset, four clusters are able to be formed. 
 There is no ideal method to group PWMs into clusters and manual inspection of any clusters produced is currently the best strategy for this process.
 Names are not strictly required for downstream analysis, but can help with interpretability
 
-```{r ex-cl}
-cl <- clusterMotifs(ex_pwm, thresh = 0.5, plot = TRUE, labels = NULL)
-ex_cl <- split(ex_pwm, cl)
+```{r ex-cl, fig.cap = "Plot produced when requested by clusterMotifs showing the relationship between motifs. The red horizontal line indicates the threshold below which motifs are grouped together into a cluster. Clustering is performed using hclust on the distance matrices produced by `universalmotif::compare_motifs()`", fig.alt = "Dendrogram showing clusters formed by `clusterMotifs()` with default settings."}
+cl <- clusterMotifs(ex_pfm, plot = TRUE, labels = NULL)
+ex_cl <- split(ex_pfm, cl)
 names(ex_cl) <- vapply(split(names(cl), cl), paste, character(1), collapse = "/")
 ```
 
 These clusters can now be tested for positional bias using `testClusterPos()`.
 Matches are the unique sites with a match to *any* PWM within the cluster, and overlapping sites from matches to multiple PWMs are counted as a single match.
-A list of *best matches* can be produced in an analogous way to for individual PWMs, using `getClusterMatches()` instead of `getPwmMatches()`
+A list of *best matches* can be produced in an analogous way to for individual PWMs, using `getClusterMatches()` instead of `getPwmMatches()`.
+When overlapping matches are found, the one with the highest relative score (score / maxScore) is chosen given that raw scores for each PWM will be on different scales.
 
 ```{r cl-matches}
-cl_matches <- getClusterMatches(ex_cl, test_seq, best_only = TRUE)
+cl_matches <- getClusterMatches(
+    ex_cl, test_seq, min_score = score_thresh, best_only = TRUE
+)
 cl_matches
 ```
 
 These can then be passed to `testClusterPos()`, which works in a very similar manner to `testMotifPos()`
 
 ```{r test-cluster-pos}
-testClusterPos(cl_matches, test_seq)
+testClusterPos(cl_matches, test_seq, abs = TRUE)
 ```
 
 All methods implemented for testing enrichment against a set of background sequences can also be used for clusters of motifs
 
 ```{r test-cluster-enrich}
 testClusterEnrich(
-  ex_cl, test_seq, rm_seq, model = "quasi", mc.cores = cores
+  ex_cl, test_seq, rm_seq, min_score = score_thresh, model = "quasi", mc.cores = cores
 )
 ```
 
@@ -416,11 +443,11 @@ Alternatively, query fields can be customised as preferred.
 ```r
 ## Not run
 library(MotifDb)
-ex_pwm <- MotifDb |>
+ex_pfm <- MotifDb |>
   subset(organism == "Hsapiens") |>
   query("HOCOMOCOv11-core-A") |>
   as.list() 
-names(ex_pwm) <- gsub(".+HOCOMOCOv11-core-A-(.+)_.+", "\\1", names(ex_pwm))
+names(ex_pfm) <- gsub(".+HOCOMOCOv11-core-A-(.+)_.+", "\\1", names(ex_pfm))
 ```
 
 Similarly, a set of candidate enhancers found on all chromosomes can be obtained here.
