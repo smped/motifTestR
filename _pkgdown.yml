@@ -2,6 +2,8 @@ template:
   bootstrap: 5
   bootswatch: simplex
 
+url: https://smped.github.io/motifTestR/
+
 authors:
   Stevie Pederson:
     href: https://github.com/smped
