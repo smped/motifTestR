@@ -19,7 +19,7 @@ reference:
 - title: Data Objects
   contents:
     - starts_with("ar_er")
-    - ex_pwm
+    - ex_pfm
     - hg19_mask
     - zr75_enh
 
