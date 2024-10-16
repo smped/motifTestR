@@ -24,8 +24,8 @@
 #' A set of ChIP-Seq peaks where AR and ER were both detected
 #'
 #' @details
-#' The subset of peaks found on chr1, and which contained signal from at least
-#' two of AR ER or H3K27ac, and taken from GSE123767.
+#' The subset of peaks found on chr1 which contained signal from at least
+#' two of AR, ER and H3K27ac, taken from GSE123767.
 #' Peaks were resized to a uniform width of 400bp after downloading
 #'
 #' Generation of these ranges is documented in
