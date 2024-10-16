@@ -9,7 +9,7 @@ a background set requiring matching"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ a background set requiring matching"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Form a set of random, matching ranges for bootstrapping or permuting</h1>
-      <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/HEAD/R/makeRMRanges.R" class="external-link"><code>R/makeRMRanges.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/gh-actions/R/makeRMRanges.R" class="external-link"><code>R/makeRMRanges.R</code></a></small>
       <div class="d-none name"><code>makeRMRanges-methods.Rd</code></div>
     </div>
 
@@ -50,7 +50,7 @@ a background set requiring matching</p>
 <span><span class="fu">makeRMRanges</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
-<span>  exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="fu">GRanges</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  n_iter <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_total <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  replace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -62,7 +62,7 @@ a background set requiring matching</p>
 <span><span class="fu">makeRMRanges</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
-<span>  exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="fu">GRanges</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  n_iter <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_total <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  replace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -157,9 +157,9 @@ setting <code>replace = FALSE</code></p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load the example peaks</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ar_er_peaks"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu">seqinfo</span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Now sample size-matched ranges for two iterations from chr1</span></span></span>
-<span class="r-in"><span><span class="fu">makeRMRanges</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, n_iter <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">makeRMRanges</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="fu">GRanges</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, n_iter <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 1698 ranges and 1 metadata column:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames              ranges strand | iteration</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt;</span>
@@ -178,7 +178,7 @@ setting <code>replace = FALSE</code></p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 24 sequences from hg19 genome</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Or simply sample 100 ranges if not planning any iterative analyses</span></span></span>
-<span class="r-in"><span><span class="fu">makeRMRanges</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, n_total <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">makeRMRanges</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="fu">GRanges</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, n_total <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 100 ranges and 0 metadata columns:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         seqnames              ranges strand</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt;</span>
@@ -208,7 +208,7 @@ setting <code>replace = FALSE</code></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

@@ -9,7 +9,7 @@ derive a NULL hypothesis"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ derive a NULL hypothesis"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Test motif enrichment using a background set of sequences</h1>
-      <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/HEAD/R/testMotifEnrich.R" class="external-link"><code>R/testMotifEnrich.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/smped/motifTestR/blob/gh-actions/R/testMotifEnrich.R" class="external-link"><code>R/testMotifEnrich.R</code></a></small>
       <div class="d-none name"><code>testMotifEnrich.Rd</code></div>
     </div>
 
@@ -207,7 +207,7 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load the example peaks &amp; the sequences</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ar_er_peaks"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ar_er_seq"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu">seqinfo</span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Now sample size-matched ranges 10 times larger. In real-world analyses,</span></span></span>
 <span class="r-in"><span><span class="co">## this set should be sampled as at least 1000x larger, ensuring features</span></span></span>
 <span class="r-in"><span><span class="co">## are matched to your requirements. This example masks regions with known N</span></span></span>
@@ -215,7 +215,7 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"hg19_mask"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">305</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bg_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="makeRMRanges-methods.html">makeRMRanges</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">ar_er_peaks</span>, <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span>  <span class="va">ar_er_peaks</span>, <span class="fu">GRanges</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert ranges to DNAStringSets</span></span></span>
@@ -259,7 +259,7 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>
