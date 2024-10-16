@@ -90,3 +90,22 @@ with the highest relative score is returned for each sequence.
 Should there be tied scores, the best match can be chosen as either the first,
 last, most central, all tied matches, or choosing one at random (the default).
 }
+\examples{
+# Load example PFMs
+data("ex_pfm")
+# Cluster using default settings
+cl_ids <- clusterMotifs(ex_pfm)
+ex_cl <- split(ex_pfm, cl_ids)
+# Add optional names
+names(ex_cl) <- vapply(ex_cl, \(x) paste(names(x), collapse = "/"), character(1))
+
+# Load example sequences
+data("ar_er_seq")
+# Get all matches for each cluster
+getClusterMatches(ex_cl, ar_er_seq)
+# Or Just count them
+countClusterMatches(ex_cl, ar_er_seq)
+# Compare this to individual counts
+countPwmMatches(ex_pfm, ar_er_seq)
+
+}

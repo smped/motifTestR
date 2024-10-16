@@ -5,7 +5,24 @@
 #' @details
 #' This builds on \link[universalmotif]{compare_motifs}, enabling the
 #' assignment of each PWM to a cluster, and subsequent testing of motifs as
-#' a cluster, rather than returning individual results
+#' a cluster, rather than returning individual results.
+#'
+#' Internally all matrices are converted to distance matrices and
+#' \link[stats]{hclust} is used to form clusters. By default, options such as
+#' "EUCL", "MAN" produce distances, whilst similarity matrices are produced
+#' when choosing "PCC" and other correlation based metrics. In these cases, the
+#' distance matrix is obtained by taking 1 - similarity.
+#'
+#' By default PWM labels are hidden (labels = FALSE), however these can be shown
+#' using labels = NULL as explained in \link[stats]{plot.hclust}.
+#'
+#' Raising the threshold will lead to fewer, larger clusters whilst leaving
+#' this value low will return a more conservative approach, with more smaller
+#' clusters.
+#' The final decision as the best clustering strategy is highly subjective and
+#' left to the user.
+#' Manual inspection of motifs within a cluster can be performed using
+#' \link[universalmotif]{view_motifs}, as shown in the vignette.
 #'
 #' @return Named vector with numeric values representing which cluster each
 #' motif has been assigned to.
