@@ -50,13 +50,14 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="motiftestr-">motifTestR <img id="motiftestr_logo" alt="MotifTestR Logo" src="reference/figures/favicon.png" align="right" width="125"><a class="anchor" aria-label="anchor" href="#motiftestr-"></a>
+<div class="page-header"><h1 id="motiftestr-">motifTestR <img id="motiftestr_logo" alt="MotifTestR Logo" src="inst/figures/favicon.png" align="right" width="125"><a class="anchor" aria-label="anchor" href="#motiftestr-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>The package <code>motifTestR</code> provides a small set of functions for analysing transcription factor binding motifs (TFBMs). Testing for positional bias is enabled using a novel approach, and testing for enrichment relative to a set of background sequences is enabled using multiple statistical models.</p>
-<p>Testing for positional bias is intended to be an R native alternative to <a href="https://meme-suite.org/meme/doc/centrimo.html" class="external-link">CentriMo</a> from the MEME-suite, and will detect any deviation of note from an even distribution across the width of sequences being tested, not just the centrality of motifs. Given the conventional statistical approach taken, results are easily interpretable directly through adjusted p-values. Enrichment testing follows well-worn modelling and iterative strategies, and instead offers a novel approach to selection of control, or background, sequences.</p>
-<p>To install the stable version of transmogR from Bioconductor please try the following.</p>
+<p>Testing for positional bias is intended to be an R native alternative to <a href="https://meme-suite.org/meme/doc/centrimo.html" class="external-link">CentriMo</a> from the MEME-suite, and will detect any deviation of note from an even distribution across the width of sequences being tested, not just the centrality of motifs. Given the conventional statistical approach taken, results are easily interpretable directly through adjusted p-values. Enrichment testing follows well-worn modelling and iterative strategies, whilst offering a novel approach to selection of control, or background, sequences.</p>
+<p>Testing similar motifs grouped together as a set of clusters is also enabled.</p>
+<p>To install the stable version of motifTestR from Bioconductor please try the following.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>

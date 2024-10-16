@@ -112,7 +112,21 @@ motif has been assigned to.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This builds on <a href="https://rdrr.io/pkg/universalmotif/man/compare_motifs.html" class="external-link">compare_motifs</a>, enabling the
 assignment of each PWM to a cluster, and subsequent testing of motifs as
-a cluster, rather than returning individual results</p>
+a cluster, rather than returning individual results.</p>
+<p>Internally all matrices are converted to distance matrices and
+<a href="https://rdrr.io/r/stats/hclust.html" class="external-link">hclust</a> is used to form clusters. By default, options such as
+"EUCL", "MAN" produce distances, whilst similarity matrices are produced
+when choosing "PCC" and other correlation based metrics. In these cases, the
+distance matrix is obtained by taking 1 - similarity.</p>
+<p>By default PWM labels are hidden (labels = FALSE), however these can be shown
+using labels = NULL as explained in <a href="https://rdrr.io/r/stats/hclust.html" class="external-link">plot.hclust</a>.</p>
+<p>Raising the threshold will lead to fewer, larger clusters whilst leaving
+this value low will return a more conservative approach, with more smaller
+clusters.
+The final decision as the best clustering strategy is highly subjective and
+left to the user.
+Manual inspection of motifs within a cluster can be performed using
+<a href="https://rdrr.io/pkg/universalmotif/man/view_motifs.html" class="external-link">view_motifs</a>, as shown in the vignette.</p>
     </div>
 
     <div class="section level2">
