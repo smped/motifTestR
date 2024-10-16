@@ -1,4 +1,4 @@
-# motifTestR <img id="motiftestr_logo" alt="MotifTestR Logo" src="inst/figures/favicon.png" align="right" width = "125" />
+# motifTestR <img id="motiftestr_logo" alt="MotifTestR Logo" src="man/figures/favicon.png" align="right" width = "125" />
 
 <!-- badges: start -->
 [![Build Status](https://github.com/smped/motifTestR/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/smped/motifTestR/actions)
