@@ -30,12 +30,13 @@
 #' @param cl A list of Position Weight Matrices, universalmotifs, with each
 #' element representing clusters of related matrices
 #' @param stringset An XStringSet
-#' @param rc logical(1) Also find matches using the reverse complement of pwm
+#' @param rc logical(1) Also find matches using the reverse complement of PWMs
+#' in the cluster
 #' @param min_score The minimum score to return a match
 #' @param best_only logical(1) Only return the best match
 #' @param break_ties Method for breaking ties when only returning the best match
 #' Ignored when all matches are returned (the default)
-#' @param mc.cores Passed to \link[parallel]{mclapply} if passing multiple PWMs
+#' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param ... Passed to \link[Biostrings]{matchPWM}
 #'
 #' @return

@@ -24,7 +24,7 @@ clusterMotifs(
 
 \item{type}{Can be ICM or PPM}
 
-\item{method}{The moetho to be used for determining similarity/distances}
+\item{method}{The method to be used for determining similarity/distances}
 
 \item{power}{Raise correlation matrices to this power before converting to a
 distance matrix. Only applied if method is either "PCC" or "WPCC"}
