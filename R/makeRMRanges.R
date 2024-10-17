@@ -11,7 +11,7 @@
 #' fixed-width ranges is passed to `x`, whilst random sampling may yield some
 #' variability when matching ranges of variable width.
 #'
-#' When both x and y are GRanges objects, they are implcitly assumed to both
+#' When both x and y are GRanges objects, they are implicitly assumed to both
 #' represent similar ranges, such as those overlapping a promoter or enhancer.
 #' When passing two GRangesList objects, both objects are expected to contain
 #' ranges annotated as belonging to key features, such that the list elements in

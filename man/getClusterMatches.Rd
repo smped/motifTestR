@@ -31,7 +31,8 @@ element representing clusters of related matrices}
 
 \item{stringset}{An XStringSet}
 
-\item{rc}{logical(1) Also find matches using the reverse complement of pwm}
+\item{rc}{logical(1) Also find matches using the reverse complement of PWMs
+in the cluster}
 
 \item{min_score}{The minimum score to return a match}
 
@@ -40,7 +41,7 @@ element representing clusters of related matrices}
 \item{break_ties}{Method for breaking ties when only returning the best match
 Ignored when all matches are returned (the default)}
 
-\item{mc.cores}{Passed to \link[parallel]{mclapply} if passing multiple PWMs}
+\item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
 \item{...}{Passed to \link[Biostrings]{matchPWM}}
 }

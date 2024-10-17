@@ -29,7 +29,8 @@ by \link{getPwmMatches} with \code{best_only = TRUE}}
 
 \item{abs}{Use absolute positions around zero to find symmetrical enrichment}
 
-\item{rc}{logical(1) Also find matches using the reverse complement of pwm}
+\item{rc}{logical(1) Also find matches using the reverse complement of each
+PWM}
 
 \item{min_score}{The minimum score to return a match}
 

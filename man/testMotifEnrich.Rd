@@ -92,7 +92,7 @@ the set of BG sequences, and the observed rate of motif-matches within the
 test set is then tested using \link[stats]{poisson.test}.
 
 This approach assumes that all matches follow a Poisson distribution, which
-is often true, but data can also be overdispersed. Given that this model can
+is often true, but data can also be over-dispersed. Given that this model can
 also return results relatively quickly, is it primarily suitable for data
 exploration, such as quickly checking for expected behaviours, but not for
 final results.

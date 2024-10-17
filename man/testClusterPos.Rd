@@ -29,7 +29,8 @@ by \link{getClusterMatches} with \code{best_only = TRUE}}
 
 \item{abs}{Use absolute positions around zero to find symmetrical enrichment}
 
-\item{rc}{logical(1) Also find matches using the reverse complement of pwm}
+\item{rc}{logical(1) Also find matches using the reverse complement of each
+PWM}
 
 \item{min_score}{The minimum score to return a match}
 
@@ -60,7 +61,7 @@ Matrix (PFM) using \link[Biostrings]{consensusMatrix}.
 Test positional bias for all motifs within a given cluster
 }
 \details{
-This is a reimplmentation of \link{testMotifPos} for sets of motifs which
+This is a reimplementation of \link{testMotifPos} for sets of motifs which
 have been clustered for similarity.
 The positions test the bias of any motifs within the cluster given that
 overlapping matches are only counted once, and with the match retained being

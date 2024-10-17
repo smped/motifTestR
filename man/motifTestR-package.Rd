@@ -19,16 +19,30 @@ sequences
 of test sequences
 }
 
+Motifs are also able to be clustered for analysis as a cluster, or for
+grouping results.
+Clusters from external approaches can also be incorporated.
+\itemize{
+\item \code{\link[=testClusterPos]{testClusterPos()}} for detecting positional bias for matches to any motif
+annotated to a cluster, within a set of test sequences
+\item \code{\link[=testClusterEnrich]{testClusterEnrich()}} for testing overall enrichment of any TFBM annotated
+to a cluster, within a set of test sequences
+}
+
 The main functions rely on lower-level functions such as:
 \itemize{
 \item \code{\link[=countPwmMatches]{countPwmMatches()}} simply counts the number of matches within an
 \code{XStringSet}
 \item \code{\link[=getPwmMatches]{getPwmMatches()}} returns the position of matches within an \code{XStringSet}
+\item \code{\link[=countClusterMatches]{countClusterMatches()}} simply counts the number of matches to motifs
+annotated to a cluster within an \code{XStringSet}
+\item \code{\link[=getClusterMatches]{getClusterMatches()}} returns the position of matches to motifs annotated
+to a cluster within an \code{XStringSet}
 \item \code{\link[=makeRMRanges]{makeRMRanges()}} which produces a set of random, matching ranges based on
 key characteristics of the set of test sequences/ranges
 }
 
-A simple utility function is provided yo enable visualisation of results
+A simple utility function is provided to enable visualisation of results
 \itemize{
 \item \code{\link[=plotMatchPos]{plotMatchPos()}} enables visualisation of the matches within a set of
 sequences using multiple strategies

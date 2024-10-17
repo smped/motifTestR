@@ -62,7 +62,8 @@
 #' @param stringset An XStringSet. Not required if matches are supplied as x
 #' @param binwidth Width of bins across the range to group data into
 #' @param abs Use absolute positions around zero to find symmetrical enrichment
-#' @param rc logical(1) Also find matches using the reverse complement of pwm
+#' @param rc logical(1) Also find matches using the reverse complement of each
+#' PWM
 #' @param min_score The minimum score to return a match
 #' @param break_ties Choose how to resolve matches with tied scores
 #' @param alt Alternative hypothesis for the binomial test

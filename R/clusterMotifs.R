@@ -29,7 +29,7 @@
 #'
 #' @param motifs A list of universalmotifs or a list of PWMs
 #' @param type Can be ICM or PPM
-#' @param method The moetho to be used for determining similarity/distances
+#' @param method The method to be used for determining similarity/distances
 #' @param power Raise correlation matrices to this power before converting to a
 #' distance matrix. Only applied if method is either "PCC" or "WPCC"
 #' @param agglom Method to be used for agglomeration by \link[stats]{hclust}
