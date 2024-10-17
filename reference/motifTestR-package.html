@@ -50,12 +50,22 @@ within a set of sequences</p><ul><li><p><code><a href="testMotifPos.html">testMo
 sequences</p></li>
 <li><p><code><a href="testMotifEnrich.html">testMotifEnrich()</a></code> for testing overall enrichment of a TFBM within a set
 of test sequences</p></li>
+</ul><p>Motifs are also able to be clustered for analysis as a cluster, or for
+grouping results.
+Clusters from external approaches can also be incorporated.</p><ul><li><p><code><a href="testClusterPos.html">testClusterPos()</a></code> for detecting positional bias for matches to any motif
+annotated to a cluster, within a set of test sequences</p></li>
+<li><p><code><a href="testClusterEnrich.html">testClusterEnrich()</a></code> for testing overall enrichment of any TFBM annotated
+to a cluster, within a set of test sequences</p></li>
 </ul><p>The main functions rely on lower-level functions such as:</p><ul><li><p><code><a href="countPwmMatches.html">countPwmMatches()</a></code> simply counts the number of matches within an
 <code>XStringSet</code></p></li>
 <li><p><code><a href="getPwmMatches.html">getPwmMatches()</a></code> returns the position of matches within an <code>XStringSet</code></p></li>
+<li><p><code><a href="getClusterMatches.html">countClusterMatches()</a></code> simply counts the number of matches to motifs
+annotated to a cluster within an <code>XStringSet</code></p></li>
+<li><p><code><a href="getClusterMatches.html">getClusterMatches()</a></code> returns the position of matches to motifs annotated
+to a cluster within an <code>XStringSet</code></p></li>
 <li><p><code><a href="makeRMRanges-methods.html">makeRMRanges()</a></code> which produces a set of random, matching ranges based on
 key characteristics of the set of test sequences/ranges</p></li>
-</ul><p>A simple utility function is provided yo enable visualisation of results</p><ul><li><p><code><a href="plotMatchPos.html">plotMatchPos()</a></code> enables visualisation of the matches within a set of
+</ul><p>A simple utility function is provided to enable visualisation of results</p><ul><li><p><code><a href="plotMatchPos.html">plotMatchPos()</a></code> enables visualisation of the matches within a set of
 sequences using multiple strategies</p></li>
 </ul></div>
     <div class="section level2">

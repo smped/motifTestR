@@ -79,7 +79,8 @@ by <a href="getClusterMatches.html">getClusterMatches</a> with <code>best_only =
 
 
 <dt id="arg-rc">rc<a class="anchor" aria-label="anchor" href="#arg-rc"></a></dt>
-<dd><p>logical(1) Also find matches using the reverse complement of pwm</p></dd>
+<dd><p>logical(1) Also find matches using the reverse complement of each
+PWM</p></dd>
 
 
 <dt id="arg-min-score">min_score<a class="anchor" aria-label="anchor" href="#arg-min-score"></a></dt>
@@ -121,7 +122,7 @@ Matrix (PFM) using <a href="https://rdrr.io/pkg/Biostrings/man/letterFrequency.h
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This is a reimplmentation of <a href="testMotifPos.html">testMotifPos</a> for sets of motifs which
+    <p>This is a reimplementation of <a href="testMotifPos.html">testMotifPos</a> for sets of motifs which
 have been clustered for similarity.
 The positions test the bias of any motifs within the cluster given that
 overlapping matches are only counted once, and with the match retained being
