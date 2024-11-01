@@ -133,8 +133,7 @@ plotMatchPos <- function(
     if (is.null(fill_scale)) fill_scale <- scale_fill_viridis_c()
     stopifnot(is(fill_scale, "ScaleContinuous"))
     stopifnot(w > 0 & w < 1)
-    xlab <- "bin_centre"
-    if (abs) xlab <- "bin_start"
+
     ## Create the dendrogram if needed
     if (cluster) {
 
@@ -165,13 +164,18 @@ plotMatchPos <- function(
         ylab <- NULL
     }
 
+    xlab <- "bin_centre"
+    ylab <- "name"
+    if (cluster) ylab <- NULL
+    if (abs) xlab <- "bin_start"
     # Always create the heatmap...
     df$name <- factor(df$name, levels = levels)
     plot <- ggplot(
         df, aes(!!sym("bin_centre"), !!sym("name"), fill = !!sym(yval))
     ) +
         geom_tile(...) +
-        scale_x_continuous(expand = rep_len(0, 4), name = xlab) +
+        labs(x = xlab, y = ylab) +
+        scale_x_continuous(expand = rep_len(0, 4)) +
         scale_y_discrete(expand = rep_len(0, 4)) +
         fill_scale
     if (!cluster) return(plot)

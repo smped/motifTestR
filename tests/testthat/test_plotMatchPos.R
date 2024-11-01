@@ -24,8 +24,6 @@ test_that("col plots work", {
 test_that("heatmaps work", {
     p <- plotMatchPos(bm, type = "heat")
     expect_true(is(p$layers[[1]]$geom, "GeomTile"))
-    # labs <- vapply(p$scales$scales[1:2], \(x) x$name, character(1))
-    # expect_equal(labs, c("bin_centre", "name"))
 })
 test_that("clusters work", {
     p <- plotMatchPos(bm, type = "heat", cluster = TRUE)
@@ -33,6 +31,7 @@ test_that("clusters work", {
     expect_true(is(p[[1]]$layers[[1]]$geom, "GeomSegment"))
     expect_equal(colnames(p[[1]]$data), c("x", "y", "xend", "yend"))
     expect_true(is(p[[2]]$layers[[1]]$geom, "GeomTile"))
+    expect_equal(p[[2]]$labels, list(x = "bin_centre", y = NULL, fill = "p"))
 })
 
 test_that("single input works", {
