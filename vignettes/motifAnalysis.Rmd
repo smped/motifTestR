@@ -27,7 +27,7 @@ knitr::opts_chunk$set(message = FALSE, crop = NULL)
 
 # Introduction
 
-Bioinformatic analysis of data from ChIP-Seq and ATAC-Seq commonly involves the analysis of sequences within the regions identified is being of interest.
+Bioinformatic analysis of data from ChIP-Seq or ATAC-Seq, along with multiple other approaches, can involve the analysis of sequences within the regions identified is being of interest.
 Whilst these analyses are not restricted to transcription factors, this can often form an important component of this type of analysis.
 Analysis of Transcription Factor Binding Motifs (TFBMs) is often performed using Position Weight Matrices (PWMs) to encode the flexibility in which exact sequence is bound by the particular transcription factor, and is a computationally demanding task with many popular tools enabling analysis outside of R.
 
@@ -368,7 +368,7 @@ The clustering methodology enabled within `motifTestR` allows for the use of any
 
 Whilst the example set of TFBMs is slightly artificial motifs can still be grouped into clusters.
 If using a larger database of TFBMs a carefully selected threshold may be more appropriate, however for this dataset, four clusters are able to be formed using the default settings. 
-There is no ideal method to group PWMs into clusters and manual inspection of any clusters produced is the best strategy for this process.
+There is *no ideal method* to group PWMs into clusters and manual inspection of any clusters produced is the best strategy for this process.
 Names are not strictly required for downstream analysis, but can help with interpretability
 
 ```{r ex-cl, fig.cap = "Plot produced when requested by clusterMotifs showing the relationship between motifs. The red horizontal line indicates the threshold below which motifs are grouped together into a cluster. Clustering is performed using hclust on the distance matrices produced by `universalmotif::compare_motifs()`", fig.alt = "Dendrogram showing clusters formed by `clusterMotifs()` with default settings."}

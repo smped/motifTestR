@@ -12,6 +12,7 @@ clusterMotifs(
   power = 1,
   agglom = "complete",
   thresh = 0.2,
+  return_d = FALSE,
   plot = FALSE,
   labels = FALSE,
   cex = 1,
@@ -33,6 +34,8 @@ distance matrix. Only applied if method is either "PCC" or "WPCC"}
 
 \item{thresh}{Tree heights below which motifs are formed into a cluster}
 
+\item{return_d}{logical(1) Return the distance matrices for each cluster}
+
 \item{plot}{Show tree produced by \link[stats]{hclust}. If requested the
 value set by thresh will be shown as a horizontal line}
 
@@ -45,6 +48,10 @@ value set by thresh will be shown as a horizontal line}
 \value{
 Named vector with numeric values representing which cluster each
 motif has been assigned to.
+
+If setting return_d = TRUE, a named list will be returned with the clusters
+as the element \code{cl} and a list with distance matrices for each cluster as the
+element \code{d}
 }
 \description{
 Cluster related motifs for testing as a group

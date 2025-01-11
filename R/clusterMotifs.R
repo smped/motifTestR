@@ -27,6 +27,10 @@
 #' @return Named vector with numeric values representing which cluster each
 #' motif has been assigned to.
 #'
+#' If setting return_d = TRUE, a named list will be returned with the clusters
+#' as the element `cl` and a list with distance matrices for each cluster as the
+#' element `d`
+#'
 #' @param motifs A list of universalmotifs or a list of PWMs
 #' @param type Can be ICM or PPM
 #' @param method The method to be used for determining similarity/distances
@@ -34,6 +38,7 @@
 #' distance matrix. Only applied if method is either "PCC" or "WPCC"
 #' @param agglom Method to be used for agglomeration by \link[stats]{hclust}
 #' @param thresh Tree heights below which motifs are formed into a cluster
+#' @param return_d logical(1) Return the distance matrices for each cluster
 #' @param plot Show tree produced by \link[stats]{hclust}. If requested the
 #' value set by thresh will be shown as a horizontal line
 #' @param labels,cex Passed to \link[stats]{plot.hclust}
@@ -60,7 +65,7 @@
 clusterMotifs <- function(
         motifs, type = c("PPM", "ICM"),
         method = c("PCC", "EUCL", "SW", "KL", "ALLR", "BHAT", "HELL", "SEUCL", "MAN", "ALLR_LL", "WEUCL", "WPCC"),
-        power = 1, agglom = "complete", thresh = 0.2,
+        power = 1, agglom = "complete", thresh = 0.2, return_d = FALSE,
         plot = FALSE, labels = FALSE, cex = 1, linecol = "red", ...
 ){
     # Convert to universal motif, if a list is passed
@@ -88,6 +93,11 @@ clusterMotifs <- function(
         abline(a = thresh, b = 0, col = linecol)
     }
     cl <- cutree(cl, h = thresh)
+    if (return_d) {
+        nm <- lapply(split(cl, cl), names)
+        d_split <- lapply(nm, \(x) as.matrix(d)[x, x])
+        return(list(cl = cl, d = d_split))
+    }
     cl
 }
 
