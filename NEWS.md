@@ -10,3 +10,7 @@
 
 + Added clusterMotifs, testClusterPos and testClusterEnrich
 + Enforced strict use of PWMs for all functions
+
+# motifTestR 1.3.3
+
++ Added simSeq for generating random sequences

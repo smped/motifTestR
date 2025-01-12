@@ -25,6 +25,10 @@ reference:
     - hg19_mask
     - zr75_enh
 
+- title: Miscellaneous Functions
+  contents:
+    - simSeq
+
 navbar:
   type: default
   left:
