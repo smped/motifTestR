@@ -12,6 +12,7 @@ testMotifEnrich(
   model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
+  prior.count = 1,
   ...
 )
 }
@@ -30,6 +31,10 @@ number}
 \item{sort_by}{Column to sort results by}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
+
+\item{prior.count}{Passed to poisson and quasipoisson models and iterative
+approaches. Added to all counts to better manage zero counts in background
+sequences}
 
 \item{...}{Passed to \link{getPwmMatches} or \link{countPwmMatches}}
 }
@@ -90,6 +95,7 @@ larger than the test set of sequences.
 The parameters for a Poisson model are estimated in a per-sequence manner on
 the set of BG sequences, and the observed rate of motif-matches within the
 test set is then tested using \link[stats]{poisson.test}.
+Testing is two-sided.
 
 This approach assumes that all matches follow a Poisson distribution, which
 is often true, but data can also be over-dispersed. Given that this model can
@@ -114,6 +120,7 @@ chosen using \link{makeRMRanges} with a large number of iterations, e.g.
 n_iter = 1000.
 Due to this parameterisation, quasipoisson approaches can be computationally
 time-consuming, as this is effectively an iterative approach.
+Testing is two-sided.
 }
 
 \subsection{Iteration}{
