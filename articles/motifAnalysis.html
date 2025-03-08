@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +110,7 @@ two key approaches.</p>
 <p>In order to perform the operations in this vignette, first install
 <code>motifTestR</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"motifTestR"</span><span class="op">)</span></span></code></pre></div>
 <p>Once installed, we can load all required packages, set a default
@@ -456,7 +456,7 @@ are associated with these regions and choosing control sequences drawn
 from the same proportion of these regions may be a viable strategy.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"zr75_enh"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">overlapsAny</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">overlapsAny</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.6914016</span></span></code></pre>
 <p>First we can annotate each peak by whether there is any overlap with
 an enhancer, or whether the peak belongs to any other region. Next we
@@ -466,7 +466,7 @@ chromosome 1 for consistency. Control regions can be drawn from each
 with proportions that match the test set of sequences.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
-<span>  <span class="fu">overlapsAny</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span>, <span class="st">"enhancer"</span>, <span class="st">"other"</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">overlapsAny</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span>, <span class="st">"enhancer"</span>, <span class="st">"other"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">chr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">bg_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span></span>
@@ -488,7 +488,7 @@ strategies being possible.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"hg19_mask"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">305</span><span class="op">)</span></span>
 <span><span class="va">rm_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeRMRanges-methods.html">makeRMRanges</a></span><span class="op">(</span></span>
-<span>  <span class="fu">splitAsList</span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">splitAsList</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">ar_er_peaks</span><span class="op">$</span><span class="va">feature</span><span class="op">)</span>,</span>
 <span>  <span class="va">bg_ranges</span>, exclude <span class="op">=</span> <span class="va">hg19_mask</span>,</span>
 <span>  n_iter <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -508,7 +508,7 @@ the <code>mcols</code> element ensure the iteration numbers are passed
 to the sequences, as these are required for this approach.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span>, <span class="va">rm_ranges</span><span class="op">)</span></span>
-<span><span class="fu">mcols</span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">mcols</span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
 <p>If choosing strategies for enrichment testing outside of
 <code>motifTestR</code>, these sequences can be exported as a fasta file
 using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.20/Biostrings" class="external-link">Biostrings</a></em>
@@ -628,7 +628,7 @@ into the binding dynamics of these two TFs.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex_pfm</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/getPwmMatches.html">getPwmMatches</a></span><span class="op">(</span><span class="va">test_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, mc.cores <span class="op">=</span> <span class="va">cores</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">seq</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">seq</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"upset"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="motifAnalysis_files/figure-html/plot-overlaps-1.png" alt="UpSet plot showing the sequences which match one or more of the PWMs in the example dataset." width="700"><p class="caption">
@@ -656,7 +656,7 @@ As we can see there is quite some similarity in the core regions of the
 two binding motifs</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ANDR"</span>, <span class="st">"FOXA1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>        \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/universalmotif/man/create_motif.html" class="external-link">create_motif</a></span><span class="op">(</span><span class="va">ex_pfm</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">x</span>, type <span class="op">=</span> <span class="st">"PPM"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/universalmotif/man/view_motifs.html" class="external-link">view_motifs</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -694,8 +694,8 @@ performed using hclust on the distance matrices produced by
 </p>
 </div>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ex_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">cl</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ex_cl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>, <span class="va">cl</span><span class="op">)</span>, <span class="va">paste</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ex_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">cl</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ex_cl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>, <span class="va">cl</span><span class="op">)</span>, <span class="va">paste</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span></span></code></pre></div>
 <p>These clusters can now be tested for positional bias using
 <code><a href="../reference/testClusterPos.html">testClusterPos()</a></code>. Matches are the unique sites with a match
 to <em>any</em> PWM within the cluster, and any overlapping sites from
@@ -885,7 +885,7 @@ these peaks repeating the steps above.</p>
 <span>    <span class="va">base_url</span>, <span class="st">"GSM3511087/suppl/GSM3511087%5FH3K27ac%5Fpeaks%5FED.bed.gz"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">all_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bed_url</span>, <span class="va">import.bed</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">all_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bed_url</span>, <span class="va">import.bed</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">seqlevels</span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">seqnames</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
 <span><span class="co">## Return the ranges with coverage from 2 or more targets</span></span>
@@ -955,11 +955,11 @@ just chromosome 1.</p>
 <span><span class="co">##  [5] BiocIO_1.16.0                     rtracklayer_1.66.0               </span></span>
 <span><span class="co">##  [7] extraChIPs_1.10.0                 tibble_3.2.1                     </span></span>
 <span><span class="co">##  [9] SummarizedExperiment_1.36.0       Biobase_2.66.0                   </span></span>
-<span><span class="co">## [11] MatrixGenerics_1.18.0             matrixStats_1.5.0                </span></span>
+<span><span class="co">## [11] MatrixGenerics_1.18.1             matrixStats_1.5.0                </span></span>
 <span><span class="co">## [13] ggside_0.3.1                      BiocParallel_1.40.0              </span></span>
-<span><span class="co">## [15] motifTestR_1.3.3                  ggplot2_3.5.1                    </span></span>
+<span><span class="co">## [15] motifTestR_1.3.4                  ggplot2_3.5.1                    </span></span>
 <span><span class="co">## [17] GenomicRanges_1.58.0              Biostrings_2.74.1                </span></span>
-<span><span class="co">## [19] GenomeInfoDb_1.42.1               XVector_0.46.0                   </span></span>
+<span><span class="co">## [19] GenomeInfoDb_1.42.3               XVector_0.46.0                   </span></span>
 <span><span class="co">## [21] IRanges_2.40.1                    S4Vectors_0.44.0                 </span></span>
 <span><span class="co">## [23] BiocGenerics_0.52.0               BiocStyle_2.34.0                 </span></span>
 <span><span class="co">## </span></span>
@@ -967,43 +967,43 @@ just chromosome 1.</p>
 <span><span class="co">##   [1] splines_4.4.2              bitops_1.0-9              </span></span>
 <span><span class="co">##   [3] filelock_1.0.3             polyclip_1.10-7           </span></span>
 <span><span class="co">##   [5] XML_3.99-0.18              rpart_4.1.24              </span></span>
-<span><span class="co">##   [7] lifecycle_1.0.4            httr2_1.0.7               </span></span>
-<span><span class="co">##   [9] edgeR_4.4.1                lattice_0.22-6            </span></span>
-<span><span class="co">##  [11] ensembldb_2.30.0           MASS_7.3-64               </span></span>
+<span><span class="co">##   [7] lifecycle_1.0.4            httr2_1.1.0               </span></span>
+<span><span class="co">##   [9] edgeR_4.4.2                lattice_0.22-6            </span></span>
+<span><span class="co">##  [11] ensembldb_2.30.0           MASS_7.3-65               </span></span>
 <span><span class="co">##  [13] backports_1.5.0            magrittr_2.0.3            </span></span>
-<span><span class="co">##  [15] limma_3.62.1               Hmisc_5.2-2               </span></span>
+<span><span class="co">##  [15] limma_3.62.2               Hmisc_5.2-2               </span></span>
 <span><span class="co">##  [17] sass_0.4.9                 rmarkdown_2.29            </span></span>
 <span><span class="co">##  [19] jquerylib_0.1.4            yaml_2.3.10               </span></span>
 <span><span class="co">##  [21] metapod_1.14.0             Gviz_1.50.0               </span></span>
 <span><span class="co">##  [23] DBI_1.2.3                  RColorBrewer_1.1-3        </span></span>
 <span><span class="co">##  [25] harmonicmeanp_3.0.1        abind_1.4-8               </span></span>
-<span><span class="co">##  [27] zlibbioc_1.52.0            purrr_1.0.2               </span></span>
+<span><span class="co">##  [27] zlibbioc_1.52.0            purrr_1.0.4               </span></span>
 <span><span class="co">##  [29] AnnotationFilter_1.30.0    biovizBase_1.54.0         </span></span>
 <span><span class="co">##  [31] RCurl_1.98-1.16            nnet_7.3-20               </span></span>
 <span><span class="co">##  [33] VariantAnnotation_1.52.0   tweenr_2.0.3              </span></span>
 <span><span class="co">##  [35] rappdirs_0.3.3             GenomeInfoDbData_1.2.13   </span></span>
 <span><span class="co">##  [37] ggrepel_0.9.6              pkgdown_2.1.1.9000        </span></span>
 <span><span class="co">##  [39] codetools_0.2-20           DelayedArray_0.32.0       </span></span>
-<span><span class="co">##  [41] xml2_1.3.6                 ggforce_0.4.2             </span></span>
+<span><span class="co">##  [41] xml2_1.3.7                 ggforce_0.4.2             </span></span>
 <span><span class="co">##  [43] tidyselect_1.2.1           futile.logger_1.4.3       </span></span>
 <span><span class="co">##  [45] UCSC.utils_1.2.0           farver_2.1.2              </span></span>
 <span><span class="co">##  [47] ComplexUpset_1.3.3         BiocFileCache_2.14.0      </span></span>
 <span><span class="co">##  [49] base64enc_0.1-3            GenomicAlignments_1.42.0  </span></span>
-<span><span class="co">##  [51] jsonlite_1.8.9             Formula_1.2-5             </span></span>
-<span><span class="co">##  [53] systemfonts_1.1.0          tools_4.4.2               </span></span>
+<span><span class="co">##  [51] jsonlite_1.9.1             Formula_1.2-5             </span></span>
+<span><span class="co">##  [53] systemfonts_1.2.1          tools_4.4.2               </span></span>
 <span><span class="co">##  [55] progress_1.2.3             ragg_1.3.3                </span></span>
-<span><span class="co">##  [57] Rcpp_1.0.13-1              glue_1.8.0                </span></span>
-<span><span class="co">##  [59] gridExtra_2.3              SparseArray_1.6.0         </span></span>
-<span><span class="co">##  [61] mgcv_1.9-1                 xfun_0.50                 </span></span>
+<span><span class="co">##  [57] Rcpp_1.0.14                glue_1.8.0                </span></span>
+<span><span class="co">##  [59] gridExtra_2.3              SparseArray_1.6.2         </span></span>
+<span><span class="co">##  [61] mgcv_1.9-1                 xfun_0.51                 </span></span>
 <span><span class="co">##  [63] dplyr_1.1.4                withr_3.0.2               </span></span>
 <span><span class="co">##  [65] formatR_1.14               BiocManager_1.30.25       </span></span>
 <span><span class="co">##  [67] fastmap_1.2.0              latticeExtra_0.6-30       </span></span>
-<span><span class="co">##  [69] digest_0.6.37              R6_2.5.1                  </span></span>
-<span><span class="co">##  [71] textshaping_0.4.1          colorspace_2.1-1          </span></span>
+<span><span class="co">##  [69] digest_0.6.37              R6_2.6.1                  </span></span>
+<span><span class="co">##  [71] textshaping_1.0.0          colorspace_2.1-1          </span></span>
 <span><span class="co">##  [73] jpeg_0.1-10                dichromat_2.0-0.1         </span></span>
-<span><span class="co">##  [75] biomaRt_2.62.0             RSQLite_2.3.9             </span></span>
+<span><span class="co">##  [75] biomaRt_2.62.1             RSQLite_2.3.9             </span></span>
 <span><span class="co">##  [77] tidyr_1.3.1                generics_0.1.3            </span></span>
-<span><span class="co">##  [79] data.table_1.16.4          prettyunits_1.2.0         </span></span>
+<span><span class="co">##  [79] data.table_1.17.0          prettyunits_1.2.0         </span></span>
 <span><span class="co">##  [81] InteractionSet_1.34.0      httr_1.4.7                </span></span>
 <span><span class="co">##  [83] htmlwidgets_1.6.4          S4Arrays_1.6.0            </span></span>
 <span><span class="co">##  [85] pkgconfig_2.0.3            gtable_0.3.6              </span></span>
@@ -1012,29 +1012,29 @@ just chromosome 1.</p>
 <span><span class="co">##  [91] scales_1.3.0               png_0.1-8                 </span></span>
 <span><span class="co">##  [93] knitr_1.49                 lambda.r_1.2.4            </span></span>
 <span><span class="co">##  [95] rstudioapi_0.17.1          rjson_0.2.23              </span></span>
-<span><span class="co">##  [97] nlme_3.1-166               checkmate_2.3.2           </span></span>
-<span><span class="co">##  [99] curl_6.1.0                 cachem_1.1.0              </span></span>
-<span><span class="co">## [101] stringr_1.5.1              foreign_0.8-87            </span></span>
+<span><span class="co">##  [97] nlme_3.1-167               checkmate_2.3.2           </span></span>
+<span><span class="co">##  [99] curl_6.2.1                 cachem_1.1.0              </span></span>
+<span><span class="co">## [101] stringr_1.5.1              foreign_0.8-88            </span></span>
 <span><span class="co">## [103] AnnotationDbi_1.68.0       restfulr_0.0.15           </span></span>
 <span><span class="co">## [105] desc_1.4.3                 pillar_1.10.1             </span></span>
 <span><span class="co">## [107] grid_4.4.2                 vctrs_0.6.5               </span></span>
 <span><span class="co">## [109] dbplyr_2.5.0               cluster_2.1.8             </span></span>
 <span><span class="co">## [111] htmlTable_2.4.3            evaluate_1.0.3            </span></span>
 <span><span class="co">## [113] VennDiagram_1.7.3          GenomicFeatures_1.58.0    </span></span>
-<span><span class="co">## [115] cli_3.6.3                  locfit_1.5-9.10           </span></span>
+<span><span class="co">## [115] cli_3.6.4                  locfit_1.5-9.12           </span></span>
 <span><span class="co">## [117] compiler_4.4.2             futile.options_1.0.1      </span></span>
-<span><span class="co">## [119] Rsamtools_2.22.0           rlang_1.1.4               </span></span>
+<span><span class="co">## [119] Rsamtools_2.22.0           rlang_1.1.5               </span></span>
 <span><span class="co">## [121] crayon_1.5.3               FMStable_0.1-4            </span></span>
 <span><span class="co">## [123] labeling_0.4.3             interp_1.1-6              </span></span>
 <span><span class="co">## [125] forcats_1.0.0              fs_1.6.5                  </span></span>
 <span><span class="co">## [127] stringi_1.8.4              viridisLite_0.4.2         </span></span>
 <span><span class="co">## [129] deldir_2.0-4               munsell_0.5.1             </span></span>
 <span><span class="co">## [131] lazyeval_0.2.2             csaw_1.40.0               </span></span>
-<span><span class="co">## [133] Matrix_1.7-1               hms_1.1.3                 </span></span>
-<span><span class="co">## [135] bit64_4.5.2                KEGGREST_1.46.0           </span></span>
-<span><span class="co">## [137] statmod_1.5.0              igraph_2.1.3              </span></span>
+<span><span class="co">## [133] Matrix_1.7-2               hms_1.1.3                 </span></span>
+<span><span class="co">## [135] bit64_4.6.0-1              KEGGREST_1.46.0           </span></span>
+<span><span class="co">## [137] statmod_1.5.0              igraph_2.1.4              </span></span>
 <span><span class="co">## [139] broom_1.0.7                memoise_2.0.1             </span></span>
-<span><span class="co">## [141] bslib_0.8.0                bit_4.5.0.1               </span></span>
+<span><span class="co">## [141] bslib_0.9.0                bit_4.6.0                 </span></span>
 <span><span class="co">## [143] GenomicInteractions_1.40.0</span></span></code></pre>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Bailey2012-qz" class="csl-entry">
