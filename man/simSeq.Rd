@@ -66,7 +66,9 @@ sim_seq <- simSeq(10, width = 20, pfm = ex_pfm$ESR1)
 sim_seq
 ## The position of the motif within each sequence is included in the mcols
 mcols(sim_seq)
+
 ## Use this to extract the random motifs from the random sequences
+library(IRanges)
 i <- mcols(sim_seq)$pos + cumsum(width(sim_seq)) - width(sim_seq)
 Views(unlist(sim_seq), start = i, width = 10)
 
