@@ -17,4 +17,4 @@
 
 # motifTestR 1.3.5
 
-+ Introduced prior counts for poisson, quasi-poisson and iterative enrichment testing
++ Introduced prior counts for enrichment testing

@@ -33,9 +33,8 @@ number}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
-\item{prior.count}{Passed to poisson and quasipoisson models and iterative
-approaches. Added to all counts to better manage zero counts in background
-sequences}
+\item{prior.count}{Added to all counts to better manage zero counts in
+background sequences}
 
 \item{...}{Passed to \link{getPwmMatches} or \link{countPwmMatches}}
 }

@@ -109,9 +109,8 @@
 #' number
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
-#' @param prior.count Passed to poisson and quasipoisson models and iterative
-#' approaches. Added to all counts to better manage zero counts in background
-#' sequences
+#' @param prior.count Added to all counts to better manage zero counts in
+#' background sequences
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
 #' @seealso [makeRMRanges()], [getPwmMatches()], [countPwmMatches()]
@@ -175,7 +174,7 @@ testMotifEnrich <- function(
     if (model == "quasipoisson")
         out <- .testQuasi(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "hypergeometric")
-        out <- .testHyper(pwm, stringset, bg, mc.cores, ...)
+        out <- .testHyper(pwm, stringset, bg, mc.cores, pc = prior.count, ...)
 
     out$fdr <- p.adjust(out$p, "fdr")
     o <- seq_len(nrow(out))
@@ -188,7 +187,7 @@ testMotifEnrich <- function(
 #' @importFrom parallel mclapply
 #' @importFrom stats phyper
 .testHyper <- function(
-        x, stringset, bg, mc.cores, type = c("pwm", "cluster"), ...
+        x, stringset, bg, mc.cores, type = c("pwm", "cluster"), pc, ...
 ){
 
     ## Check there's no overlap between the two by removing shared sequences
@@ -224,8 +223,8 @@ testMotifEnrich <- function(
             x, .hasClusterMatch, stringset = bg, ..., mc.cores = mc.cores
         )
     }
-    n_matches_ss <- vapply(matches_ss, sum, integer(1))
-    n_matches_bg <- vapply(matches_bg, sum, integer(1))
+    n_matches_ss <- vapply(matches_ss, sum, integer(1)) + pc
+    n_matches_bg <- vapply(matches_bg, sum, integer(1)) + pc
 
     or_denom <- (n_ss - n_matches_ss) / (n_bg - n_matches_bg)
     or <- (n_matches_ss / n_matches_bg) / or_denom

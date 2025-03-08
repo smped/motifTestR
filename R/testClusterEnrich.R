@@ -25,9 +25,8 @@
 #' number
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
-#' @param prior.count Passed to poisson and quasipoisson models and iterative
-#' approaches. Added to all counts to better manage zero counts in background
-#' sequences
+#' @param prior.count Added to all counts to better manage zero counts in
+#' background sequences
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
 #' @seealso [makeRMRanges()], [getClusterMatches()], [countClusterMatches()], [testMotifEnrich()]
@@ -87,7 +86,7 @@ testClusterEnrich <- function(
     if (model == "quasipoisson")
         out <- .testQuasi(cl, stringset, bg, var, mc.cores, type = "cluster", pc = prior.count, ...)
     if (model == "hypergeometric")
-        out <- .testHyper(cl, stringset, bg, mc.cores, type = "cluster", ...)
+        out <- .testHyper(cl, stringset, bg, mc.cores, type = "cluster", pc = prior.count, ...)
 
     out$fdr <- p.adjust(out$p, "fdr")
     o <- seq_len(nrow(out))
