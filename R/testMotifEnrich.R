@@ -38,6 +38,7 @@
 #' The parameters for a Poisson model are estimated in a per-sequence manner on
 #' the set of BG sequences, and the observed rate of motif-matches within the
 #' test set is then tested using \link[stats]{poisson.test}.
+#' Testing is two-sided.
 #'
 #' This approach assumes that all matches follow a Poisson distribution, which
 #' is often true, but data can also be over-dispersed. Given that this model can
@@ -61,6 +62,7 @@
 #' n_iter = 1000.
 #' Due to this parameterisation, quasipoisson approaches can be computationally
 #' time-consuming, as this is effectively an iterative approach.
+#' Testing is two-sided.
 #'
 #' ### Iteration
 #'
@@ -107,6 +109,9 @@
 #' number
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
+#' @param prior.count Passed to poisson and quasipoisson models and iterative
+#' approaches. Added to all counts to better manage zero counts in background
+#' sequences
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
 #' @seealso [makeRMRanges()], [getPwmMatches()], [countPwmMatches()]
@@ -145,7 +150,7 @@
 testMotifEnrich <- function(
         pwm, stringset, bg, var = "iteration",
         model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
-        sort_by = c("p", "none"), mc.cores = 1, ...
+        sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, ...
 ) {
 
     ## Checks
@@ -163,11 +168,12 @@ testMotifEnrich <- function(
     ## Run the analysis
     if (is.matrix(pwm)) pwm <- list(pwm)
     pwm <- .cleanMotifList(pwm)
-    if (model == "poisson") out <- .testPois(pwm, stringset, bg, mc.cores, ...)
+    if (model == "poisson")
+        out <- .testPois(pwm, stringset, bg, mc.cores, pc = prior.count, ...)
     if (model == "iteration")
-        out <- .testIter(pwm, stringset, bg, var, mc.cores, ...)
+        out <- .testIter(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "quasipoisson")
-        out <- .testQuasi(pwm, stringset, bg, var, mc.cores, ...)
+        out <- .testQuasi(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "hypergeometric")
         out <- .testHyper(pwm, stringset, bg, mc.cores, ...)
 
@@ -252,7 +258,8 @@ testMotifEnrich <- function(
 #' @importFrom matrixStats colSds
 #' @keywords internal
 .testQuasi <- function(
-        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), ...
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"),
+        pc, ...
 ) {
 
     n <- length(stringset)
@@ -287,7 +294,7 @@ testMotifEnrich <- function(
         seq_along(x),
         \(i) {
             df <- data.frame(
-                x = c(matches[[i]], bg_mat[,i]),
+                x = c(matches[[i]], bg_mat[,i]) + pc,
                 type = c("test", rep_len("control", n_iter))
             )
             fit <- glm(x~type, family = quasipoisson(), data = df)
@@ -306,7 +313,8 @@ testMotifEnrich <- function(
 #' @importFrom matrixStats colSds
 #' @keywords internal
 .testIter <- function(
-        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), ...
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc,
+        ...
 ) {
 
     stopifnot(var %in% colnames(mcols(bg)))
@@ -316,16 +324,16 @@ testMotifEnrich <- function(
         stop("All iterations must be the same size as the test sequences")
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...) + pc
         bg_matches <- mclapply(
-            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...) + pc,
             mc.cores = mc.cores
         )
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...) + pc
         bg_matches <- mclapply(
-            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...) + pc,
             mc.cores = mc.cores
         )
     }
@@ -352,18 +360,18 @@ testMotifEnrich <- function(
 #' @importFrom stats poisson.test
 #' @keywords internal
 .testPois <- function(
-        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), ...
+        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), pc, ...
 ){
 
     n_seq <- length(test_seq)
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...)
-        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...)
+        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
+        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...)
-        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...)
+        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
+        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
     }
     est_bg_rate <- n_bg / length(bg_seq)
     expected <- est_bg_rate * n_seq

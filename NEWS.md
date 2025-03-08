@@ -14,3 +14,7 @@
 # motifTestR 1.3.3
 
 + Added simSeq for generating random sequences
+
+# motifTestR 1.3.5
+
++ Introduced prior counts for poisson, quasi-poisson and iterative enrichment testing

@@ -12,6 +12,7 @@ testClusterEnrich(
   model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
+  prior.count = 1,
   ...
 )
 }
@@ -31,6 +32,10 @@ number}
 \item{sort_by}{Column to sort results by}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
+
+\item{prior.count}{Passed to poisson and quasipoisson models and iterative
+approaches. Added to all counts to better manage zero counts in background
+sequences}
 
 \item{...}{Passed to \link{getPwmMatches} or \link{countPwmMatches}}
 }
