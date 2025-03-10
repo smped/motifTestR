@@ -41,6 +41,7 @@ Suggests:
   extraChIPs,
   ggdendro,
   knitr,
+  MASS,
   MotifDb,
   rmarkdown,
   rtracklayer,
