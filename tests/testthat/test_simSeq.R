@@ -17,17 +17,17 @@ test_that("Basic sequence simulation works", {
 test_that("Poisson simulation works", {
     set.seed(1000)
     sim_seq <- simSeq(10, 5, pfm, rate = 0.5)
-    ## There should always be at least one NA
-    expect_true(any(is.na(mcols(sim_seq)$pos)))
+    expect_true(is(mcols(sim_seq)$pos, "IntegerList"))
+    expect_true(is(mcols(sim_seq)$n_motifs, "integer"))
     ## For a width of 5, can only be pos 1 or 2
-    expect_true(max(mcols(sim_seq)$pos, na.rm = TRUE) <= 2)
+    expect_true(max(unlist(mcols(sim_seq)$pos)) <= 2)
+
 })
 
 test_that("NegBin simulation works", {
     set.seed(1000)
     sim_seq <- simSeq(10, 5, pfm, rate = 1, theta = 1)
-    ## There should always be at least one NA
-    expect_true(any(is.na(mcols(sim_seq)$pos)))
+    expect_true(is(mcols(sim_seq)$pos, "IntegerList"))
 })
 
 test_that("simSeq errors where expected", {

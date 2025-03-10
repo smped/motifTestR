@@ -65,7 +65,8 @@
 #' Views(unlist(sim_seq), start = i, width = 10)
 #'
 #'
-#' @importFrom S4Vectors mcols<-
+#' @importFrom S4Vectors mcols<- DataFrame endoapply
+#' @importFrom IRanges IntegerList
 #' @importFrom methods slot is
 #' @export
 simSeq <- function(
@@ -78,7 +79,6 @@ simSeq <- function(
     prob <- rep_len(prob, length(nt))
     bg <- sample(nt, n * width, replace = TRUE, prob = prob)
     seq_starts <- seq(1, n*width, by = width) # Where each sequence starts
-    pos_vec <- NULL
 
     ## If a PWM is provided, now sample using the motifs
     if (!is.null(pfm)) {
@@ -109,6 +109,7 @@ simSeq <- function(
         ## Placing them in the mcols at the end will take some thought though
 
         if (is.null(rate)) {
+
             pos <- VGAM::rbetabinom.ab(n, max_start, shape1, shape2) + seq_starts
             ## Inject into the existing sequences. This is faster treating
             ## bg as a vector, not a matrix to be iterated through.
@@ -116,7 +117,9 @@ simSeq <- function(
                 pos, \(i) seq(i, length.out = pfm_width), numeric(pfm_width)
             )
             vec_pos <- as.integer(vec_pos)
+
         } else {
+
             stopifnot(rate > 0)
             if (is.null(theta)) {
                 pos <- .simPoisSeq(n, rate, shape1, shape2, max_start, seq_starts)
@@ -128,6 +131,7 @@ simSeq <- function(
                 pos, \(i) seq(i, length.out = pfm_width), numeric(pfm_width)
             )
             vec_pos <- as.integer(vec_pos)
+
         }
 
         ## Sample the random motifs as a matrix, then coerce to a vector
@@ -141,16 +145,25 @@ simSeq <- function(
         dups <- duplicated(vec_pos)
         bg[vec_pos[!dups]] <- as.character(rnd_mot)[!dups]
 
-        ## Now setup for inclusion in the mcols
-        pos_vec <- rep_len(NA, n)
-        temp_pos <- pos[apply(matrix(!dups, ncol = length(pos)), MARGIN = 2, all)]
-        i <- ceiling(temp_pos / width)
-        pos_vec[i] <- temp_pos %% width
-
     }
+
     seq <- apply(matrix(bg, ncol = n), MARGIN = 2, paste, collapse = "")
     seq <- as(seq, as)
-    if (is(seq, "Vector")) mcols(seq)$pos <- pos_vec ## The base class with mcols
+    if (is(seq, "Vector") & !is.null(pfm)) {
+
+        which_seq <- ceiling(pos / width)
+        pos_list <- IntegerList(vector("list", n))
+        pos_list[unique(which_seq)] <- split(pos %% width, f = which_seq)
+        pos_list <- endoapply(endoapply(pos_list, unique), sort)
+        ## Now form any mcols
+        n_motifs <- vapply(pos_list, length, integer(1))
+        if (all(n_motifs == 1)) pos_list <- unlist(pos_list)
+        seq_mcols <- DataFrame(
+            pos = pos_list,
+            n_motifs = n_motifs
+        )
+        mcols(seq) <- seq_mcols ## The base class with mcols
+    }
     seq
 
 }
