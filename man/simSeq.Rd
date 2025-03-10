@@ -12,6 +12,8 @@ simSeq(
   prob = rep(0.25, 4),
   shape1 = 1,
   shape2 = 1,
+  rate = NULL,
+  theta = NULL,
   as = "DNAStringSet",
   ...
 )
@@ -25,9 +27,18 @@ simSeq(
 
 \item{nt}{Nucleotides to include}
 
-\item{prob}{Sampling probablities for each nucleotide}
+\item{prob}{Sampling probabilities for each nucleotide}
 
 \item{shape1, shape2}{Passed to \link[VGAM]{rbetabinom.ab}}
+
+\item{rate}{The expected rate of motifs per sequence. Is equivalent to
+\eqn{ \lambda } in \link[stats]{rpois}. If set to NULL, all sequences will
+be simulated with a single motif, otherwise a Poisson distribution will be used}
+
+\item{theta}{Overdispersion parameter passed to \link[MASS]{rnegbin}.
+If set to NULL the rate parameter will be passed to \link[stats]{rpois}.
+However if this value is set, the rate and theta parameters are passed to
+\link[MASS]{rnegbin} to simulate overdispersed counts}
 
 \item{as}{ObjectClass to return objects as. Defaults to DNAStringSet, but
 other viable options may include 'character', 'CharacterList' or any
@@ -52,9 +63,18 @@ If a PWM/PFM is supplied, the shape parameters are first passed to
 \link[VGAM]{rbetabinom.ab} to determine the random positions the motif will
 be placed, with the default parameters representing a discrete uniform
 distribution.
-Once positions for the TFBM have been selected, nucleotides will be randomly
-sampled using the probabilities provided in the PWM and these motifs will be
-placed at the randomly sample positions
+
+The sequences to have a motif inserted will be selected, along with the
+number of motifs, using the rate and theta parameters.
+If both are NULL, every sequence will have a single motif inserted.
+If the rate is > 0 and theta is NULL, sequences will be selected to have
+motifs inserted using a poisson distribution.
+If theta is also provided, sequences will be selected to contain motifs
+using a negative binomial distribution
+
+Once positions and sequences for the TFBM have been selected, nucleotides
+will be randomly sampled using the probabilities provided in the PWM and
+these motifs will be placed at the randomly sampled positions
 }
 \examples{
 ## Randomly generate 10x50nt sequences without any TFBMs present
