@@ -257,8 +257,7 @@ testMotifEnrich <- function(
 #' @importFrom matrixStats colSds
 #' @keywords internal
 .testQuasi <- function(
-        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"),
-        pc, ...
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc, ...
 ) {
 
     n <- length(stringset)
@@ -269,16 +268,16 @@ testMotifEnrich <- function(
 
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...) + pc
         bg_matches <- mclapply(
-            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...) + pc,
             mc.cores = mc.cores
         )
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...) + pc
         bg_matches <- mclapply(
-            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...) + pc,
             mc.cores = mc.cores
         )
     }
@@ -288,12 +287,13 @@ testMotifEnrich <- function(
     mean_bg <- colMeans(bg_mat)
     sd_bg <- colSds(bg_mat)
     Z <- (matches - mean_bg) / sd_bg
+    Z[sd_bg == 0] <- NA_real_ # Handle where sd_bg == 0
 
     p <- vapply(
         seq_along(x),
         \(i) {
             df <- data.frame(
-                x = c(matches[[i]], bg_mat[,i]) + pc,
+                x = c(matches[[i]], bg_mat[,i]),
                 type = c("test", rep_len("control", n_iter))
             )
             fit <- glm(x~type, family = quasipoisson(), data = df)
@@ -312,8 +312,7 @@ testMotifEnrich <- function(
 #' @importFrom matrixStats colSds
 #' @keywords internal
 .testIter <- function(
-        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc,
-        ...
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc, ...
 ) {
 
     stopifnot(var %in% colnames(mcols(bg)))
@@ -346,6 +345,7 @@ testMotifEnrich <- function(
     )
     iter_p <- (colSums(diff > 0) + 1) / n_iter
     Z <- (matches - mean_bg) / sd_bg
+    Z[sd_bg == 0] <- NA_real_ ## Handle where sd_bg == 0
     p <- 1 - pchisq(Z^2, 1)
 
     data.frame(
