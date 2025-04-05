@@ -179,7 +179,7 @@ ranges to a character vector.</p>
 <h3 id="obtaining-a-list-of-pwms-for-testing">Obtaining a List of PWMs for Testing<a class="anchor" aria-label="anchor" href="#obtaining-a-list-of-pwms-for-testing"></a>
 </h3>
 <p>A small list of Position Frequency Matrices (PFMs), obtained from
-<em><a href="https://bioconductor.org/packages/3.20/MotifDb" class="external-link">MotifDb</a></em>
+<em><a href="https://bioconductor.org/packages/3.21/MotifDb" class="external-link">MotifDb</a></em>
 are provided with the package and these will be suitable for all
 downstream analysis. All functions will convert PFMs to PWMs
 internally.</p>
@@ -471,7 +471,7 @@ with proportions that match the test set of sequences.</p>
 <span><span class="va">chr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">bg_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span></span>
 <span>  enhancer <span class="op">=</span> <span class="va">zr75_enh</span>,</span>
-<span>  other <span class="op">=</span> <span class="fu">GenomicRanges</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">chr1</span>, <span class="va">zr75_enh</span><span class="op">)</span></span>
+<span>  other <span class="op">=</span> <span class="fu">GenomicRanges</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">chr1</span>, <span class="va">zr75_enh</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The provided object <code>hg19_mask</code> contains regions of the
 genome which are rich in Ns, such as centromeres and telomeres.
@@ -511,7 +511,7 @@ to the sequences, as these are required for this approach.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
 <p>If choosing strategies for enrichment testing outside of
 <code>motifTestR</code>, these sequences can be exported as a fasta file
-using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.20/Biostrings" class="external-link">Biostrings</a></em>
+using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.21/Biostrings" class="external-link">Biostrings</a></em>
 package.</p>
 </div>
 <div class="section level3">
@@ -583,11 +583,11 @@ lowest possible p-value is 1/n_iterations.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">enrich_res</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       sequences matches expected enrichment          Z            p</span></span>
-<span><span class="co">## ZN143       849      43     0.19 226.315789 102.144041 1.108724e-74</span></span>
-<span><span class="co">## ESR1        849      51     4.41  11.564626  21.469841 1.442392e-30</span></span>
-<span><span class="co">## FOXA1       849     292   125.64   2.324101  13.345825 9.564101e-23</span></span>
-<span><span class="co">## ANDR        849      36    11.53   3.122290   7.014137 2.188131e-09</span></span>
-<span><span class="co">## ZN281       849      46    19.53   2.355351   5.186250 2.649028e-06</span></span>
+<span><span class="co">## ZN143       849      44     1.19  36.974790 102.144041 1.108724e-74</span></span>
+<span><span class="co">## ESR1        849      52     5.41   9.611830  21.469841 1.442392e-30</span></span>
+<span><span class="co">## FOXA1       849     293   126.64   2.313645  13.345825 9.564101e-23</span></span>
+<span><span class="co">## ANDR        849      37    12.53   2.952913   7.014137 2.188131e-09</span></span>
+<span><span class="co">## ZN281       849      47    20.53   2.289333   5.186250 2.649028e-06</span></span>
 <span><span class="co">##                fdr n_iter     sd_bg</span></span>
 <span><span class="co">## ZN143 5.543618e-74    100  0.419114</span></span>
 <span><span class="co">## ESR1  3.605980e-30    100  2.170021</span></span>
@@ -621,7 +621,7 @@ than under modelling approaches.</p>
 <span><span class="co">## ZN281 2.145708e-07   0.01    100  5.103880</span></span></code></pre>
 <p>Once we have selected our motifs of interest, sequences with matches
 can be compared to easily assess co-occurrence, using
-<code><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps()</a></code> from <em><a href="https://bioconductor.org/packages/3.20/extraChIPs" class="external-link">extraChIPs</a></em>.
+<code><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps()</a></code> from <em><a href="https://bioconductor.org/packages/3.21/extraChIPs" class="external-link">extraChIPs</a></em>.
 In our test set, peaks were selected based on co-detection of ESR1 and
 ANDR, however the rate of co-occurrence is low, revealing key insights
 into the binding dynamics of these two TFs.</p>
@@ -849,10 +849,10 @@ background sequences can also be used for clusters of motifs.</p>
 <span>  <span class="va">ex_cl</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, model <span class="op">=</span> <span class="st">"quasi"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##            sequences matches expected enrichment         Z            p</span></span>
-<span><span class="co">## ZN143            849      43     0.19 226.315789 102.14404 1.108724e-74</span></span>
-<span><span class="co">## ESR1             849      51     4.41  11.564626  21.46984 1.442392e-30</span></span>
-<span><span class="co">## ANDR/FOXA1       849     312   133.08   2.344454  14.11311 2.895015e-24</span></span>
-<span><span class="co">## ZN281            849      46    19.53   2.355351   5.18625 2.649028e-06</span></span>
+<span><span class="co">## ZN143            849      44     1.19  36.974790 102.14404 1.108724e-74</span></span>
+<span><span class="co">## ESR1             849      52     5.41   9.611830  21.46984 1.442392e-30</span></span>
+<span><span class="co">## ANDR/FOXA1       849     313   134.08   2.334427  14.11311 2.895015e-24</span></span>
+<span><span class="co">## ZN281            849      47    20.53   2.289333   5.18625 2.649028e-06</span></span>
 <span><span class="co">##                     fdr n_iter     sd_bg</span></span>
 <span><span class="co">## ZN143      4.434895e-74    100  0.419114</span></span>
 <span><span class="co">## ESR1       2.884784e-30    100  2.170021</span></span>
@@ -926,7 +926,7 @@ just chromosome 1.</p>
 <div class="section level2">
 <h2 class="unnumbered" id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<pre><code><span><span class="co">## R version 4.4.2 (2024-10-31)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2025-03-08 r87910)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">## Running under: Ubuntu 24.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -950,92 +950,50 @@ just chromosome 1.</p>
 <span><span class="co">## [8] methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] universalmotif_1.24.2             patchwork_1.3.0                  </span></span>
-<span><span class="co">##  [3] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.74.0                  </span></span>
-<span><span class="co">##  [5] BiocIO_1.16.0                     rtracklayer_1.66.0               </span></span>
-<span><span class="co">##  [7] extraChIPs_1.10.0                 tibble_3.2.1                     </span></span>
-<span><span class="co">##  [9] SummarizedExperiment_1.36.0       Biobase_2.66.0                   </span></span>
-<span><span class="co">## [11] MatrixGenerics_1.18.1             matrixStats_1.5.0                </span></span>
-<span><span class="co">## [13] ggside_0.3.1                      BiocParallel_1.40.0              </span></span>
+<span><span class="co">##  [1] universalmotif_1.25.1             patchwork_1.3.0                  </span></span>
+<span><span class="co">##  [3] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.75.1                  </span></span>
+<span><span class="co">##  [5] BiocIO_1.17.1                     rtracklayer_1.67.1               </span></span>
+<span><span class="co">##  [7] extraChIPs_1.11.2                 tibble_3.2.1                     </span></span>
+<span><span class="co">##  [9] SummarizedExperiment_1.37.0       Biobase_2.67.0                   </span></span>
+<span><span class="co">## [11] MatrixGenerics_1.19.1             matrixStats_1.5.0                </span></span>
+<span><span class="co">## [13] ggside_0.3.1                      BiocParallel_1.41.5              </span></span>
 <span><span class="co">## [15] motifTestR_1.3.6                  ggplot2_3.5.1                    </span></span>
-<span><span class="co">## [17] GenomicRanges_1.58.0              Biostrings_2.74.1                </span></span>
-<span><span class="co">## [19] GenomeInfoDb_1.42.3               XVector_0.46.0                   </span></span>
-<span><span class="co">## [21] IRanges_2.40.1                    S4Vectors_0.44.0                 </span></span>
-<span><span class="co">## [23] BiocGenerics_0.52.0               BiocStyle_2.34.0                 </span></span>
+<span><span class="co">## [17] GenomicRanges_1.59.1              Biostrings_2.75.4                </span></span>
+<span><span class="co">## [19] GenomeInfoDb_1.43.4               XVector_0.47.2                   </span></span>
+<span><span class="co">## [21] IRanges_2.41.3                    S4Vectors_0.45.4                 </span></span>
+<span><span class="co">## [23] BiocGenerics_0.53.6               generics_0.1.3                   </span></span>
+<span><span class="co">## [25] BiocStyle_2.35.0                 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] splines_4.4.2              bitops_1.0-9              </span></span>
-<span><span class="co">##   [3] filelock_1.0.3             polyclip_1.10-7           </span></span>
-<span><span class="co">##   [5] XML_3.99-0.18              rpart_4.1.24              </span></span>
-<span><span class="co">##   [7] lifecycle_1.0.4            httr2_1.1.1               </span></span>
-<span><span class="co">##   [9] edgeR_4.4.2                lattice_0.22-6            </span></span>
-<span><span class="co">##  [11] ensembldb_2.30.0           MASS_7.3-65               </span></span>
-<span><span class="co">##  [13] backports_1.5.0            magrittr_2.0.3            </span></span>
-<span><span class="co">##  [15] limma_3.62.2               Hmisc_5.2-2               </span></span>
-<span><span class="co">##  [17] sass_0.4.9                 rmarkdown_2.29            </span></span>
-<span><span class="co">##  [19] jquerylib_0.1.4            yaml_2.3.10               </span></span>
-<span><span class="co">##  [21] metapod_1.14.0             Gviz_1.50.0               </span></span>
-<span><span class="co">##  [23] DBI_1.2.3                  RColorBrewer_1.1-3        </span></span>
-<span><span class="co">##  [25] harmonicmeanp_3.0.1        abind_1.4-8               </span></span>
-<span><span class="co">##  [27] zlibbioc_1.52.0            purrr_1.0.4               </span></span>
-<span><span class="co">##  [29] AnnotationFilter_1.30.0    biovizBase_1.54.0         </span></span>
-<span><span class="co">##  [31] RCurl_1.98-1.16            nnet_7.3-20               </span></span>
-<span><span class="co">##  [33] VariantAnnotation_1.52.0   tweenr_2.0.3              </span></span>
-<span><span class="co">##  [35] rappdirs_0.3.3             GenomeInfoDbData_1.2.13   </span></span>
-<span><span class="co">##  [37] ggrepel_0.9.6              pkgdown_2.1.1.9000        </span></span>
-<span><span class="co">##  [39] codetools_0.2-20           DelayedArray_0.32.0       </span></span>
-<span><span class="co">##  [41] xml2_1.3.7                 ggforce_0.4.2             </span></span>
-<span><span class="co">##  [43] tidyselect_1.2.1           futile.logger_1.4.3       </span></span>
-<span><span class="co">##  [45] UCSC.utils_1.2.0           farver_2.1.2              </span></span>
-<span><span class="co">##  [47] ComplexUpset_1.3.3         BiocFileCache_2.14.0      </span></span>
-<span><span class="co">##  [49] base64enc_0.1-3            GenomicAlignments_1.42.0  </span></span>
-<span><span class="co">##  [51] jsonlite_1.9.1             Formula_1.2-5             </span></span>
-<span><span class="co">##  [53] systemfonts_1.2.1          tools_4.4.2               </span></span>
-<span><span class="co">##  [55] progress_1.2.3             ragg_1.3.3                </span></span>
-<span><span class="co">##  [57] Rcpp_1.0.14                glue_1.8.0                </span></span>
-<span><span class="co">##  [59] gridExtra_2.3              SparseArray_1.6.2         </span></span>
-<span><span class="co">##  [61] mgcv_1.9-1                 xfun_0.51                 </span></span>
-<span><span class="co">##  [63] dplyr_1.1.4                withr_3.0.2               </span></span>
-<span><span class="co">##  [65] formatR_1.14               BiocManager_1.30.25       </span></span>
-<span><span class="co">##  [67] fastmap_1.2.0              latticeExtra_0.6-30       </span></span>
-<span><span class="co">##  [69] digest_0.6.37              R6_2.6.1                  </span></span>
-<span><span class="co">##  [71] textshaping_1.0.0          colorspace_2.1-1          </span></span>
-<span><span class="co">##  [73] jpeg_0.1-10                dichromat_2.0-0.1         </span></span>
-<span><span class="co">##  [75] biomaRt_2.62.1             RSQLite_2.3.9             </span></span>
-<span><span class="co">##  [77] tidyr_1.3.1                generics_0.1.3            </span></span>
-<span><span class="co">##  [79] data.table_1.17.0          prettyunits_1.2.0         </span></span>
-<span><span class="co">##  [81] InteractionSet_1.34.0      httr_1.4.7                </span></span>
-<span><span class="co">##  [83] htmlwidgets_1.6.4          S4Arrays_1.6.0            </span></span>
-<span><span class="co">##  [85] pkgconfig_2.0.3            gtable_0.3.6              </span></span>
-<span><span class="co">##  [87] blob_1.2.4                 htmltools_0.5.8.1         </span></span>
-<span><span class="co">##  [89] bookdown_0.42              ProtGenerics_1.38.0       </span></span>
-<span><span class="co">##  [91] scales_1.3.0               png_0.1-8                 </span></span>
-<span><span class="co">##  [93] knitr_1.49                 lambda.r_1.2.4            </span></span>
-<span><span class="co">##  [95] rstudioapi_0.17.1          rjson_0.2.23              </span></span>
-<span><span class="co">##  [97] nlme_3.1-167               checkmate_2.3.2           </span></span>
-<span><span class="co">##  [99] curl_6.2.1                 cachem_1.1.0              </span></span>
-<span><span class="co">## [101] stringr_1.5.1              foreign_0.8-88            </span></span>
-<span><span class="co">## [103] AnnotationDbi_1.68.0       restfulr_0.0.15           </span></span>
-<span><span class="co">## [105] desc_1.4.3                 pillar_1.10.1             </span></span>
-<span><span class="co">## [107] grid_4.4.2                 vctrs_0.6.5               </span></span>
-<span><span class="co">## [109] dbplyr_2.5.0               cluster_2.1.8             </span></span>
-<span><span class="co">## [111] htmlTable_2.4.3            evaluate_1.0.3            </span></span>
-<span><span class="co">## [113] VennDiagram_1.7.3          GenomicFeatures_1.58.0    </span></span>
-<span><span class="co">## [115] cli_3.6.4                  locfit_1.5-9.12           </span></span>
-<span><span class="co">## [117] compiler_4.4.2             futile.options_1.0.1      </span></span>
-<span><span class="co">## [119] Rsamtools_2.22.0           rlang_1.1.5               </span></span>
-<span><span class="co">## [121] crayon_1.5.3               FMStable_0.1-4            </span></span>
-<span><span class="co">## [123] labeling_0.4.3             interp_1.1-6              </span></span>
-<span><span class="co">## [125] forcats_1.0.0              fs_1.6.5                  </span></span>
-<span><span class="co">## [127] stringi_1.8.4              viridisLite_0.4.2         </span></span>
-<span><span class="co">## [129] deldir_2.0-4               munsell_0.5.1             </span></span>
-<span><span class="co">## [131] lazyeval_0.2.2             csaw_1.40.0               </span></span>
-<span><span class="co">## [133] Matrix_1.7-2               hms_1.1.3                 </span></span>
-<span><span class="co">## [135] bit64_4.6.0-1              KEGGREST_1.46.0           </span></span>
-<span><span class="co">## [137] statmod_1.5.0              igraph_2.1.4              </span></span>
-<span><span class="co">## [139] broom_1.0.7                memoise_2.0.1             </span></span>
-<span><span class="co">## [141] bslib_0.9.0                bit_4.6.0                 </span></span>
-<span><span class="co">## [143] GenomicInteractions_1.40.0</span></span></code></pre>
+<span><span class="co">##  [1] bitops_1.0-9             rlang_1.1.5              magrittr_2.0.3          </span></span>
+<span><span class="co">##  [4] compiler_4.5.0           mgcv_1.9-3               systemfonts_1.2.2       </span></span>
+<span><span class="co">##  [7] vctrs_0.6.5              stringr_1.5.1            pkgconfig_2.0.3         </span></span>
+<span><span class="co">## [10] crayon_1.5.3             fastmap_1.2.0            labeling_0.4.3          </span></span>
+<span><span class="co">## [13] Rsamtools_2.23.1         rmarkdown_2.29           UCSC.utils_1.3.1        </span></span>
+<span><span class="co">## [16] ragg_1.3.3               purrr_1.0.4              xfun_0.52               </span></span>
+<span><span class="co">## [19] cachem_1.1.0             jsonlite_2.0.0           FMStable_0.1-4          </span></span>
+<span><span class="co">## [22] DelayedArray_0.33.6      R6_2.6.1                 bslib_0.9.0             </span></span>
+<span><span class="co">## [25] stringi_1.8.7            RColorBrewer_1.1-3       ComplexUpset_1.3.3      </span></span>
+<span><span class="co">## [28] limma_3.63.11            jquerylib_0.1.4          Rcpp_1.0.14             </span></span>
+<span><span class="co">## [31] bookdown_0.42            knitr_1.50               splines_4.5.0           </span></span>
+<span><span class="co">## [34] Matrix_1.7-3             tidyselect_1.2.1         abind_1.4-8             </span></span>
+<span><span class="co">## [37] yaml_2.3.10              codetools_0.2-20         curl_6.2.2              </span></span>
+<span><span class="co">## [40] lattice_0.22-7           InteractionSet_1.35.0    withr_3.0.2             </span></span>
+<span><span class="co">## [43] csaw_1.41.2              evaluate_1.0.3           desc_1.4.3              </span></span>
+<span><span class="co">## [46] pillar_1.10.2            BiocManager_1.30.25      RCurl_1.98-1.17         </span></span>
+<span><span class="co">## [49] munsell_0.5.1            scales_1.3.0             harmonicmeanp_3.0.1     </span></span>
+<span><span class="co">## [52] glue_1.8.0               metapod_1.15.0           tools_4.5.0             </span></span>
+<span><span class="co">## [55] locfit_1.5-9.12          GenomicAlignments_1.43.0 forcats_1.0.0           </span></span>
+<span><span class="co">## [58] fs_1.6.5                 XML_3.99-0.18            grid_4.5.0              </span></span>
+<span><span class="co">## [61] tidyr_1.3.1              edgeR_4.5.10             colorspace_2.1-1        </span></span>
+<span><span class="co">## [64] nlme_3.1-168             GenomeInfoDbData_1.2.14  restfulr_0.0.15         </span></span>
+<span><span class="co">## [67] cli_3.6.4                textshaping_1.0.0        viridisLite_0.4.2       </span></span>
+<span><span class="co">## [70] S4Arrays_1.7.3           dplyr_1.1.4              gtable_0.3.6            </span></span>
+<span><span class="co">## [73] sass_0.4.9               digest_0.6.37            SparseArray_1.7.7       </span></span>
+<span><span class="co">## [76] ggrepel_0.9.6            rjson_0.2.23             htmlwidgets_1.6.4       </span></span>
+<span><span class="co">## [79] farver_2.1.2             htmltools_0.5.8.1        pkgdown_2.1.1.9000      </span></span>
+<span><span class="co">## [82] lifecycle_1.0.4          httr_1.4.7               statmod_1.5.0           </span></span>
+<span><span class="co">## [85] MASS_7.3-65</span></span></code></pre>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Bailey2012-qz" class="csl-entry">
 Bailey, Timothy L, and Philip Machanick. 2012. <span>“Inferring Direct
