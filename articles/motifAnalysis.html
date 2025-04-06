@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -582,18 +582,18 @@ lowest possible p-value is 1/n_iterations.</p>
 <span>  <span class="va">ex_pfm</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, model <span class="op">=</span> <span class="st">"quasi"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">enrich_res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##       sequences matches expected enrichment          Z            p</span></span>
-<span><span class="co">## ZN143       849      44     1.19  36.974790 102.144041 1.108724e-74</span></span>
-<span><span class="co">## ESR1        849      52     5.41   9.611830  21.469841 1.442392e-30</span></span>
-<span><span class="co">## FOXA1       849     293   126.64   2.313645  13.345825 9.564101e-23</span></span>
-<span><span class="co">## ANDR        849      37    12.53   2.952913   7.014137 2.188131e-09</span></span>
-<span><span class="co">## ZN281       849      47    20.53   2.289333   5.186250 2.649028e-06</span></span>
-<span><span class="co">##                fdr n_iter     sd_bg</span></span>
-<span><span class="co">## ZN143 5.543618e-74    100  0.419114</span></span>
-<span><span class="co">## ESR1  3.605980e-30    100  2.170021</span></span>
-<span><span class="co">## FOXA1 1.594017e-22    100 12.465322</span></span>
-<span><span class="co">## ANDR  2.735163e-09    100  3.488669</span></span>
-<span><span class="co">## ZN281 2.649028e-06    100  5.103880</span></span></code></pre>
+<pre><code><span><span class="co">##       sequences matches expected enrichment         Z            p          fdr</span></span>
+<span><span class="co">## ZN143       849      43     1.22  35.245902 38.737822 1.585282e-37 7.926411e-37</span></span>
+<span><span class="co">## ESR1        849      51     5.40   9.444444 20.012479 1.734768e-28 4.336921e-28</span></span>
+<span><span class="co">## FOXA1       849     293   126.60   2.314376 13.299432 1.188963e-22 1.981605e-22</span></span>
+<span><span class="co">## ANDR        849      36    12.60   2.857143  6.290326 4.520855e-08 5.651069e-08</span></span>
+<span><span class="co">## ZN281       849      47    20.62   2.279340  4.852750 9.665125e-06 9.665125e-06</span></span>
+<span><span class="co">##       n_iter     sd_bg</span></span>
+<span><span class="co">## ZN143    100  1.078532</span></span>
+<span><span class="co">## ESR1     100  2.278578</span></span>
+<span><span class="co">## FOXA1    100 12.511813</span></span>
+<span><span class="co">## ANDR     100  3.719998</span></span>
+<span><span class="co">## ZN281    100  5.436093</span></span></code></pre>
 <p>Setting the model to “iteration” instead uses a classical iterative
 approach to define the null distributions of counts and Z-scores are
 calculated from these values. The returned p-values from this test are
@@ -849,15 +849,15 @@ background sequences can also be used for clusters of motifs.</p>
 <span>  <span class="va">ex_cl</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, model <span class="op">=</span> <span class="st">"quasi"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##            sequences matches expected enrichment         Z            p</span></span>
-<span><span class="co">## ZN143            849      44     1.19  36.974790 102.14404 1.108724e-74</span></span>
-<span><span class="co">## ESR1             849      52     5.41   9.611830  21.46984 1.442392e-30</span></span>
-<span><span class="co">## ANDR/FOXA1       849     313   134.08   2.334427  14.11311 2.895015e-24</span></span>
-<span><span class="co">## ZN281            849      47    20.53   2.289333   5.18625 2.649028e-06</span></span>
+<span><span class="co">## ZN143            849      44     1.14  38.596491 42.636635 1.121325e-39</span></span>
+<span><span class="co">## ESR1             849      51     5.40   9.444444 18.047785 2.079208e-25</span></span>
+<span><span class="co">## ANDR/FOXA1       849     312   134.16   2.325581 13.948343 6.044820e-24</span></span>
+<span><span class="co">## ZN281            849      46    20.55   2.238443  4.896252 7.962617e-06</span></span>
 <span><span class="co">##                     fdr n_iter     sd_bg</span></span>
-<span><span class="co">## ZN143      4.434895e-74    100  0.419114</span></span>
-<span><span class="co">## ESR1       2.884784e-30    100  2.170021</span></span>
-<span><span class="co">## ANDR/FOXA1 3.860019e-24    100 12.677571</span></span>
-<span><span class="co">## ZN281      2.649028e-06    100  5.103880</span></span></code></pre>
+<span><span class="co">## ZN143      4.485300e-39    100  1.005239</span></span>
+<span><span class="co">## ESR1       4.158416e-25    100  2.526626</span></span>
+<span><span class="co">## ANDR/FOXA1 8.059760e-24    100 12.749902</span></span>
+<span><span class="co">## ZN281      7.962617e-06    100  5.197853</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="working-with-larger-datasets">Working With Larger Datasets<a class="anchor" aria-label="anchor" href="#working-with-larger-datasets"></a>
@@ -957,7 +957,7 @@ just chromosome 1.</p>
 <span><span class="co">##  [9] SummarizedExperiment_1.37.0       Biobase_2.67.0                   </span></span>
 <span><span class="co">## [11] MatrixGenerics_1.19.1             matrixStats_1.5.0                </span></span>
 <span><span class="co">## [13] ggside_0.3.1                      BiocParallel_1.41.5              </span></span>
-<span><span class="co">## [15] motifTestR_1.3.6                  ggplot2_3.5.1                    </span></span>
+<span><span class="co">## [15] motifTestR_1.3.7                  ggplot2_3.5.1                    </span></span>
 <span><span class="co">## [17] GenomicRanges_1.59.1              Biostrings_2.75.4                </span></span>
 <span><span class="co">## [19] GenomeInfoDb_1.43.4               XVector_0.47.2                   </span></span>
 <span><span class="co">## [21] IRanges_2.41.3                    S4Vectors_0.45.4                 </span></span>
