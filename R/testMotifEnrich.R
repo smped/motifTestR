@@ -110,7 +110,9 @@
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param prior.count Added to all counts to better manage zero counts in
-#' background sequences
+#' background sequences. For analysis under Poisson and QuasiPoisson models
+#' prior counts are added as Poisson noise using this value as expected counts
+#' @param seed Used for reproducibility when adding Poisson noise
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
 #' @seealso [makeRMRanges()], [getPwmMatches()], [countPwmMatches()]
@@ -149,7 +151,7 @@
 testMotifEnrich <- function(
         pwm, stringset, bg, var = "iteration",
         model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
-        sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, ...
+        sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, seed = 100, ...
 ) {
 
     ## Checks
@@ -168,11 +170,15 @@ testMotifEnrich <- function(
     if (is.matrix(pwm)) pwm <- list(pwm)
     pwm <- .cleanMotifList(pwm)
     if (model == "poisson")
-        out <- .testPois(pwm, stringset, bg, mc.cores, pc = prior.count, ...)
+        out <- .testPois(
+            pwm, stringset, bg, mc.cores, "pwm", prior.count, seed, ...
+        )
     if (model == "iteration")
         out <- .testIter(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "quasipoisson")
-        out <- .testQuasi(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
+        out <- .testQuasi(
+            pwm, stringset, bg, var, mc.cores, "pwm", prior.count, seed, ...
+        )
     if (model == "hypergeometric")
         out <- .testHyper(pwm, stringset, bg, mc.cores, pc = prior.count, ...)
 
@@ -257,8 +263,14 @@ testMotifEnrich <- function(
 #' @importFrom matrixStats colSds
 #' @keywords internal
 .testQuasi <- function(
-        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc, ...
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc, seed,
+        ...
 ) {
+
+    ## Prior counts should be handled with caution here as using a fixed value
+    ## will breach the Poisson distribution, e.g. adding a fixed value of 1 to
+    ## a consistent run of zeros will give mean 1 with variance 0. Poisson
+    ## noise may be preferable, but may profoundly reduce significance
 
     n <- length(stringset)
     stopifnot(var %in% colnames(mcols(bg)))
@@ -268,26 +280,33 @@ testMotifEnrich <- function(
 
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...) + pc
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
         bg_matches <- mclapply(
-            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...) + pc,
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
             mc.cores = mc.cores
         )
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...) + pc
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
         bg_matches <- mclapply(
-            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...) + pc,
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
             mc.cores = mc.cores
         )
     }
     bg_mat <- do.call("rbind", bg_matches)
+    ## Add Poisson prior counts
+    if (pc != 0) {
+        set.seed(seed)
+        matches <- matches + stats::rpois(length(matches), pc)
+        bg_mat <- bg_mat + stats::rpois(length(bg_mat), pc)
+    }
     n_iter <- nrow(bg_mat)
     stopifnot(n_iter > 1)
     mean_bg <- colMeans(bg_mat)
     sd_bg <- colSds(bg_mat)
     Z <- (matches - mean_bg) / sd_bg
     Z[sd_bg == 0] <- NA_real_ # Handle where sd_bg == 0
+    enrichment <- (matches) / colMeans(bg_mat)
 
     p <- vapply(
         seq_along(x),
@@ -303,7 +322,7 @@ testMotifEnrich <- function(
 
     data.frame(
         sequences = n, matches, expected = mean_bg,
-        enrichment = matches / mean_bg, Z, p, n_iter, sd_bg
+        enrichment, Z, p, n_iter, sd_bg
     )
 }
 
@@ -359,21 +378,35 @@ testMotifEnrich <- function(
 #' @importFrom stats poisson.test
 #' @keywords internal
 .testPois <- function(
-        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), pc, ...
+        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), pc, seed, ...
 ){
+
+    ## Prior counts should be handled with caution here as using a fixed value
+    ## will breach the Poisson distribution, e.g. adding a fixed value of 1 to
+    ## a consistent run of zeros will give mean 1 with variance 0. Poisson
+    ## noise may be preferable, but may profoundly reduce significance
 
     n_seq <- length(test_seq)
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
-        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
+        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...)
+        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...)
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
-        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
+        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...)
+        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...)
+    }
+    ## Add Poisson prior counts
+    if (pc != 0) {
+        set.seed(seed)
+        matches <- matches + stats::rpois(length(matches), pc)
+        n_bg <- n_bg + stats::rpois(length(n_bg), pc)
     }
     est_bg_rate <- n_bg / length(bg_seq)
     expected <- est_bg_rate * n_seq
+    ## Get the Z-scores & handle those with zero variance
+    Z <- (matches - expected) / sqrt(expected)
+    Z[sqrt(expected) == 0] <- NA_real_
     ## Running vapply seems faster than mclappy here
     p <- vapply(
         seq_along(x),
@@ -382,7 +415,7 @@ testMotifEnrich <- function(
     )
     data.frame(
         sequences = n_seq, matches, expected, enrichment = matches / expected,
-        Z  = (matches - expected) / sqrt(expected), p, est_bg_rate
+        Z, p, est_bg_rate
     )
 
 }

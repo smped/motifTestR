@@ -13,6 +13,7 @@ testMotifEnrich(
   sort_by = c("p", "none"),
   mc.cores = 1,
   prior.count = 1,
+  seed = 100,
   ...
 )
 }
@@ -33,7 +34,10 @@ number}
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
 \item{prior.count}{Added to all counts to better manage zero counts in
-background sequences}
+background sequences. For analysis under Poisson and QuasiPoisson models
+prior counts are added as Poisson noise using this value as expected counts}
+
+\item{seed}{Used for reproducibility when adding Poisson noise}
 
 \item{...}{Passed to \link{getPwmMatches} or \link{countPwmMatches}}
 }

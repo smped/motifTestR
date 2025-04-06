@@ -26,7 +26,9 @@
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param prior.count Added to all counts to better manage zero counts in
-#' background sequences
+#' background sequences. For analysis under Poisson and QuasiPoisson models
+#' prior counts are added as Poisson noise using this value as expected counts
+#' @param seed Used for reproducibility when adding Poisson noise
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
 #' @seealso [makeRMRanges()], [getClusterMatches()], [countClusterMatches()], [testMotifEnrich()]
@@ -62,7 +64,7 @@
 testClusterEnrich <- function(
         cl, stringset, bg, var = "iteration",
         model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
-        sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, ...
+        sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, seed = 100, ...
 ) {
 
     ## Checks
@@ -80,13 +82,21 @@ testClusterEnrich <- function(
     ## Run the analysis
     cl <- lapply(cl, .cleanMotifList)
     if (model == "poisson")
-        out <- .testPois(cl, stringset, bg, mc.cores, type = "cluster", pc = prior.count, ...)
+        out <- .testPois(
+            cl, stringset, bg, mc.cores, "cluster", prior.count, seed, ...
+        )
     if (model == "iteration")
-        out <- .testIter(cl, stringset, bg, var, mc.cores, type = "cluster", pc = prior.count, ...)
+        out <- .testIter(
+            cl, stringset, bg, var, mc.cores, "cluster", prior.count, ...
+        )
     if (model == "quasipoisson")
-        out <- .testQuasi(cl, stringset, bg, var, mc.cores, type = "cluster", pc = prior.count, ...)
+        out <- .testQuasi(
+            cl, stringset, bg, var, mc.cores, "cluster", prior.count, seed, ...
+        )
     if (model == "hypergeometric")
-        out <- .testHyper(cl, stringset, bg, mc.cores, type = "cluster", pc = prior.count, ...)
+        out <- .testHyper(
+            cl, stringset, bg, mc.cores, "cluster", prior.count, ...
+        )
 
     out$fdr <- p.adjust(out$p, "fdr")
     o <- seq_len(nrow(out))
