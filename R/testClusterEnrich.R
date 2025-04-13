@@ -26,8 +26,8 @@
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param prior.count Added to all counts to better manage zero counts in
-#' background sequences. For analysis under Poisson and QuasiPoisson models
-#' prior counts are added as Poisson noise using this value as expected counts
+#' background sequences. For analysis under QuasiPoisson models prior counts
+#' are added as Poisson noise using this value as expected counts
 #' @param seed Used for reproducibility when adding Poisson noise
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
@@ -71,6 +71,9 @@ testClusterEnrich <- function(
     stopifnot(is(bg, "XStringSet"))
     model <- match.arg(model)
     args <- c(as.list(environment()), list(...))
+    prior.count <- prior.count[[1]]
+    stopifnot(prior.count >= 0)
+
     ## Prepare the output
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
@@ -83,7 +86,7 @@ testClusterEnrich <- function(
     cl <- lapply(cl, .cleanMotifList)
     if (model == "poisson")
         out <- .testPois(
-            cl, stringset, bg, mc.cores, "cluster", prior.count, seed, ...
+            cl, stringset, bg, mc.cores, "cluster", prior.count, ...
         )
     if (model == "iteration")
         out <- .testIter(

@@ -110,8 +110,8 @@
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
 #' @param prior.count Added to all counts to better manage zero counts in
-#' background sequences. For analysis under Poisson and QuasiPoisson models
-#' prior counts are added as Poisson noise using this value as expected counts
+#' background sequences. For analysis under QuasiPoisson models prior counts
+#' are added as Poisson noise using this value as expected counts
 #' @param seed Used for reproducibility when adding Poisson noise
 #' @param ... Passed to \link{getPwmMatches} or \link{countPwmMatches}
 #'
@@ -158,6 +158,9 @@ testMotifEnrich <- function(
     stopifnot(is(bg, "XStringSet"))
     model <- match.arg(model)
     args <- c(as.list(environment()), list(...))
+    prior.count <- prior.count[[1]]
+    stopifnot(prior.count >= 0)
+
     ## Prepare the output
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
@@ -170,9 +173,7 @@ testMotifEnrich <- function(
     if (is.matrix(pwm)) pwm <- list(pwm)
     pwm <- .cleanMotifList(pwm)
     if (model == "poisson")
-        out <- .testPois(
-            pwm, stringset, bg, mc.cores, "pwm", prior.count, seed, ...
-        )
+        out <- .testPois(pwm, stringset, bg, mc.cores, "pwm", prior.count, ...)
     if (model == "iteration")
         out <- .testIter(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "quasipoisson")
@@ -378,29 +379,23 @@ testMotifEnrich <- function(
 #' @importFrom stats poisson.test
 #' @keywords internal
 .testPois <- function(
-        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), pc, seed, ...
+        x, test_seq, bg_seq, mc.cores, type = c("pwm", "cluster"), pc, ...
 ){
 
-    ## Prior counts should be handled with caution here as using a fixed value
-    ## will breach the Poisson distribution, e.g. adding a fixed value of 1 to
-    ## a consistent run of zeros will give mean 1 with variance 0. Poisson
-    ## noise may be preferable, but may profoundly reduce significance
+    ## Prior counts can be added here as we have single-valued counts for each
+    ## motif. This value is use to estimate lambda for mean & variance.
+    ## Adding a single value, effectively increases the variance & makes the
+    ## returned parameter estimates more conservative
 
     n_seq <- length(test_seq)
     type <- match.arg(type)
     if (type == "pwm") {
-        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...)
-        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...)
+        matches <- countPwmMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
+        n_bg <- countPwmMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
     }
     if (type == "cluster") {
-        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...)
-        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...)
-    }
-    ## Add Poisson prior counts
-    if (pc != 0) {
-        set.seed(seed)
-        matches <- matches + stats::rpois(length(matches), pc)
-        n_bg <- n_bg + stats::rpois(length(n_bg), pc)
+        matches <- countClusterMatches(x, test_seq, mc.cores = mc.cores, ...) + pc
+        n_bg <- countClusterMatches(x, bg_seq, mc.cores = mc.cores, ...) + pc
     }
     est_bg_rate <- n_bg / length(bg_seq)
     expected <- est_bg_rate * n_seq

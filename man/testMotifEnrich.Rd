@@ -34,8 +34,8 @@ number}
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
 \item{prior.count}{Added to all counts to better manage zero counts in
-background sequences. For analysis under Poisson and QuasiPoisson models
-prior counts are added as Poisson noise using this value as expected counts}
+background sequences. For analysis under QuasiPoisson models prior counts
+are added as Poisson noise using this value as expected counts}
 
 \item{seed}{Used for reproducibility when adding Poisson noise}
 
