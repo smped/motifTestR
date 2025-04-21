@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@
 <span>  nt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"T"</span><span class="op">)</span>,</span>
 <span>  prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>  shape1 <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  shape2 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  shape2 <span class="op">=</span> <span class="va">shape1</span>,</span>
 <span>  rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  theta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  as <span class="op">=</span> <span class="st">"DNAStringSet"</span>,</span>
@@ -86,13 +86,14 @@
 
 <dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
 <dd><p>The expected rate of motifs per sequence. Is equivalent to
-\( \lambda \) in <a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a>. If set to NULL, all sequences will
-be simulated with a single motif, otherwise a Poisson distribution will be used</p></dd>
+\( \lambda \) in <a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a>. If set to NULL or NA, all sequences
+will be simulated with a single motif, otherwise a Poisson distribution will
+be used</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>Overdispersion parameter passed to <a href="https://rdrr.io/pkg/MASS/man/rnegbin.html" class="external-link">rnegbin</a>.
-If set to NULL the rate parameter will be passed to <a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a>.
+If set to NULL or NA, the rate parameter will be passed to <a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a>.
 However if this value is set, the rate and theta parameters are passed to
 <a href="https://rdrr.io/pkg/MASS/man/rnegbin.html" class="external-link">rnegbin</a> to simulate overdispersed counts</p></dd>
 
@@ -128,7 +129,8 @@ If both are NULL, every sequence will have a single motif inserted.
 If the rate is &gt; 0 and theta is NULL, sequences will be selected to have
 motifs inserted using a poisson distribution.
 If theta is also provided, sequences will be selected to contain motifs
-using a negative binomial distribution</p>
+using a negative binomial distribution, noting that smaller values of theta
+lead to higher over-dispersion</p>
 <p>Once positions and sequences for the TFBM have been selected, nucleotides
 will be randomly sampled using the probabilities provided in the PWM and
 these motifs will be placed at the randomly sampled positions</p>
@@ -140,16 +142,16 @@ these motifs will be placed at the randomly sampled positions</p>
 <span class="r-in"><span><span class="fu">simSeq</span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DNAStringSet object of length 10:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      width seq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]    50 GCTGCATACAAGCCCAAGTTGCTAATTGAACGCAGTAGGGGTTCTAGAGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2]    50 GACTTCGATGGACGAGAGCGGGCGAAGAATAGGTTTCCAAAATGTGTCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3]    50 GGTGCTATAATTGGTTACCCGGAGCTTGAAGATAGCTGTGCATTCAATAA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4]    50 TGGCCCTGCGTTCGACACTATTGGCACGCGCATCCCATCGTTATCCAGTA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5]    50 GATGGTCGCATTGTGCAAACATGTATGGGAAGGACGTCCGTGGTGTCTGA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]    50 CCGATTTGTGTCGAGATTGGCTTCGCTCAATCGTAATTAATACACTGTGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]    50 TAGTTAGATCCATTAGTCGTTTTAGCGCTTTATTCGAAAGTCCCTCAAAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]    50 TACTTGCACTACGTCACGGAGAAATAACAATGAAGGATTTTGGACTTAGA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9]    50 AGCTGCAGCCCGGGGTAAATAAGCAGTGAGCCTTTTCATCTATCATTGTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]    50 GGGGCAGAGTTCGCTCCAGTCATGACGCAGCGACGGCCCCACACGAGTCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]    50 GAAGGGTGACATGCTACTGGTGGGCGTGAGTGCTATTAGGTGGGGTAGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2]    50 GCCATTTCGCTAGTGTGAGCTCAGTTGCCGGTATATATGGATACGGCCCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3]    50 GACTTGTAGTCGACATGCTGCTCTCGGTACTAATACAAAACTTCGCAACT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4]    50 CAGTGCGTACCAGCGCGCTTCATCTTCGCGTAAAACCAGGAATATGATTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5]    50 TCAAAGGGTCAGGACTCTTTATTATAGCCAGCCTCGCCTAGCGTGTCCTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]    50 GGGCGGGATGGCGACAGTAAAACTGGGGTCACCAACTGGAGGCATACGTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]    50 CAAATAAACGGCCCCCCTTACCCTCTTCACTAGCGCTACCCCACTTATGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]    50 CTGAATATATAAGTAACTATGAGGAGCGACGACCGATTTTCACGACATTA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9]    50 GAGCTTGACTCGCCGTTGTGATTAAGTATTATGCATAGGGGTAGCCGGCG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]    50 CATAGAGAAAGAAGTGAGGTAGCCCAGGCTACAAGGCGGACATGTATCAG</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Now place a motif at random positions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'ex_pfm'</span><span class="op">)</span></span></span>
@@ -157,50 +159,50 @@ these motifs will be placed at the randomly sampled positions</p>
 <span class="r-in"><span><span class="va">sim_seq</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DNAStringSet object of length 10:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      width seq</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]    20 TGCGAGAGCACCATGACCCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2]    20 AGAAGGGCAGAATGCCCTTT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3]    20 CTAACGGGTCAGACTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4]    20 CGTTGGGACAGCGTGACCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5]    20 GGAGGTTGCAATGACTCGAT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]    20 CTCATGTCAGCACACCCCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]    20 GTAGGTCAGCCTGACCCTTT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]    20 CAAAAGGGCACCCTGCCCTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9]    20 TCTTAGGACATCGAGCATTT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]    20 GGGATAGGGCGACCTGACCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]    20 GACAAGGGCACCATATCCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2]    20 CGAGGTCATCCTGACCAACG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3]    20 ATGGGTCAGCGTGACCCTAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4]    20 TTCGGCCAAAATGCCATCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5]    20 TGCGAGGTCATATTGACCCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]    20 AGGGGTGACGCGACATAACC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]    20 TGTCGGGTTACATTGACCCG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]    20 TGAAGGGCCACCGTGACCTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9]    20 TATAAGGACAGCCGGACCTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]    20 GAGGTTACCCTGACCCCGAA</span>
 <span class="r-in"><span><span class="co">## The position of the motif within each sequence is included in the mcols</span></span></span>
 <span class="r-in"><span><span class="fu">mcols</span><span class="op">(</span><span class="va">sim_seq</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 10 rows and 2 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          pos  n_motifs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;integer&gt; &lt;integer&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          4         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          6         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          3         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6          4         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7          3         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          3         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          3         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          3         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          5         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          2         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          5         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8          5         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9          5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         6         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         2         1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Use this to extract the random motifs from the random sequences</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/IRanges" class="external-link">IRanges</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">sim_seq</span><span class="op">)</span><span class="op">$</span><span class="va">pos</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/start.html" class="external-link">width</a></span><span class="op">(</span><span class="va">sim_seq</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/start.html" class="external-link">width</a></span><span class="op">(</span><span class="va">sim_seq</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/Views-class.html" class="external-link">Views</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">sim_seq</span><span class="op">)</span>, start <span class="op">=</span> <span class="va">i</span>, width <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Views on a 200-letter DNAString subject</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> subject: TGCGAGAGCACCATGACCCCAGAAGGGCAGAATG...GACATCGAGCATTTGGGATAGGGCGACCTGACCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> subject: GACAAGGGCACCATATCCCCCGAGGTCATCCTGA...GACAGCCGGACCTGGAGGTTACCCTGACCCCGAA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> views:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        start end width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [1]     5  14    10 [AGAGCACCAT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [2]    24  33    10 [AGGGCAGAAT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [3]    46  55    10 [GGGTCAGACT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [4]    65  74    10 [GGGACAGCGT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [5]    83  92    10 [AGGTTGCAAT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [6]   104 113    10 [ATGTCAGCAC]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [7]   123 132    10 [AGGTCAGCCT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [8]   145 154    10 [AGGGCACCCT]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    [9]   165 174    10 [AGGACATCGA]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [10]   186 195    10 [AGGGCGACCT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [1]     5  14    10 [AGGGCACCAT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [2]    23  32    10 [AGGTCATCCT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [3]    43  52    10 [GGGTCAGCGT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [4]    63  72    10 [CGGCCAAAAT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [5]    85  94    10 [AGGTCATATT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [6]   102 111    10 [GGGGTGACGC]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [7]   125 134    10 [GGGTTACATT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [8]   145 154    10 [GGGCCACCGT]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    [9]   165 174    10 [AGGACAGCCG]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [10]   182 191    10 [AGGTTACCCT]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

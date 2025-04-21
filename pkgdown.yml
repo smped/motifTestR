@@ -1,9 +1,9 @@
-pandoc: 3.6.3
+pandoc: 3.6.4
 pkgdown: 2.1.1.9000
-pkgdown_sha: 66477c0dbb4f4925ec872cf64d5eaa316cc70bac
+pkgdown_sha: 62d5c5a0fc12899aae97f6ce14018d2784bf308b
 articles:
   motifAnalysis: motifAnalysis.html
-last_built: 2025-04-13T05:48Z
+last_built: 2025-04-21T16:56Z
 urls:
   reference: https://smped.github.io/motifTestR/reference
   article: https://smped.github.io/motifTestR/articles
