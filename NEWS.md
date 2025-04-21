@@ -18,3 +18,7 @@
 # motifTestR 1.3.5
 
 + Introduced prior counts for enrichment testing
+
+# motifTestR 1.5.1
+
++ Added simMultiMotifs
