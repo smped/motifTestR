@@ -3,7 +3,7 @@ pkgdown: 2.1.1.9000
 pkgdown_sha: 62d5c5a0fc12899aae97f6ce14018d2784bf308b
 articles:
   motifAnalysis: motifAnalysis.html
-last_built: 2025-04-21T16:56Z
+last_built: 2025-04-22T07:54Z
 urls:
   reference: https://smped.github.io/motifTestR/reference
   article: https://smped.github.io/motifTestR/articles
