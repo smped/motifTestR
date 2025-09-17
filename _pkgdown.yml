@@ -16,11 +16,7 @@ reference:
     - starts_with("test")
     - contains("luster")
     - makeRMRanges
-    - starts_with("plot")
-
-- title: Simulation Functions
-  contents:
-    - starts_with("sim")
+    - plotMatchPos
 
 - title: Data Objects
   contents:
@@ -28,6 +24,10 @@ reference:
     - ex_pfm
     - hg19_mask
     - zr75_enh
+
+- title: Miscellaneous Functions
+  contents:
+    - simSeq
 
 navbar:
   type: default
