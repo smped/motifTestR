@@ -71,7 +71,7 @@ setGeneric(
 )
 #' @import GenomicRanges
 #' @importFrom IRanges overlapsAny width
-#' @importFrom Seqinfo seqinfo
+#' @importFrom GenomeInfoDb seqinfo
 #' @rdname makeRMRanges-methods
 #' @aliases makeRMRanges
 #' @export
