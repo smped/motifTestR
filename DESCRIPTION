@@ -1,6 +1,6 @@
 Package: motifTestR
 Title: Perform key tests for binding motifs in sequence data
-Version: 1.5.1
+Version: 1.5.3
 Authors@R: person("Stevie", "Pederson", 
   email = "stephen.pederson.au@gmail.com", 
   role = c("aut", "cre"),
@@ -18,8 +18,8 @@ BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings,
   GenomicRanges,
-  ggplot2 (>= 3.5.0),
-  R (>= 4.3.0),
+  ggplot2 (>= 4.0.0),
+  R (>= 4.5.0),
 Imports:
   Seqinfo,
   graphics,
@@ -37,7 +37,6 @@ Suggests:
   AnnotationHub,
   BiocStyle,
   BSgenome.Hsapiens.UCSC.hg19,
-  ComplexUpset,
   extraChIPs,
   ggdendro,
   knitr,
@@ -49,7 +48,7 @@ Suggests:
   VGAM
 biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
 LazyData: false
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
