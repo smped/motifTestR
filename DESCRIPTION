@@ -37,7 +37,6 @@ Suggests:
   AnnotationHub,
   BiocStyle,
   BSgenome.Hsapiens.UCSC.hg19,
-  ComplexUpset,
   extraChIPs,
   ggdendro,
   knitr,
