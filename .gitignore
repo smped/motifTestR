@@ -6,3 +6,5 @@
 Rprof.out
 inst/scripts/N.bed.gz
 tests/testthat/*pdf
+vignettes/*R
+vignettes/*html
