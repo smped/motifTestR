@@ -19,7 +19,8 @@
 #' If the rate is > 0 and theta is NULL, sequences will be selected to have
 #' motifs inserted using a poisson distribution.
 #' If theta is also provided, sequences will be selected to contain motifs
-#' using a negative binomial distribution
+#' using a negative binomial distribution, noting that smaller values of theta
+#' lead to higher over-dispersion
 #'
 #' Once positions and sequences for the TFBM have been selected, nucleotides
 #' will be randomly sampled using the probabilities provided in the PWM and
@@ -37,10 +38,11 @@
 #' @param prob Sampling probabilities for each nucleotide
 #' @param shape1,shape2 Passed to \link[VGAM]{rbetabinom.ab}
 #' @param rate The expected rate of motifs per sequence. Is equivalent to
-#' \eqn{ \lambda } in \link[stats]{rpois}. If set to NULL, all sequences will
-#' be simulated with a single motif, otherwise a Poisson distribution will be used
+#' \eqn{ \lambda } in \link[stats]{rpois}. If set to NULL or NA, all sequences
+#' will be simulated with a single motif, otherwise a Poisson distribution will
+#' be used
 #' @param theta Overdispersion parameter passed to \link[MASS]{rnegbin}.
-#' If set to NULL the rate parameter will be passed to \link[stats]{rpois}.
+#' If set to NULL or NA, the rate parameter will be passed to \link[stats]{rpois}.
 #' However if this value is set, the rate and theta parameters are passed to
 #' \link[MASS]{rnegbin} to simulate overdispersed counts
 #' @param as ObjectClass to return objects as. Defaults to DNAStringSet, but
@@ -71,7 +73,7 @@
 #' @export
 simSeq <- function(
         n, width, pfm = NULL, nt = c("A", "C", "G", "T"), prob = rep(0.25, 4),
-        shape1 = 1, shape2 = 1, rate = NULL, theta = NULL, as = "DNAStringSet",
+        shape1 = 1, shape2 = shape1, rate = NULL, theta = NULL, as = "DNAStringSet",
         ...
 ){
 
@@ -82,9 +84,6 @@ simSeq <- function(
 
     ## If a PWM is provided, now sample using the motifs
     if (!is.null(pfm)) {
-
-        if (!requireNamespace('VGAM', quietly = TRUE))
-            stop("Please install 'VGAM' to insert TFBMs into the sequences.")
 
         ## Check we have PFMs, not PWMs or any other format
         if (is(pfm, "universalmotif")) pfm <- slot(pfm, "motif")
@@ -106,33 +105,11 @@ simSeq <- function(
 
         ## We really need to just choose the positions using the
         ## different distributions. Everything else can follow.
-        ## Placing them in the mcols at the end will take some thought though
-
-        if (is.null(rate)) {
-
-            pos <- VGAM::rbetabinom.ab(n, max_start, shape1, shape2) + seq_starts
-            ## Inject into the existing sequences. This is faster treating
-            ## bg as a vector, not a matrix to be iterated through.
-            vec_pos <- vapply(
-                pos, \(i) seq(i, length.out = pfm_width), numeric(pfm_width)
-            )
-            vec_pos <- as.integer(vec_pos)
-
-        } else {
-
-            stopifnot(rate > 0)
-            if (is.null(theta)) {
-                pos <- .simPoisSeq(n, rate, shape1, shape2, max_start, seq_starts)
-            } else {
-                stopifnot(theta > 0)
-                pos <- .simNBSeq(n, rate, theta, shape1, shape2, max_start, seq_starts)
-            }
-            vec_pos <- vapply(
-                pos, \(i) seq(i, length.out = pfm_width), numeric(pfm_width)
-            )
-            vec_pos <- as.integer(vec_pos)
-
-        }
+        pos <- .samplePos(n, rate, theta, shape1, shape2, max_start, seq_starts)
+        vec_pos <- vapply(
+            pos, \(i) seq(i, length.out = pfm_width), numeric(pfm_width)
+        )
+        vec_pos <- as.integer(vec_pos)
 
         ## Sample the random motifs as a matrix, then coerce to a vector
         rnd_mot <- replicate(
@@ -158,16 +135,30 @@ simSeq <- function(
         ## Now form any mcols
         n_motifs <- vapply(pos_list, length, integer(1))
         if (all(n_motifs == 1)) pos_list <- unlist(pos_list)
-        seq_mcols <- DataFrame(
-            pos = pos_list,
-            n_motifs = n_motifs
-        )
-        mcols(seq) <- seq_mcols ## The base class with mcols
+        mcols(seq) <- DataFrame(pos = pos_list, n_motifs = n_motifs)
     }
     seq
 
 }
 
+#' @keywords internal
+.samplePos <- function(n, rate, theta, shape1, shape2, max_start, seq_starts) {
+
+    if (!requireNamespace('VGAM', quietly = TRUE))
+        stop("Please install 'VGAM' to insert TFBMs into the sequences.")
+
+    if (is.null(rate) | isTRUE(is.na(rate))) {
+        pos <- VGAM::rbetabinom.ab(n, max_start, shape1, shape2) + seq_starts
+    } else {
+        stopifnot(rate > 0)
+        if (is.null(theta) | isTRUE(is.na(theta))) {
+            pos <- .simPoisSeq(n, rate, shape1, shape2, max_start, seq_starts)
+        } else {
+            stopifnot(theta > 0)
+            pos <- .simNBSeq(n, rate, theta, shape1, shape2, max_start, seq_starts)
+        }
+    }
+}
 
 #' @keywords internal
 .simPoisSeq <- function(n, rate, shape1, shape2, max_start, seq_starts) {
