@@ -61,6 +61,7 @@ library(parallel)
 library(ggplot2)
 library(patchwork)
 library(universalmotif)
+library(extraChIPs)
 theme_set(theme_bw())
 cores <- 1
 ```
@@ -334,10 +335,10 @@ iter_res <- testMotifEnrich(
 head(iter_res)
 ```
 
-<!-- Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`. -->
-<!-- In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs. -->
+Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from `r Biocpkg("extraChIPs")`.
+In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs.
 
-```{r plot-overlaps, echo = FALSE, eval = FALSE, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence.", fig.alt = "UpSet plot showing the sequences which match one or more of the PWMs in the example dataset."}
+```{r plot-overlaps, fig.cap = "Distribution of select PWM matches within sequences. Each sequence is only considered once and as such, match numbers may be below those returned during testing, which includes multiple matches within a sequence.", fig.alt = "UpSet plot showing the sequences which match one or more of the PWMs in the example dataset."}
 ex_pfm |>
   getPwmMatches(test_seq, min_score = score_thresh, mc.cores = cores) |>
   lapply(\(x) x$seq) |>

@@ -37,13 +37,14 @@ Suggests:
   AnnotationHub,
   BiocStyle,
   BSgenome.Hsapiens.UCSC.hg19,
-  extraChIPs,
+  extraChIPs (>= 1.13.3),
   ggdendro,
   knitr,
   MASS,
   MotifDb,
   rmarkdown,
   rtracklayer,
+  SimpleUpset,
   testthat (>= 3.0.0),
   VGAM
 biocViews: MotifAnnotation, ChIPSeq, ChipOnChip, SequenceMatching, Software  
