@@ -1,6 +1,6 @@
 cl <- list(A = ex_pfm[1], B = ex_pfm[2:3], C = ex_pfm[4:5])
 
-test_that("countClusterMatches returnes expexted values", {
+test_that("countClusterMatches returnes expected values", {
     counts <- countClusterMatches(cl, ar_er_seq)
     expect_true(is(counts, "integer"))
     expect_equal(names(counts), c("A", "B", "C"))
@@ -9,9 +9,8 @@ test_that("countClusterMatches returnes expexted values", {
     counts <- countClusterMatches(ex_pfm, ar_er_seq)
     expect_equal(length(counts), 1L)
 
-    expect_message(
-        countClusterMatches(list("cat"), ar_er_seq),
-        "Could not determine clusters"
+    expect_error(
+        countClusterMatches(list("cat"), ar_er_seq), "Could not determine.+"
     )
 
 })

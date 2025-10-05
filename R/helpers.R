@@ -12,7 +12,7 @@
             motif, nsites = nsites, pseudocount = 1, type = "PPM"
         )
     }
-    stopifnot(is(motif, "universalmotif"))
+    if (!is(motif, "universalmotif")) stop("Could not determine motif type")
     if (slot(motif, "pseudocount") == 0)
         warning("Zero pseudocounts may lead to a PWM with infinite values")
     pwm <- convert_type(motif, "PWM")

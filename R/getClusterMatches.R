@@ -143,38 +143,32 @@ countClusterMatches <- function(
 ) {
 
     stopifnot(is.list(cl))
-    args <- c(as.list(environment()), list(...))
-    args <- args[names(args) != "mc.cores"]
-    args$counts_only <- TRUE
     out <- NULL
     if (!length(cl)) return(out)
-    if (
-        all(vapply(cl, is, logical(1), "list")) |
-        all(vapply(cl, is, logical(1), "universalmotif"))
-    ) {
-        cl <- lapply(cl, .cleanMotifList)
-        nm <- names(cl)
-        single_pwm <- vapply(cl, length, integer(1)) == 1
-        out <- vector("list", length(cl))
-        names(out) <- nm
-        out[single_pwm] <- mclapply(
-            cl[single_pwm],
-            \(x) {
-                .countSinglePwmMatches(x[[1]], stringset, rc, min_score)
-            },  mc.cores = mc.cores
-        )
-        out[!single_pwm] <- mclapply(
-            cl[!single_pwm],
-            .getClusterPwmMatches, stringset = stringset, rc = rc,
-            min_score = min_score, counts_only = TRUE, mc.cores = mc.cores
-        )
-        out <- unlist(out)
 
-    }
-    if (all(vapply(cl, is, logical(1), "matrix"))) {
-        ## This is essentially for a single cluster
-        out <- do.call(".getClusterPwmMatches", args)
-    }
+    is_clust_list <- all(vapply(cl, is, logical(1), "list"))
+    is_motif_list <- (
+        all(vapply(cl, is, logical(1), "universalmotif")) |
+            all(vapply(cl, is, logical(1), "matrix"))
+    )
+    if (!is_clust_list & is_motif_list) cl <- list(cl)
+    cl <- lapply(cl, \(x) lapply(x, .checkPWM))
+    cl <- lapply(cl, .cleanMotifList)
+    nm <- names(cl)
+    single_pwm <- vapply(cl, length, integer(1)) == 1
+    out <- vector("list", length(cl))
+    names(out) <- nm
+    out[single_pwm] <- mclapply(
+        cl[single_pwm],
+        \(x) .countSinglePwmMatches(x[[1]], stringset, rc, min_score),
+        mc.cores = mc.cores
+    )
+    out[!single_pwm] <- mclapply(
+        cl[!single_pwm],
+        .getClusterPwmMatches, stringset = stringset, rc = rc,
+        min_score = min_score, counts_only = TRUE, mc.cores = mc.cores
+    )
+    out <- unlist(out)
 
     if (is.null(out)) message("Could not determine clusters")
     out
@@ -283,3 +277,26 @@ countClusterMatches <- function(
 
 }
 
+#' @import Biostrings
+#' @keywords internal
+.countSinglePwmMatches <- function(
+        pwm, stringset, rc = TRUE, min_score = "80%", ...
+){
+    ## Checks & the map
+    pwm <- .checkPWM(pwm)
+    map <- .viewMapFromXStringset(stringset)
+
+    # Form the entire XStringSetList into a Views object
+    views <- Views(
+        unlist(stringset), start = map$start, width = map$width,
+        names = map$names
+    )
+    n_matches <- countPWM(pwm, views, min.score = min_score, ...)
+    if (rc)
+        n_matches <- c(
+            n_matches,
+            countPWM(reverseComplement(pwm), views, min.score = min_score, ...)
+        )
+
+    as.integer(sum(n_matches))
+}
