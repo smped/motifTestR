@@ -95,6 +95,13 @@ getClusterMatches <- function(
     if (!is.null(names(stringset))) nm_type <- "character"
     if (!length(cl)) return(list())
     out <- NULL
+
+    # Form the entire XStringSetList into a Views object
+    map <- .viewMapFromXStringset(stringset)
+    views <- Views(
+        unlist(stringset), map$start, width = map$width, names = map$names
+    )
+
     if (
         all(vapply(cl, is, logical(1), "list")) |
         all(vapply(cl, is, logical(1), "universalmotif"))
@@ -112,7 +119,7 @@ getClusterMatches <- function(
             cl[single_pwm],
             \(x) {
                 DF <- .getSinglePwmMatches(
-                    x[[1]], stringset = stringset, rc = rc,
+                    x[[1]], views = views, rc = rc,
                     min_score = min_score, best_only = best_only,
                     break_ties = break_ties, nm_type = nm_type
                 )
@@ -121,13 +128,15 @@ getClusterMatches <- function(
             },  mc.cores = mc.cores
         )
         out[!single_pwm] <- mclapply(
-            cl[!single_pwm], .getClusterPwmMatches, stringset = stringset,
+            cl[!single_pwm], .getClusterPwmMatches, views = views,
             rc = rc, min_score = min_score, best_only = best_only,
             break_ties = break_ties, nm_type = nm_type, mc.cores = mc.cores
         )
     }
     if (all(vapply(cl, is, logical(1), "matrix"))) {
         args$nm_type <- nm_type
+        args$stringset <- NULL
+        args$views <- views
         out <- do.call(".getClusterPwmMatches", args)
     }
 
@@ -155,17 +164,24 @@ countClusterMatches <- function(
     cl <- lapply(cl, \(x) lapply(x, .checkPWM))
     cl <- lapply(cl, .cleanMotifList)
     nm <- names(cl)
+
+    # Form the entire XStringSetList into a Views object
+    map <- .viewMapFromXStringset(stringset)
+    views <- Views(
+        unlist(stringset), map$start, width = map$width, names = map$names
+    )
+
     single_pwm <- vapply(cl, length, integer(1)) == 1
     out <- vector("list", length(cl))
     names(out) <- nm
     out[single_pwm] <- mclapply(
         cl[single_pwm],
-        \(x) .countSinglePwmMatches(x[[1]], stringset, rc, min_score),
+        \(x) .countSinglePwmMatches(x[[1]], views, rc, min_score),
         mc.cores = mc.cores
     )
     out[!single_pwm] <- mclapply(
         cl[!single_pwm],
-        .getClusterPwmMatches, stringset = stringset, rc = rc,
+        .getClusterPwmMatches, views = views, rc = rc,
         min_score = min_score, counts_only = TRUE, mc.cores = mc.cores
     )
     out <- unlist(out)
@@ -181,13 +197,13 @@ countClusterMatches <- function(
 #' @importFrom S4Vectors mcols<- queryHits subjectHits
 #' @keywords internal
 .getClusterPwmMatches <- function(
-        cl, stringset, rc, min_score, best_only = FALSE, break_ties,
+        cl, views, rc, min_score, best_only = FALSE, break_ties,
         nm_type = "integer", counts_only = FALSE, ...
 ){
 
     ## Checks
     cl <- lapply(cl, .checkPWM)
-    stopifnot(is(stringset, "XStringSet"))
+    stopifnot(is(views, "XStringViews"))
     ## Handle empty stringsets
     empty_df <- .emptyPwmDF(nm_type)
     empty_df$motif <- character()
@@ -195,13 +211,9 @@ countClusterMatches <- function(
         "seq", "score", "direction", "start", "end", "from_centre",
         "seq_width", "motif", "match"
     )
-    if (!length(stringset)) return(empty_df[cols])
+    if (!length(views)) return(empty_df[cols])
 
-    # Form the entire XStringSetList into a Views object & find all hits
-    map <- .viewMapFromXStringset(stringset)
-    views <- Views(
-        unlist(stringset), map$start, width = map$width, names = map$names
-    )
+    # Find all hits
     hits <- lapply(
         cl, matchPWM, subject = views, min.score = min_score, with.score = TRUE,
         ...
@@ -244,6 +256,7 @@ countClusterMatches <- function(
     final_hits <- sort(all_hits[best])
 
     ## Map back to the original Views
+    map <- as.data.frame(views@ranges)
     hits_to_map <- findInterval(start(final_hits), map$start)
     w <- width(final_hits)
 
@@ -253,13 +266,15 @@ countClusterMatches <- function(
     out$seq <- hits_to_map
     out$start <- as.integer(start(final_hits) - c(0, map$end)[hits_to_map])
     out$end <- as.integer(out$start + w - 1)
-    out$seq_width <- width(stringset[out$seq])
+    out$seq_width <- width(views[out$seq])
     out$from_centre <- (out$start + out$end - out$seq_width) / 2
 
     ## The match itself
     to_rev <- out$direction == "R"
+    i <- map$start[out$seq] - 1
+    seq <- unlist(unname(views))
     out$match <- as(
-        Views(unlist(stringset), start = out$start, end = out$end), "XStringSet"
+        Views(seq, start = i + out$start, end = i + out$end), "XStringSet"
     )
     out$match[to_rev] <- reverseComplement(out$match[to_rev])
 
@@ -280,17 +295,12 @@ countClusterMatches <- function(
 #' @import Biostrings
 #' @keywords internal
 .countSinglePwmMatches <- function(
-        pwm, stringset, rc = TRUE, min_score = "80%", ...
+        pwm, views, rc = TRUE, min_score = "80%", ...
 ){
     ## Checks & the map
     pwm <- .checkPWM(pwm)
-    map <- .viewMapFromXStringset(stringset)
 
     # Form the entire XStringSetList into a Views object
-    views <- Views(
-        unlist(stringset), start = map$start, width = map$width,
-        names = map$names
-    )
     n_matches <- countPWM(pwm, views, min.score = min_score, ...)
     if (rc)
         n_matches <- c(

@@ -73,15 +73,25 @@ getPwmMatches <- function(
     args <- args[names(args) != "mc.cores"]
     nm_type <- "integer"
     if (!is.null(names(stringset))) nm_type <- "character"
+
+    # Form the entire XStringSetList into a Views object
+    map <- .viewMapFromXStringset(stringset)
+    views <- Views(
+        unlist(stringset), start = map$start, width = map$width,
+        names = map$names
+    )
+
     if (is.list(pwm)) {
         pwm <- .cleanMotifList(pwm)
         out <- mclapply(
-            pwm, .getSinglePwmMatches, stringset = stringset, rc = rc,
+            pwm, .getSinglePwmMatches, views = views, rc = rc,
             min_score = min_score, best_only = best_only,
             break_ties = break_ties, nm_type = nm_type, mc.cores = mc.cores
         )
     } else {
         args$nm_type <- nm_type
+        args$stringset <- NULL
+        args$views <- views
         out <- do.call(".getSinglePwmMatches", args)
     }
     out
@@ -95,22 +105,16 @@ getPwmMatches <- function(
 #' @importFrom stats setNames
 #' @keywords internal
 .getSinglePwmMatches <- function(
-        pwm, stringset, rc, min_score, best_only = FALSE, break_ties, nm_type,
+        pwm, views, rc, min_score, best_only = FALSE, break_ties, nm_type,
         ...
 ){
 
     ## Checks
     pwm <- .checkPWM(pwm)
-    stopifnot(is(stringset, "XStringSet"))
+    stopifnot(is(views, "XStringViews"))
     ## Handle empty stringsets
-    if (!length(stringset)) return(.emptyPwmDF(nm_type))
+    if (!length(views)) return(.emptyPwmDF(nm_type))
 
-    # Form the entire XStringSetList into a Views object
-    map <- .viewMapFromXStringset(stringset)
-    views <- Views(
-        unlist(stringset), start = map$start, width = map$width,
-        names = map$names
-    )
     hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE)
     mcols(hits)$direction <- rep_len("F", length(hits))
     if (rc) {
@@ -135,6 +139,7 @@ getPwmMatches <- function(
     out$direction <- factor(out$direction, levels = c("F", "R"))
 
     ## Map back to the original Views
+    map <- as.data.frame(views@ranges)
     hits_to_map <- findInterval(start(hits), map$start)
     w <- width(hits)
 
@@ -142,7 +147,7 @@ getPwmMatches <- function(
     out$seq <- hits_to_map
     out$start <- as.integer(start(hits) - c(0, map$end)[hits_to_map])
     out$end <- as.integer(out$start + w - 1)
-    out$seq_width <- width(stringset[out$seq])
+    out$seq_width <- width(views[out$seq])
     out$from_centre <- (out$start + out$end - out$seq_width) / 2
 
     ## The match itself
