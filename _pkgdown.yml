@@ -27,7 +27,7 @@ reference:
 
 - title: Miscellaneous Functions
   contents:
-    - starts_with("sim")
+    - simSeq
 
 navbar:
   type: default

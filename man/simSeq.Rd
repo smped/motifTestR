@@ -11,7 +11,7 @@ simSeq(
   nt = c("A", "C", "G", "T"),
   prob = rep(0.25, 4),
   shape1 = 1,
-  shape2 = shape1,
+  shape2 = 1,
   rate = NULL,
   theta = NULL,
   as = "DNAStringSet",
@@ -32,12 +32,11 @@ simSeq(
 \item{shape1, shape2}{Passed to \link[VGAM]{rbetabinom.ab}}
 
 \item{rate}{The expected rate of motifs per sequence. Is equivalent to
-\eqn{ \lambda } in \link[stats]{rpois}. If set to NULL or NA, all sequences
-will be simulated with a single motif, otherwise a Poisson distribution will
-be used}
+\eqn{ \lambda } in \link[stats]{rpois}. If set to NULL, all sequences will
+be simulated with a single motif, otherwise a Poisson distribution will be used}
 
 \item{theta}{Overdispersion parameter passed to \link[MASS]{rnegbin}.
-If set to NULL or NA, the rate parameter will be passed to \link[stats]{rpois}.
+If set to NULL the rate parameter will be passed to \link[stats]{rpois}.
 However if this value is set, the rate and theta parameters are passed to
 \link[MASS]{rnegbin} to simulate overdispersed counts}
 
@@ -71,8 +70,7 @@ If both are NULL, every sequence will have a single motif inserted.
 If the rate is > 0 and theta is NULL, sequences will be selected to have
 motifs inserted using a poisson distribution.
 If theta is also provided, sequences will be selected to contain motifs
-using a negative binomial distribution, noting that smaller values of theta
-lead to higher over-dispersion
+using a negative binomial distribution
 
 Once positions and sequences for the TFBM have been selected, nucleotides
 will be randomly sampled using the probabilities provided in the PWM and
