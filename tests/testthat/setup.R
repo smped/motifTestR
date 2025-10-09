@@ -1,5 +1,6 @@
 library(extraChIPs)
 library(BSgenome.Hsapiens.UCSC.hg19)
+library(S7)
 genome <- BSgenome.Hsapiens.UCSC.hg19
 
 esr1 <- structure(
