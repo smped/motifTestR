@@ -18,7 +18,7 @@ BugReports: https://github.com/smped/motifTestR/issues
 Depends:
   Biostrings,
   GenomicRanges,
-  ggplot2 (>= 3.5.0),
+  ggplot2 (>= 4.0.0),
   R (>= 4.3.0),
 Imports:
   GenomeInfoDb,
