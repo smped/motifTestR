@@ -9,7 +9,7 @@ derive a NULL hypothesis"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ derive a NULL hypothesis</p>
 <span>  <span class="va">stringset</span>,</span>
 <span>  <span class="va">bg</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"iteration"</span>,</span>
-<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quasipoisson"</span>, <span class="st">"hypergeometric"</span>, <span class="st">"poisson"</span>, <span class="st">"iteration"</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poisson"</span>, <span class="st">"hypergeometric"</span>, <span class="st">"quasipoisson"</span>, <span class="st">"glm_poisson"</span>, <span class="st">"iteration"</span><span class="op">)</span>,</span>
 <span>  sort_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  prior.count <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -191,6 +191,16 @@ Testing is two-sided.</p>
 </div>
 
 <div class="section">
+<h4 id="glm-poisson-test">GLM-Poisson Test<a class="anchor" aria-label="anchor" href="#glm-poisson-test"></a></h4>
+
+
+<p>This follows the same approach as the Quasi-Poisson model, relying on fitting
+iterations using <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code>.
+For this model however, no over-dispersions are estimated and the underlying
+family is simply the <code><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson()</a></code> family</p>
+</div>
+
+<div class="section">
 <h4 id="iteration">Iteration<a class="anchor" aria-label="anchor" href="#iteration"></a></h4>
 
 
@@ -236,6 +246,7 @@ and matched for any features as appropriate using <code><a href="makeRMRanges-me
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">genome</span> <span class="op">&lt;-</span> <span class="va">BSgenome.Hsapiens.UCSC.hg19</span></span></span>
 <span class="r-in"><span><span class="va">bg_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">genome</span>, <span class="va">bg_ranges</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">bg_seq</span><span class="op">)</span><span class="op">$</span><span class="va">iteraton</span> <span class="op">&lt;-</span><span class="va">bg_ranges</span><span class="op">$</span><span class="va">iteration</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Test for enrichment of the ESR1 motif</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ex_pfm"</span><span class="op">)</span></span></span>

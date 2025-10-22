@@ -1,0 +1,41 @@
+# motifTestR ![MotifTestR Logo](reference/figures/favicon.png)
+
+The package `motifTestR` provides a small set of functions for analysing
+transcription factor binding motifs (TFBMs). Testing for positional bias
+is enabled using a novel approach, and testing for enrichment relative
+to a set of background sequences is enabled using multiple statistical
+models.
+
+Testing for positional bias is intended to be an R native alternative to
+[CentriMo](https://meme-suite.org/meme/doc/centrimo.html) from the
+MEME-suite, and will detect any deviation of note from an even
+distribution across the width of sequences being tested, not just the
+centrality of motifs. Given the conventional statistical approach taken,
+results are easily interpretable directly through adjusted p-values.
+Enrichment testing follows well-worn modelling and iterative strategies,
+whilst offering a novel approach to selection of control, or background,
+sequences.
+
+Testing similar motifs grouped together as a set of clusters is also
+enabled.
+
+To install the stable version of motifTestR from Bioconductor please try
+the following.
+
+``` r
+
+if (!require("BiocManager")) {
+  install.packages("BiocManager")
+}
+BiocManager::install("motifTestR")
+```
+
+Alternatively, the latest build can be installed using
+
+``` r
+
+if (!require("BiocManager")) {
+  install.packages("BiocManager")
+}
+BiocManager::install("smped/motifTestR")
+```

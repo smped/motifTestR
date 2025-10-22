@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,6 +124,7 @@ analysis.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/universalmotif/" class="external-link">universalmotif</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/smped/extraChIPs" class="external-link">extraChIPs</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cores</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></code></pre></div>
 </div>
@@ -155,7 +156,7 @@ chromosome 1, with all peaks resized to 400bp</p>
 <span><span class="co">##   -------</span></span>
 <span><span class="co">##   seqinfo: 24 sequences from hg19 genome</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">ar_er_peaks</span><span class="op">)</span></span></code></pre></div>
 <p>Whilst the example dataset is small for the convenience of an R
 package, those wishing to work on the complete set of peaks (i.e. not
 just chromosome 1) may run the code provided in the final section to
@@ -178,7 +179,7 @@ ranges to a character vector.</p>
 <h3 id="obtaining-a-list-of-pwms-for-testing">Obtaining a List of PWMs for Testing<a class="anchor" aria-label="anchor" href="#obtaining-a-list-of-pwms-for-testing"></a>
 </h3>
 <p>A small list of Position Frequency Matrices (PFMs), obtained from
-<em><a href="https://bioconductor.org/packages/3.21/MotifDb" class="external-link">MotifDb</a></em>
+<em><a href="https://bioconductor.org/packages/3.22/MotifDb" class="external-link">MotifDb</a></em>
 are provided with the package and these will be suitable for all
 downstream analysis. All functions will convert PFMs to PWMs
 internally.</p>
@@ -392,7 +393,7 @@ is simple to produce a wide variety of outputs (Figure 1B)</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="va">A</span> <span class="op">+</span> <span class="va">B</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span>tag_levels <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="motifAnalysis_files/figure-html/plot-pos-1.png" alt="Two panel plot with the left panel showing the probability distribution of motif matches for ESR1, ANDR and FOXA1 within the set of test sequences as coloured lines. The right panel shows the counts within each 10bp bin around the centre of the sequences with a loess curve overlaid" width="700"><p class="caption">
+<img src="motifAnalysis_files/figure-html/plot-pos-1.png" class="r-plt" alt="Two panel plot with the left panel showing the probability distribution of motif matches for ESR1, ANDR and FOXA1 within the set of test sequences as coloured lines. The right panel shows the counts within each 10bp bin around the centre of the sequences with a loess curve overlaid" width="700"><p class="caption">
 Distribution of motif matches around the centres of the set of peaks
 </p>
 </div>
@@ -415,7 +416,7 @@ resolution.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">A</span> <span class="op">+</span> <span class="va">B</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span>tag_levels <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="motifAnalysis_files/figure-html/plot-abs-pos-1.png" alt="Two panel plot with the left panel showing the distances from the sequence centres of the best matches for FOXA1, ANDR and ESR1. The right panel shows the CDF of these matches as a line plot" width="700"><p class="caption">
+<img src="motifAnalysis_files/figure-html/plot-abs-pos-1.png" class="r-plt" alt="Two panel plot with the left panel showing the distances from the sequence centres of the best matches for FOXA1, ANDR and ESR1. The right panel shows the CDF of these matches as a line plot" width="700"><p class="caption">
 Distribution of motif matches shown as a distance from the centre of
 each sequence
 </p>
@@ -510,7 +511,7 @@ to the sequences, as these are required for this approach.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_seq</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">rm_ranges</span><span class="op">)</span></span></code></pre></div>
 <p>If choosing strategies for enrichment testing outside of
 <code>motifTestR</code>, these sequences can be exported as a fasta file
-using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.21/Biostrings" class="external-link">Biostrings</a></em>
+using <code>writeXStringSet</code> from the <em><a href="https://bioconductor.org/packages/3.22/Biostrings" class="external-link">Biostrings</a></em>
 package.</p>
 </div>
 <div class="section level3">
@@ -618,8 +619,25 @@ than under modelling approaches.</p>
 <span><span class="co">## ZN143 0.000000e+00   0.01    100  0.419114</span></span>
 <span><span class="co">## ANDR  2.892131e-12   0.01    100  3.488669</span></span>
 <span><span class="co">## ZN281 2.145708e-07   0.01    100  5.103880</span></span></code></pre>
-<!-- Once we have selected our motifs of interest, sequences with matches can be compared to easily assess co-occurrence, using `plotOverlaps()` from *[extraChIPs](https://bioconductor.org/packages/3.21/extraChIPs)*. -->
-<!-- In our test set, peaks were selected based on co-detection of ESR1 and ANDR, however the rate of co-occurrence is low, revealing key insights into the binding dynamics of these two TFs. -->
+<p>Once we have selected our motifs of interest, sequences with matches
+can be compared to easily assess co-occurrence, using
+<code><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps()</a></code> from <em><a href="https://bioconductor.org/packages/3.22/extraChIPs" class="external-link">extraChIPs</a></em>.
+In our test set, peaks were selected based on co-detection of ESR1 and
+ANDR, however the rate of co-occurrence is low, revealing key insights
+into the binding dynamics of these two TFs.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ex_pfm</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/getPwmMatches.html">getPwmMatches</a></span><span class="op">(</span><span class="va">test_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, mc.cores <span class="op">=</span> <span class="va">cores</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">seq</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/extraChIPs/man/plotOverlaps-methods.html" class="external-link">plotOverlaps</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"upset"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="motifAnalysis_files/figure-html/plot-overlaps-1.png" class="r-plt" alt="UpSet plot showing the sequences which match one or more of the PWMs in the example dataset." width="700"><p class="caption">
+Distribution of select PWM matches within sequences. Each sequence is
+only considered once and as such, match numbers may be below those
+returned during testing, which includes multiple matches within a
+sequence.
+</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -636,14 +654,14 @@ contain a FOXA1 motif. Does this mean that both are bound to the
 sequence, or have the same sequences simply been matched to both PWMs?
 As we can see there is quite some similarity in the core regions of the
 two binding motifs</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ANDR"</span>, <span class="st">"FOXA1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>        \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/universalmotif/man/create_motif.html" class="external-link">create_motif</a></span><span class="op">(</span><span class="va">ex_pfm</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">x</span>, type <span class="op">=</span> <span class="st">"PPM"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/universalmotif/man/view_motifs.html" class="external-link">view_motifs</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="motifAnalysis_files/figure-html/compare-andr-foxa1-1.png" alt="Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions." width="700"><p class="caption">
+<img src="motifAnalysis_files/figure-html/compare-andr-foxa1-1.png" class="r-plt" alt="Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions." width="700"><p class="caption">
 Binding Motifs for ANDR and FOXA1 overlaid for the best alignment,
 showing the similarity in the core regions.
 </p>
@@ -664,10 +682,10 @@ There is <em>no ideal method</em> to group PWMs into clusters and manual
 inspection of any clusters produced is the best strategy for this
 process. Names are not strictly required for downstream analysis, but
 can help with interpretability</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterMotifs.html">clusterMotifs</a></span><span class="op">(</span><span class="va">ex_pfm</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, labels <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="motifAnalysis_files/figure-html/ex-cl-1.png" alt="Dendrogram showing clusters formed by `clusterMotifs()` with default settings." width="700"><p class="caption">
+<img src="motifAnalysis_files/figure-html/ex-cl-1.png" class="r-plt" alt="Dendrogram showing clusters formed by `clusterMotifs()` with default settings." width="700"><p class="caption">
 Plot produced when requested by clusterMotifs showing the relationship
 between motifs. The red horizontal line indicates the threshold below
 which motifs are grouped together into a cluster. Clustering is
@@ -675,7 +693,7 @@ performed using hclust on the distance matrices produced by
 <code><a href="https://rdrr.io/pkg/universalmotif/man/compare_motifs.html" class="external-link">universalmotif::compare_motifs()</a></code>
 </p>
 </div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">cl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ex_cl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>, <span class="va">cl</span><span class="op">)</span>, <span class="va">paste</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span></span></code></pre></div>
 <p>These clusters can now be tested for positional bias using
@@ -689,7 +707,7 @@ analogous way to for individual PWMs, using
 <code><a href="../reference/getClusterMatches.html">getClusterMatches()</a></code> instead of
 <code><a href="../reference/getPwmMatches.html">getPwmMatches()</a></code>, and the motif assigned to each match is
 also provided.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl_matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getClusterMatches.html">getClusterMatches</a></span><span class="op">(</span></span>
 <span>    <span class="va">ex_cl</span>, <span class="va">test_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, best_only <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -740,17 +758,17 @@ also provided.</p>
 <span><span class="co">## 255 chr1:246746473-24674..   14.3461         F        40        51      -154.5</span></span>
 <span><span class="co">##     seq_width       motif              match</span></span>
 <span><span class="co">##     &lt;integer&gt; &lt;character&gt;     &lt;DNAStringSet&gt;</span></span>
-<span><span class="co">## 1         400       FOXA1       TGTCATCCCGCC</span></span>
-<span><span class="co">## 2         400       FOXA1       GGCTGGCGGGAT</span></span>
-<span><span class="co">## 3         400       FOXA1       CAGGATCCGCTG</span></span>
-<span><span class="co">## 4         400       FOXA1       ACTTGCCAGTGA</span></span>
-<span><span class="co">## 5         400       FOXA1       CCCACCCCTCCA</span></span>
+<span><span class="co">## 1         400       FOXA1       TGTTTATTCTGT</span></span>
+<span><span class="co">## 2         400       FOXA1       TGTTTGCTTTTG</span></span>
+<span><span class="co">## 3         400       FOXA1       TGTGTACTTAGC</span></span>
+<span><span class="co">## 4         400       FOXA1       TGTTTACTTTCC</span></span>
+<span><span class="co">## 5         400       FOXA1       TGTTTATTTAGG</span></span>
 <span><span class="co">## ...       ...         ...                ...</span></span>
-<span><span class="co">## 251       400       FOXA1       ACAGGCTGGCGG</span></span>
-<span><span class="co">## 252       400       FOXA1       CAGAGCACAGTC</span></span>
-<span><span class="co">## 253       400        ANDR TGGCAAGTCAGGGGTGGG</span></span>
-<span><span class="co">## 254       400        ANDR GTCCCAGACAGGCTGGCG</span></span>
-<span><span class="co">## 255       400       FOXA1       CAGGGAGCCACA</span></span>
+<span><span class="co">## 251       400       FOXA1       TGTTTATTTTAA</span></span>
+<span><span class="co">## 252       400       FOXA1       TATTTACTGTGG</span></span>
+<span><span class="co">## 253       400        ANDR TGTTCTTTTTTGTTTGTT</span></span>
+<span><span class="co">## 254       400        ANDR TGTTCTTTCGTGTTTGAC</span></span>
+<span><span class="co">## 255       400       FOXA1       TGTTTACTTTCT</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $ZN143</span></span>
 <span><span class="co">## DataFrame with 26 rows and 9 columns</span></span>
@@ -812,7 +830,7 @@ also provided.</p>
 <p>These matches can then be passed to <code><a href="../reference/testClusterPos.html">testClusterPos()</a></code>,
 which works in a near-identical manner to
 <code><a href="../reference/testMotifPos.html">testMotifPos()</a></code></p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/testClusterPos.html">testClusterPos</a></span><span class="op">(</span><span class="va">cl_matches</span>, <span class="va">test_seq</span>, abs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##            start end centre width total_matches matches_in_region  expected</span></span>
 <span><span class="co">## ANDR/FOXA1     0  30     15    30           253                57 26.354167</span></span>
@@ -820,13 +838,13 @@ which works in a near-identical manner to
 <span><span class="co">## ZN143          0  50     25    50            26                20  6.842105</span></span>
 <span><span class="co">## ZN281          0 190     95   190            40                38 33.160622</span></span>
 <span><span class="co">##            enrichment prop_total            p         fdr consensus_motif</span></span>
-<span><span class="co">## ANDR/FOXA1   2.162846  0.2252964 0.0004845717 0.001581452    46, 79, ....</span></span>
+<span><span class="co">## ANDR/FOXA1   2.162846  0.2252964 0.0004845717 0.001581452    0, 0, 0,....</span></span>
 <span><span class="co">## ESR1         4.246000  0.2200000 0.0007907262 0.001581452    35, 0, 1....</span></span>
 <span><span class="co">## ZN143        2.923077  0.7692308 0.1963203926 0.261760523    6, 1, 13....</span></span>
 <span><span class="co">## ZN281        1.145938  0.9500000 0.9173293626 0.917329363    8, 6, 22....</span></span></code></pre>
 <p>All methods implemented for testing enrichment against a set of
 background sequences can also be used for clusters of motifs.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/testClusterEnrich.html">testClusterEnrich</a></span><span class="op">(</span></span>
 <span>  <span class="va">ex_cl</span>, <span class="va">test_seq</span>, <span class="va">rm_seq</span>, min_score <span class="op">=</span> <span class="va">score_thresh</span>, model <span class="op">=</span> <span class="st">"quasi"</span>, mc.cores <span class="op">=</span> <span class="va">cores</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -853,7 +871,7 @@ snippets will allow analysis of the above dataset, but without being
 restricted to chromosome 1.</p>
 <p>To obtain the full set of peaks, simply run the following and use
 these peaks repeating the steps above.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Not run</span></span>
 <span><span class="va">base_url</span> <span class="op">&lt;-</span> <span class="st">"https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM3511nnn"</span></span>
 <span><span class="va">bed_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -868,10 +886,10 @@ these peaks repeating the steps above.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">all_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRangesList-class.html" class="external-link">GRangesList</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bed_url</span>, <span class="va">import.bed</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">seqlevels</span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">seqnames</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqlevels</a></span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqnames</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">all_peaks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
 <span><span class="co">## Return the ranges with coverage from 2 or more targets</span></span>
-<span><span class="va">ar_er_peaks</span> <span class="op">&lt;-</span> <span class="fu">makeConsensus</span><span class="op">(</span></span>
+<span><span class="va">ar_er_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/extraChIPs/man/makeConsensus.html" class="external-link">makeConsensus</a></span><span class="op">(</span></span>
 <span>  <span class="va">all_peaks</span>, p <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, method <span class="op">=</span> <span class="st">"coverage"</span>, min_width <span class="op">=</span> <span class="fl">200</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co">## Now subset to the ranges which overlap a peak from every target</span></span>
@@ -880,7 +898,7 @@ these peaks repeating the steps above.</p>
 <p>The full set of PWMs for HOCOMOCOv11 (core-A) provided in
 <code>MotifDb</code> can be obtained using the following. Alternatively,
 query fields can be customised as preferred.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Not run</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MotifDb</span><span class="op">)</span></span>
 <span><span class="va">ex_pfm</span> <span class="op">&lt;-</span> <span class="va">MotifDb</span> <span class="op">|&gt;</span></span>
@@ -892,13 +910,13 @@ query fields can be customised as preferred.</p>
 be obtained here. If choosing this dataset, note that
 <code>bg_ranges</code> will need to be drawn from the entire genome, not
 just chromosome 1.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Not run</span></span>
 <span><span class="va">zr75_url</span> <span class="op">&lt;-</span> <span class="st">"http://www.enhanceratlas.org/data/download/enhancer/hs/ZR75-1.bed"</span></span>
 <span><span class="va">zr75_enh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/BEDFile-class.html" class="external-link">import.bed</a></span><span class="op">(</span><span class="va">zr75_url</span><span class="op">)</span></span>
 <span><span class="va">zr75_enh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/genomic-range-squeezers.html" class="external-link">granges</a></span><span class="op">(</span><span class="va">zr75_enh</span><span class="op">)</span></span>
-<span><span class="fu">seqlevels</span><span class="op">(</span><span class="va">zr75_enh</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">seqnames</span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">zr75_enh</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqlevels</a></span><span class="op">(</span><span class="va">zr75_enh</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqnames</a></span><span class="op">(</span><span class="va">sq</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">zr75_enh</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sq</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">overlapsAny</a></span><span class="op">(</span><span class="va">ar_er_peaks</span>, <span class="va">zr75_enh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -932,55 +950,49 @@ just chromosome 1.</p>
 <span><span class="co">## [8] methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] universalmotif_1.26.3             patchwork_1.3.2                  </span></span>
-<span><span class="co">##  [3] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.76.0                  </span></span>
-<span><span class="co">##  [5] BiocIO_1.18.0                     rtracklayer_1.68.0               </span></span>
-<span><span class="co">##  [7] motifTestR_1.4.2                  ggplot2_4.0.0                    </span></span>
-<span><span class="co">##  [9] GenomicRanges_1.60.0              Biostrings_2.76.0                </span></span>
-<span><span class="co">## [11] GenomeInfoDb_1.44.3               XVector_0.48.0                   </span></span>
-<span><span class="co">## [13] IRanges_2.42.0                    S4Vectors_0.46.0                 </span></span>
-<span><span class="co">## [15] BiocGenerics_0.54.0               generics_0.1.4                   </span></span>
-<span><span class="co">## [17] BiocStyle_2.36.0                 </span></span>
+<span><span class="co">##  [1] extraChIPs_1.13.3                 tibble_3.3.0                     </span></span>
+<span><span class="co">##  [3] SummarizedExperiment_1.39.2       Biobase_2.69.1                   </span></span>
+<span><span class="co">##  [5] MatrixGenerics_1.21.0             matrixStats_1.5.0                </span></span>
+<span><span class="co">##  [7] ggside_0.4.0                      BiocParallel_1.43.4              </span></span>
+<span><span class="co">##  [9] universalmotif_1.27.4             patchwork_1.3.2                  </span></span>
+<span><span class="co">## [11] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.77.2                  </span></span>
+<span><span class="co">## [13] BiocIO_1.19.0                     rtracklayer_1.69.1               </span></span>
+<span><span class="co">## [15] motifTestR_1.5.6                  ggplot2_4.0.0                    </span></span>
+<span><span class="co">## [17] GenomicRanges_1.61.5              Biostrings_2.77.2                </span></span>
+<span><span class="co">## [19] Seqinfo_0.99.2                    XVector_0.49.1                   </span></span>
+<span><span class="co">## [21] IRanges_2.43.5                    S4Vectors_0.47.4                 </span></span>
+<span><span class="co">## [23] BiocGenerics_0.55.4               generics_0.1.4                   </span></span>
+<span><span class="co">## [25] BiocStyle_2.37.1                 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tidyselect_1.2.1            viridisLite_0.4.2          </span></span>
-<span><span class="co">##  [3] dplyr_1.1.4                 farver_2.1.2               </span></span>
-<span><span class="co">##  [5] S7_0.2.0                    bitops_1.0-9               </span></span>
-<span><span class="co">##  [7] fastmap_1.2.0               RCurl_1.98-1.17            </span></span>
-<span><span class="co">##  [9] GenomicAlignments_1.44.0    XML_3.99-0.19              </span></span>
-<span><span class="co">## [11] digest_0.6.37               lifecycle_1.0.4            </span></span>
-<span><span class="co">## [13] magrittr_2.0.4              compiler_4.5.1             </span></span>
-<span><span class="co">## [15] rlang_1.1.6                 sass_0.4.10                </span></span>
-<span><span class="co">## [17] tools_4.5.1                 yaml_2.3.10                </span></span>
-<span><span class="co">## [19] knitr_1.50                  S4Arrays_1.8.1             </span></span>
-<span><span class="co">## [21] labeling_0.4.3              htmlwidgets_1.6.4          </span></span>
-<span><span class="co">## [23] curl_7.0.0                  DelayedArray_0.34.1        </span></span>
-<span><span class="co">## [25] RColorBrewer_1.1-3          harmonicmeanp_3.0.1        </span></span>
-<span><span class="co">## [27] abind_1.4-8                 BiocParallel_1.42.2        </span></span>
-<span><span class="co">## [29] withr_3.0.2                 desc_1.4.3                 </span></span>
-<span><span class="co">## [31] grid_4.5.1                  scales_1.4.0               </span></span>
-<span><span class="co">## [33] MASS_7.3-65                 SummarizedExperiment_1.38.1</span></span>
-<span><span class="co">## [35] cli_3.6.5                   rmarkdown_2.30             </span></span>
-<span><span class="co">## [37] crayon_1.5.3                ragg_1.5.0                 </span></span>
-<span><span class="co">## [39] httr_1.4.7                  rjson_0.2.23               </span></span>
-<span><span class="co">## [41] cachem_1.1.0                splines_4.5.1              </span></span>
-<span><span class="co">## [43] BiocManager_1.30.26         restfulr_0.0.16            </span></span>
-<span><span class="co">## [45] matrixStats_1.5.0           vctrs_0.6.5                </span></span>
-<span><span class="co">## [47] Matrix_1.7-4                jsonlite_2.0.0             </span></span>
-<span><span class="co">## [49] bookdown_0.45               systemfonts_1.3.1          </span></span>
-<span><span class="co">## [51] FMStable_0.1-4              jquerylib_0.1.4            </span></span>
-<span><span class="co">## [53] glue_1.8.0                  pkgdown_2.1.3.9000         </span></span>
-<span><span class="co">## [55] codetools_0.2-20            gtable_0.3.6               </span></span>
-<span><span class="co">## [57] UCSC.utils_1.4.0            tibble_3.3.0               </span></span>
-<span><span class="co">## [59] pillar_1.11.1               htmltools_0.5.8.1          </span></span>
-<span><span class="co">## [61] GenomeInfoDbData_1.2.14     R6_2.6.1                   </span></span>
-<span><span class="co">## [63] textshaping_1.0.3           evaluate_1.0.5             </span></span>
-<span><span class="co">## [65] Biobase_2.68.0              lattice_0.22-7             </span></span>
-<span><span class="co">## [67] Rsamtools_2.24.1            bslib_0.9.0                </span></span>
-<span><span class="co">## [69] Rcpp_1.1.0                  SparseArray_1.8.1          </span></span>
-<span><span class="co">## [71] nlme_3.1-168                mgcv_1.9-3                 </span></span>
-<span><span class="co">## [73] xfun_0.53                   fs_1.6.6                   </span></span>
-<span><span class="co">## [75] MatrixGenerics_1.20.0       pkgconfig_2.0.3</span></span></code></pre>
+<span><span class="co">##  [1] bitops_1.0-9             SimpleUpset_0.1.2        rlang_1.1.6             </span></span>
+<span><span class="co">##  [4] magrittr_2.0.4           compiler_4.5.1           mgcv_1.9-3              </span></span>
+<span><span class="co">##  [7] systemfonts_1.3.1        vctrs_0.6.5              stringr_1.5.2           </span></span>
+<span><span class="co">## [10] pkgconfig_2.0.3          crayon_1.5.3             fastmap_1.2.0           </span></span>
+<span><span class="co">## [13] labeling_0.4.3           Rsamtools_2.25.3         rmarkdown_2.30          </span></span>
+<span><span class="co">## [16] UCSC.utils_1.5.0         ragg_1.5.0               purrr_1.1.0             </span></span>
+<span><span class="co">## [19] xfun_0.53                cachem_1.1.0             GenomeInfoDb_1.45.12    </span></span>
+<span><span class="co">## [22] jsonlite_2.0.0           FMStable_0.1-4           DelayedArray_0.35.3     </span></span>
+<span><span class="co">## [25] R6_2.6.1                 bslib_0.9.0              stringi_1.8.7           </span></span>
+<span><span class="co">## [28] RColorBrewer_1.1-3       limma_3.65.6             jquerylib_0.1.4         </span></span>
+<span><span class="co">## [31] Rcpp_1.1.0               bookdown_0.45            knitr_1.50              </span></span>
+<span><span class="co">## [34] Matrix_1.7-4             splines_4.5.1            tidyselect_1.2.1        </span></span>
+<span><span class="co">## [37] abind_1.4-8              yaml_2.3.10              codetools_0.2-20        </span></span>
+<span><span class="co">## [40] curl_7.0.0               lattice_0.22-7           InteractionSet_1.37.1   </span></span>
+<span><span class="co">## [43] withr_3.0.2              S7_0.2.0                 csaw_1.43.1             </span></span>
+<span><span class="co">## [46] evaluate_1.0.5           desc_1.4.3               pillar_1.11.1           </span></span>
+<span><span class="co">## [49] BiocManager_1.30.26      RCurl_1.98-1.17          scales_1.4.0            </span></span>
+<span><span class="co">## [52] harmonicmeanp_3.0.1      glue_1.8.0               metapod_1.17.0          </span></span>
+<span><span class="co">## [55] tools_4.5.1              locfit_1.5-9.12          GenomicAlignments_1.45.4</span></span>
+<span><span class="co">## [58] forcats_1.0.1            fs_1.6.6                 XML_3.99-0.19           </span></span>
+<span><span class="co">## [61] grid_4.5.1               tidyr_1.3.1              edgeR_4.7.6             </span></span>
+<span><span class="co">## [64] nlme_3.1-168             restfulr_0.0.16          cli_3.6.5               </span></span>
+<span><span class="co">## [67] textshaping_1.0.4        S4Arrays_1.9.1           viridisLite_0.4.2       </span></span>
+<span><span class="co">## [70] dplyr_1.1.4              gtable_0.3.6             sass_0.4.10             </span></span>
+<span><span class="co">## [73] digest_0.6.37            SparseArray_1.9.1        ggrepel_0.9.6           </span></span>
+<span><span class="co">## [76] rjson_0.2.23             htmlwidgets_1.6.4        farver_2.1.2            </span></span>
+<span><span class="co">## [79] htmltools_0.5.8.1        pkgdown_2.1.3.9000       lifecycle_1.0.4         </span></span>
+<span><span class="co">## [82] httr_1.4.7               statmod_1.5.1            MASS_7.3-65</span></span></code></pre>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Bailey2012-qz" class="csl-entry">
 Bailey, Timothy L, and Philip Machanick. 2012. <span>“Inferring Direct
