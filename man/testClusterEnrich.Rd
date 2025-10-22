@@ -9,7 +9,7 @@ testClusterEnrich(
   stringset,
   bg,
   var = "iteration",
-  model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
+  model = c("poisson", "hypergeometric", "quasipoisson", "glm_poisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
   prior.count = 1,

@@ -63,7 +63,7 @@
 #' @export
 testClusterEnrich <- function(
         cl, stringset, bg, var = "iteration",
-        model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
+        model = c("poisson", "hypergeometric", "quasipoisson", "glm_poisson", "iteration"),
         sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, seed = 100, ...
 ) {
 
@@ -78,7 +78,8 @@ testClusterEnrich <- function(
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
         poisson = "est_bg_rate", iteration = c("iter_p", "n_iter", "sd_bg"),
-        hypergeometric = "odds_ratio", quasipoisson = c("n_iter", "sd_bg")
+        hypergeometric = "odds_ratio", quasipoisson = c("n_iter", "sd_bg"),
+        glm_poisson = c("n_iter", "sd_bg")
     )
     cols <- c(cols, mod_cols[[model]])
     if (model == "hypergeometric") cols <- setdiff(cols, "Z")
@@ -94,6 +95,10 @@ testClusterEnrich <- function(
         )
     if (model == "quasipoisson")
         out <- .testQuasi(
+            cl, stringset, bg, var, mc.cores, "cluster", prior.count, seed, ...
+        )
+    if (model == "glm_poisson")
+        out <- .testGlmPois(
             cl, stringset, bg, var, mc.cores, "cluster", prior.count, seed, ...
         )
     if (model == "hypergeometric")

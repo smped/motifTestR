@@ -9,7 +9,7 @@ testMotifEnrich(
   stringset,
   bg,
   var = "iteration",
-  model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
+  model = c("poisson", "hypergeometric", "quasipoisson", "glm_poisson", "iteration"),
   sort_by = c("p", "none"),
   mc.cores = 1,
   prior.count = 1,
@@ -126,6 +126,14 @@ time-consuming, as this is effectively an iterative approach.
 Testing is two-sided.
 }
 
+\subsection{GLM-Poisson Test}{
+
+This follows the same approach as the Quasi-Poisson model, relying on fitting
+iterations using \code{\link[=glm]{glm()}}.
+For this model however, no over-dispersions are estimated and the underlying
+family is simply the \code{poisson()} family
+}
+
 \subsection{Iteration}{
 
 Setting the model as "iteration" performs a non-parametric analysis, with
@@ -163,6 +171,7 @@ bg_ranges <- makeRMRanges(
 library(BSgenome.Hsapiens.UCSC.hg19)
 genome <- BSgenome.Hsapiens.UCSC.hg19
 bg_seq <- getSeq(genome, bg_ranges)
+mcols(bg_seq)$iteraton <-bg_ranges$iteration
 
 ## Test for enrichment of the ESR1 motif
 data("ex_pfm")
