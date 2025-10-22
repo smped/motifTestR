@@ -1,24 +1,28 @@
-# motifTestR 0.1.8
+# Changes in version 1.5.6
 
-+ First complete draft
++ Added GLM-Poisson model for enrichment testing
 
-# motifTestR 0.99.0
+# Changes in version 1.5.1
 
-+ Submitted to Bioconductor
++ Added simMultiMotifs
 
-# motifTestR 1.1.5
+# Changes in version 1.3.5
+
++ Introduced prior counts for enrichment testing
+
+# Changes in version 1.3.3
+
++ Added simSeq for generating random sequences
+
+# Changes in version 1.1.5
 
 + Added clusterMotifs, testClusterPos and testClusterEnrich
 + Enforced strict use of PWMs for all functions
 
-# motifTestR 1.3.3
+# Changes in version 0.99.0
 
-+ Added simSeq for generating random sequences
++ Submitted to Bioconductor
 
-# motifTestR 1.3.5
+# Changes in version 0.1.8
 
-+ Introduced prior counts for enrichment testing
-
-# motifTestR 1.5.1
-
-+ Added simMultiMotifs
++ First complete draft
