@@ -12,7 +12,7 @@
             motif, nsites = nsites, pseudocount = 1, type = "PPM"
         )
     }
-    stopifnot(is(motif, "universalmotif"))
+    if (!is(motif, "universalmotif")) stop("Could not determine motif type")
     if (slot(motif, "pseudocount") == 0)
         warning("Zero pseudocounts may lead to a PWM with infinite values")
     pwm <- convert_type(motif, "PWM")
@@ -31,7 +31,7 @@
 
 #' @keywords internal
 #' @importClassesFrom universalmotif universalmotif
-.cleanMotifList <- function(x) {
+.cleanMotifList <- function(x, nt = c("A", "C", "G", "T")) {
     if (all(vapply(x, is, logical(1), "universalmotif"))) {
         ## Add the name as the motif name, swicthing to altname where required
         n <- length(x)
@@ -55,9 +55,7 @@
     }
     ## Now check everything is a matrix
     all_mat <- vapply(
-        x,
-        \(mat) all(is.matrix(mat), rownames(mat) == c("A", "C", "G", "T")),
-        logical(1)
+        x, \(mat) all(is.matrix(mat), rownames(mat) == nt), logical(1)
     )
     stopifnot(all_mat)
     x

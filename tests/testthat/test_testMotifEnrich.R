@@ -36,6 +36,15 @@ test_that("Quasipoisson works", {
 
 })
 
+test_that("GLM-Poisson works", {
+    mcols(bg_set) <- mcols(bg_ranges)
+    iter <- testMotifEnrich(esr1, test_set, bg_set, model = "glm")
+    expect_true(is(iter, "data.frame"))
+    expect_true(nrow(iter) == 1)
+    expect_true(iter$n_iter == 10)
+
+})
+
 test_that("Hypergeometric works", {
     mcols(bg_set) <- mcols(bg_ranges)
     hg <- testMotifEnrich(esr1, test_set, bg_set, model = "hyper")

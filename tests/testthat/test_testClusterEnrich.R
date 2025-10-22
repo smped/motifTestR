@@ -32,6 +32,15 @@ test_that("Quasipoisson works", {
 
 })
 
+test_that("GLM-Poisson works", {
+    mcols(bg_set) <- mcols(bg_ranges)
+    iter <- testClusterEnrich(cl, test_set, bg_set, model = "glm")
+    expect_true(is(iter, "data.frame"))
+    expect_true(nrow(iter) == 3)
+    expect_true(all(iter$n_iter == 10))
+
+})
+
 test_that("Hypergeometric works", {
     mcols(bg_set) <- mcols(bg_ranges)
     hg <- testClusterEnrich(cl, test_set, bg_set, model = "hyper")

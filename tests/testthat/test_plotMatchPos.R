@@ -2,56 +2,56 @@ bm <- getPwmMatches(ex_pfm[1:2], seq, best_only = TRUE, break_ties = "all")
 
 test_that("Defaults work", {
     p <- plotMatchPos(bm, se = FALSE)
-    expect_true(is(prop(p, "layers")[[1]]$geom, "GeomSmooth"))
-    expect_equal(levels(prop(p, "data")$name), names(bm))
+    expect_true(is(p@layers[[1]]$geom, "GeomSmooth"))
+    expect_equal(levels(p@data$name), names(bm))
     expect_equal(
-        vapply(prop(p, "mapping"), as_label, character(1)),
+        vapply(p@mapping, as_label, character(1)),
         c(x = "bin_centre", y = "p", colour = "name")
     )
-    expect_true(!prop(p, "layers")[[1]]$geom_params$se)
+    expect_true(!p@layers[[1]]$geom_params$se)
 })
 
 test_that("cdf plots work", {
     p <- plotMatchPos(bm, abs = TRUE, type = "cdf", geom = "line")
-    expect_true(is(prop(p, 'layers')[[1]]$geom, "GeomLine"))
+    expect_true(is(p@layers[[1]]$geom, "GeomLine"))
     expect_equal(
-        vapply(prop(p, "mapping"), as_label, character(1)),
+        vapply(p@mapping, as_label, character(1)),
         c(x = "bin_start", y = "cdf", colour = "name")
     )
 })
 
 test_that("col plots work", {
     p <- plotMatchPos(bm, abs = TRUE, geom = "col", position = "dodge")
-    expect_true(is(prop(p, "layers")[[1]]$geom, "GeomCol"))
-    expect_true(is(prop(p, "layers")[[1]]$position, "PositionDodge"))
+    expect_true(is(p@layers[[1]]$geom, "GeomCol"))
+    expect_true(is(p@layers[[1]]$position, "PositionDodge"))
     expect_equal(
-        vapply(prop(p, "mapping"), as_label, character(1)),
+        vapply(p@mapping, as_label, character(1)),
         c(x = "bin_start", y = "p", fill = "name")
     )
 })
 
 test_that("heatmaps work", {
     p <- plotMatchPos(bm, type = "heat")
-    expect_true(is(prop(p, "layers")[[1]]$geom, "GeomTile"))
+    expect_true(is(p@layers[[1]]$geom, "GeomTile"))
 })
 test_that("clusters work", {
     p <- plotMatchPos(bm, type = "heat", cluster = TRUE)
     expect_true(is(p, "patchwork"))
-    expect_true(is(prop(p[[1]], "layers")[[1]]$geom, "GeomSegment"))
-    expect_equal(colnames(prop(p[[1]], "data")), c("x", "y", "xend", "yend"))
-    expect_true(is(prop(p[[2]], "layers")[[1]]$geom, "GeomTile"))
+    expect_true(is(p[[1]]@layers[[1]]$geom, "GeomSegment"))
+    expect_equal(colnames(p[[1]]$data), c("x", "y", "xend", "yend"))
+    expect_true(is(p[[2]]@layers[[1]]$geom, "GeomTile"))
     expect_equal(
-        lapply(prop(p[[2]], "mapping"), as_label),
+        lapply(p[[2]]@mapping, as_label),
         list(x = "bin_centre", y = "name", fill = "p")
     )
-    expect_null(prop(p[[2]], "labels")$y)
+    expect_null(p[[2]]@labels$y)
 })
 
 test_that("single input works", {
     p <- plotMatchPos(bm[[1]])
-    expect_true(is(prop(p, "layers")[[1]]$geom, "GeomSmooth"))
+    expect_true(is(p@layers[[1]]$geom, "GeomSmooth"))
     expect_equal(
-        lapply(prop(p, "mapping"), as_label),
+        lapply(p@mapping, as_label),
         list(x = "bin_centre", y = "p", colour = "NULL")
     )
 })

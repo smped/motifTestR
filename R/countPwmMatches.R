@@ -29,46 +29,41 @@
 #' countPwmMatches(ex_pfm, ar_er_seq)
 #'
 #' @importFrom parallel mclapply
+#' @importFrom matrixStats rowSums2
+#' @import Biostrings
 #' @export
 countPwmMatches <- function(
         pwm, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
 ) {
 
-    args <- c(as.list(environment()), list(...))
-    args <- args[names(args) != "mc.cores"]
-    if (is.list(pwm)) {
-        pwm <- .cleanMotifList(pwm)
-        out <- mclapply(
-            pwm, .countSinglePwmMatches, stringset = stringset, rc = rc,
-            min_score = min_score, mc.cores = mc.cores
-        )
-        out <- unlist(out)
-    }
-    if (is.matrix(pwm)) out <- do.call(".countSinglePwmMatches", args)
-    out
-
-}
-
-#' @import Biostrings
-#' @keywords internal
-.countSinglePwmMatches <- function(
-        pwm, stringset, rc = TRUE, min_score = "80%", ...
-){
-    ## Checks & the map
-    pwm <- .checkPWM(pwm)
-    map <- .viewMapFromXStringset(stringset)
+    if (!is.list(pwm)) pwm <- list(pwm)
+    mc.cores <- min(mc.cores, length(pwm))
+    pwm <- mclapply(pwm, .checkPWM, mc.cores = mc.cores)
+    pwm <- .cleanMotifList(pwm)
+    nm <- names(pwm)
+    ## Append any reverse matrices to the existing list
+    if (rc) pwm <- c(pwm, lapply(pwm, reverseComplement))
 
     # Form the entire XStringSetList into a Views object
+    map <- .viewMapFromXStringset(stringset)
     views <- Views(
         unlist(stringset), start = map$start, width = map$width,
         names = map$names
     )
-    n_matches <- countPWM(pwm, views, min.score = min_score, ...)
-    if (rc)
-        n_matches <- c(
-            n_matches,
-            countPWM(reverseComplement(pwm), views, min.score = min_score, ...)
-        )
 
-    as.integer(sum(n_matches))
+    ## Now the counts
+    counts <- mclapply(
+        pwm,
+        \(x) countPWM(x, views, min.score = min_score, ...),
+        mc.cores = mc.cores
+    )
+    out <- unlist(counts)
+    if (rc) out <- rowSums2(matrix(out, ncol = 2, dimnames = list(nm, NULL)))
+    out
+
+}
+
+#' @keywords internal
+.countSinglePwmMatches <- function(){
+
 }

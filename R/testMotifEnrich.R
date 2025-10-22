@@ -64,6 +64,13 @@
 #' time-consuming, as this is effectively an iterative approach.
 #' Testing is two-sided.
 #'
+#' ### GLM-Poisson Test
+#'
+#' This follows the same approach as the Quasi-Poisson model, relying on fitting
+#' iterations using [glm()].
+#' For this model however, no over-dispersions are estimated and the underlying
+#' family is simply the `poisson()` family
+#'
 #' ### Iteration
 #'
 #' Setting the model as "iteration" performs a non-parametric analysis, with
@@ -136,6 +143,7 @@
 #' library(BSgenome.Hsapiens.UCSC.hg19)
 #' genome <- BSgenome.Hsapiens.UCSC.hg19
 #' bg_seq <- getSeq(genome, bg_ranges)
+#' mcols(bg_seq)$iteraton <-bg_ranges$iteration
 #'
 #' ## Test for enrichment of the ESR1 motif
 #' data("ex_pfm")
@@ -150,7 +158,7 @@
 #' @export
 testMotifEnrich <- function(
         pwm, stringset, bg, var = "iteration",
-        model = c("quasipoisson", "hypergeometric", "poisson", "iteration"),
+        model = c("poisson", "hypergeometric", "quasipoisson", "glm_poisson", "iteration"),
         sort_by = c("p", "none"), mc.cores = 1, prior.count = 1, seed = 100, ...
 ) {
 
@@ -165,7 +173,8 @@ testMotifEnrich <- function(
     cols <- c("sequences", "matches", "expected", "enrichment", "Z", "p", "fdr")
     mod_cols <- list(
         poisson = "est_bg_rate", iteration = c("iter_p", "n_iter", "sd_bg"),
-        hypergeometric = "odds_ratio", quasipoisson = c("n_iter", "sd_bg")
+        hypergeometric = "odds_ratio", quasipoisson = c("n_iter", "sd_bg"),
+        glm_poisson = c("n_iter", "sd_bg")
     )
     cols <- c(cols, mod_cols[[model]])
     if (model == "hypergeometric") cols <- setdiff(cols, "Z")
@@ -178,6 +187,10 @@ testMotifEnrich <- function(
         out <- .testIter(pwm, stringset, bg, var, mc.cores, pc = prior.count, ...)
     if (model == "quasipoisson")
         out <- .testQuasi(
+            pwm, stringset, bg, var, mc.cores, "pwm", prior.count, seed, ...
+        )
+    if (model == "glm_poisson")
+        out <- .testGlmPois(
             pwm, stringset, bg, var, mc.cores, "pwm", prior.count, seed, ...
         )
     if (model == "hypergeometric")
@@ -317,6 +330,74 @@ testMotifEnrich <- function(
                 type = c("test", rep_len("control", n_iter))
             )
             fit <- glm(x~type, family = quasipoisson(), data = df)
+            summary(fit)$coef[2, 4]
+        }, numeric(1)
+    )
+
+    data.frame(
+        sequences = n, matches, expected = mean_bg,
+        enrichment, Z, p, n_iter, sd_bg
+    )
+}
+
+#' @importFrom parallel mclapply
+#' @importFrom stats glm poisson
+#' @importFrom matrixStats colSds
+#' @keywords internal
+.testGlmPois <- function(
+        x, stringset, bg, var, mc.cores, type = c("pwm", "cluster"), pc, seed,
+        ...
+) {
+
+    ## Prior counts should be handled with caution here as using a fixed value
+    ## will breach the Poisson distribution, e.g. adding a fixed value of 1 to
+    ## a consistent run of zeros will give mean 1 with variance 0. Poisson
+    ## noise may be preferable, but may profoundly reduce significance
+
+    n <- length(stringset)
+    stopifnot(var %in% colnames(mcols(bg)))
+    splitbg <- split(bg, mcols(bg)[[var]])
+    if (!all(vapply(splitbg, length, integer(1)) == n))
+        stop("All iterations must be the same size as the test sequences")
+
+    type <- match.arg(type)
+    if (type == "pwm") {
+        matches <- countPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countPwmMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
+    if (type == "cluster") {
+        matches <- countClusterMatches(x, stringset, mc.cores = mc.cores, ...)
+        bg_matches <- mclapply(
+            splitbg, \(i) countClusterMatches(x, i, mc.cores = 1, ...),
+            mc.cores = mc.cores
+        )
+    }
+    bg_mat <- do.call("rbind", bg_matches)
+    ## Add Poisson prior counts
+    if (pc != 0) {
+        set.seed(seed)
+        matches <- matches + stats::rpois(length(matches), pc)
+        bg_mat <- bg_mat + stats::rpois(length(bg_mat), pc)
+    }
+    n_iter <- nrow(bg_mat)
+    stopifnot(n_iter > 1)
+    mean_bg <- colMeans(bg_mat)
+    sd_bg <- colSds(bg_mat)
+    Z <- (matches - mean_bg) / sd_bg
+    Z[sd_bg == 0] <- NA_real_ # Handle where sd_bg == 0
+    enrichment <- (matches) / colMeans(bg_mat)
+
+    p <- vapply(
+        seq_along(x),
+        \(i) {
+            df <- data.frame(
+                x = c(matches[[i]], bg_mat[,i]),
+                type = c("test", rep_len("control", n_iter))
+            )
+            fit <- glm(x~type, family = poisson(), data = df)
             summary(fit)$coef[2, 4]
         }, numeric(1)
     )
