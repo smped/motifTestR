@@ -55,3 +55,14 @@ test_that("Main function simulates data as expected", {
 
 
 })
+
+test_that("Differences between PFM & PWMs are managed", {
+    pwm_list <- um_db |>
+        universalmotif::convert_type("PWM") |>
+        lapply(slot, "motif")
+    names(pwm_list) <- vapply(um_db, slot, character(1), "name")
+    chk <- .checkPfmList(pwm_list)
+    expect_true(all(names(chk) == names(pwm_list)))
+    expect_true(all(vapply(chk, is.matrix, logical(1))))
+
+})
