@@ -186,11 +186,14 @@ simMultiMotifs <- function(
     names(pfm) <- nm
   } else {
     col_sums <- lapply(pfm, \(x) unname(colSums(x)))
-    is_pfm <- vapply(col_sums, \(x) all.equal(x, rep(1, length(x))), logical(1))
-    if (!all(is_pfm)) {
+    is_pfm <- lapply(col_sums, \(x) all.equal(sum(x), length(x), tolerance = 1e-6))
+    is_pfm <- unlist(is_pfm)
+    if (is.character(is_pfm)) {
       ## Perform the conversion using universal motif
+      nm <- names(pfm)
       pfm <- lapply(pfm, create_motif, type = "PPM")
       pfm <- lapply(pfm, slot, "motif")
+      names(pfm) <- nm
     }
   }
   stopifnot(all(vapply(pfm, is.matrix, logical(1))))
