@@ -1001,14 +1001,14 @@ mean(overlapsAny(ar_er_peaks, zr75_enh))
     ## [11] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.77.2                  
     ## [13] BiocIO_1.19.0                     rtracklayer_1.69.1               
     ## [15] motifTestR_1.5.6                  ggplot2_4.0.0                    
-    ## [17] GenomicRanges_1.61.5              Biostrings_2.77.2                
-    ## [19] Seqinfo_0.99.2                    XVector_0.49.1                   
-    ## [21] IRanges_2.43.5                    S4Vectors_0.47.4                 
+    ## [17] GenomicRanges_1.61.6              Biostrings_2.77.2                
+    ## [19] Seqinfo_0.99.3                    XVector_0.49.1                   
+    ## [21] IRanges_2.43.6                    S4Vectors_0.47.5                 
     ## [23] BiocGenerics_0.55.4               generics_0.1.4                   
     ## [25] BiocStyle_2.37.1                 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] bitops_1.0-9             SimpleUpset_0.1.2        rlang_1.1.6             
+    ##  [1] bitops_1.0-9             SimpleUpset_0.1.3        rlang_1.1.6             
     ##  [4] magrittr_2.0.4           compiler_4.5.1           mgcv_1.9-3              
     ##  [7] systemfonts_1.3.1        vctrs_0.6.5              stringr_1.5.2           
     ## [10] pkgconfig_2.0.3          crayon_1.5.3             fastmap_1.2.0           
@@ -1017,7 +1017,7 @@ mean(overlapsAny(ar_er_peaks, zr75_enh))
     ## [19] xfun_0.53                cachem_1.1.0             GenomeInfoDb_1.45.12    
     ## [22] jsonlite_2.0.0           FMStable_0.1-4           DelayedArray_0.35.3     
     ## [25] R6_2.6.1                 bslib_0.9.0              stringi_1.8.7           
-    ## [28] RColorBrewer_1.1-3       limma_3.65.6             jquerylib_0.1.4         
+    ## [28] RColorBrewer_1.1-3       limma_3.65.7             jquerylib_0.1.4         
     ## [31] Rcpp_1.1.0               bookdown_0.45            knitr_1.50              
     ## [34] Matrix_1.7-4             splines_4.5.1            tidyselect_1.2.1        
     ## [37] abind_1.4-8              yaml_2.3.10              codetools_0.2-20        
