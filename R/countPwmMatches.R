@@ -59,11 +59,8 @@ countPwmMatches <- function(
     )
     out <- unlist(counts)
     if (rc) out <- rowSums2(matrix(out, ncol = 2, dimnames = list(nm, NULL)))
+    names(out) <- nm
     out
 
 }
 
-#' @keywords internal
-.countSinglePwmMatches <- function(){
-
-}
