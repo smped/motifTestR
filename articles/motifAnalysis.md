@@ -1000,7 +1000,7 @@ mean(overlapsAny(ar_er_peaks, zr75_enh))
     ##  [9] universalmotif_1.27.4             patchwork_1.3.2                  
     ## [11] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.77.2                  
     ## [13] BiocIO_1.19.0                     rtracklayer_1.69.1               
-    ## [15] motifTestR_1.5.6                  ggplot2_4.0.0                    
+    ## [15] motifTestR_1.5.8                  ggplot2_4.0.0                    
     ## [17] GenomicRanges_1.61.6              Biostrings_2.77.2                
     ## [19] Seqinfo_0.99.3                    XVector_0.49.1                   
     ## [21] IRanges_2.43.6                    S4Vectors_0.47.5                 
