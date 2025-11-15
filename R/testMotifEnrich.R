@@ -320,6 +320,7 @@ testMotifEnrich <- function(
     sd_bg <- colSds(bg_mat)
     Z <- (matches - mean_bg) / sd_bg
     Z[sd_bg == 0] <- NA_real_ # Handle where sd_bg == 0
+    Z[matches == mean_bg] <- 0 # The denominator doesn't matter if diff is 0
     enrichment <- (matches) / colMeans(bg_mat)
 
     p <- vapply(
@@ -388,6 +389,7 @@ testMotifEnrich <- function(
     sd_bg <- colSds(bg_mat)
     Z <- (matches - mean_bg) / sd_bg
     Z[sd_bg == 0] <- NA_real_ # Handle where sd_bg == 0
+    Z[matches == mean_bg] <- 0 # The denominator doesn't matter if diff is 0
     enrichment <- (matches) / colMeans(bg_mat)
 
     p <- vapply(
@@ -438,6 +440,7 @@ testMotifEnrich <- function(
     }
     bg_mat <- do.call("rbind", bg_matches)
     mean_bg <- colMeans(bg_mat)
+    ## Maybe sample a value from a low quantile to handle zero values
     sd_bg <- colSds(bg_mat)
     n_iter <- nrow(bg_mat)
     stopifnot(n_iter > 1)
@@ -447,6 +450,7 @@ testMotifEnrich <- function(
     iter_p <- (colSums(diff > 0) + 1) / n_iter
     Z <- (matches - mean_bg) / sd_bg
     Z[sd_bg == 0] <- NA_real_ ## Handle where sd_bg == 0
+    Z[matches == mean_bg] <- 0 ## Set any to zero where matches equal bg
     p <- 1 - pchisq(Z^2, 1)
 
     data.frame(
@@ -483,6 +487,7 @@ testMotifEnrich <- function(
     ## Get the Z-scores & handle those with zero variance
     Z <- (matches - expected) / sqrt(expected)
     Z[sqrt(expected) == 0] <- NA_real_
+    Z[matches == expected] <- 0
     ## Running vapply seems faster than mclappy here
     p <- vapply(
         seq_along(x),
