@@ -969,7 +969,7 @@ mean(overlapsAny(ar_er_peaks, zr75_enh))
 
 ## Session info
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.2 (2025-10-31)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.3 LTS
     ## 
@@ -993,49 +993,50 @@ mean(overlapsAny(ar_er_peaks, zr75_enh))
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] extraChIPs_1.13.3                 tibble_3.3.0                     
-    ##  [3] SummarizedExperiment_1.39.2       Biobase_2.69.1                   
-    ##  [5] MatrixGenerics_1.21.0             matrixStats_1.5.0                
-    ##  [7] ggside_0.4.0                      BiocParallel_1.43.4              
-    ##  [9] universalmotif_1.27.4             patchwork_1.3.2                  
-    ## [11] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.77.2                  
-    ## [13] BiocIO_1.19.0                     rtracklayer_1.69.1               
-    ## [15] motifTestR_1.5.8                  ggplot2_4.0.0                    
-    ## [17] GenomicRanges_1.61.6              Biostrings_2.77.2                
-    ## [19] Seqinfo_0.99.3                    XVector_0.49.1                   
-    ## [21] IRanges_2.43.6                    S4Vectors_0.47.5                 
-    ## [23] BiocGenerics_0.55.4               generics_0.1.4                   
-    ## [25] BiocStyle_2.37.1                 
+    ##  [1] extraChIPs_1.14.0                 tibble_3.3.0                     
+    ##  [3] SummarizedExperiment_1.40.0       Biobase_2.70.0                   
+    ##  [5] MatrixGenerics_1.22.0             matrixStats_1.5.0                
+    ##  [7] ggside_0.4.0                      BiocParallel_1.44.0              
+    ##  [9] universalmotif_1.28.0             patchwork_1.3.2                  
+    ## [11] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.78.0                  
+    ## [13] BiocIO_1.20.0                     rtracklayer_1.70.0               
+    ## [15] motifTestR_1.6.1                  ggplot2_4.0.0                    
+    ## [17] GenomicRanges_1.62.0              Biostrings_2.78.0                
+    ## [19] Seqinfo_1.0.0                     XVector_0.50.0                   
+    ## [21] IRanges_2.44.0                    S4Vectors_0.48.0                 
+    ## [23] BiocGenerics_0.56.0               generics_0.1.4                   
+    ## [25] BiocStyle_2.38.0                 
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] bitops_1.0-9             SimpleUpset_0.1.3        rlang_1.1.6             
-    ##  [4] magrittr_2.0.4           compiler_4.5.1           mgcv_1.9-3              
-    ##  [7] systemfonts_1.3.1        vctrs_0.6.5              stringr_1.5.2           
+    ##  [4] magrittr_2.0.4           compiler_4.5.2           mgcv_1.9-4              
+    ##  [7] systemfonts_1.3.1        vctrs_0.6.5              stringr_1.6.0           
     ## [10] pkgconfig_2.0.3          crayon_1.5.3             fastmap_1.2.0           
-    ## [13] labeling_0.4.3           Rsamtools_2.25.3         rmarkdown_2.30          
-    ## [16] UCSC.utils_1.5.0         ragg_1.5.0               purrr_1.1.0             
-    ## [19] xfun_0.53                cachem_1.1.0             GenomeInfoDb_1.45.12    
-    ## [22] jsonlite_2.0.0           FMStable_0.1-4           DelayedArray_0.35.3     
-    ## [25] R6_2.6.1                 bslib_0.9.0              stringi_1.8.7           
-    ## [28] RColorBrewer_1.1-3       limma_3.65.7             jquerylib_0.1.4         
-    ## [31] Rcpp_1.1.0               bookdown_0.45            knitr_1.50              
-    ## [34] Matrix_1.7-4             splines_4.5.1            tidyselect_1.2.1        
-    ## [37] abind_1.4-8              yaml_2.3.10              codetools_0.2-20        
-    ## [40] curl_7.0.0               lattice_0.22-7           InteractionSet_1.37.1   
-    ## [43] withr_3.0.2              S7_0.2.0                 csaw_1.43.1             
-    ## [46] evaluate_1.0.5           desc_1.4.3               pillar_1.11.1           
-    ## [49] BiocManager_1.30.26      RCurl_1.98-1.17          scales_1.4.0            
-    ## [52] harmonicmeanp_3.0.1      glue_1.8.0               metapod_1.17.0          
-    ## [55] tools_4.5.1              locfit_1.5-9.12          GenomicAlignments_1.45.4
-    ## [58] forcats_1.0.1            fs_1.6.6                 XML_3.99-0.19           
-    ## [61] grid_4.5.1               tidyr_1.3.1              edgeR_4.7.6             
-    ## [64] nlme_3.1-168             restfulr_0.0.16          cli_3.6.5               
-    ## [67] textshaping_1.0.4        S4Arrays_1.9.1           viridisLite_0.4.2       
-    ## [70] dplyr_1.1.4              gtable_0.3.6             sass_0.4.10             
-    ## [73] digest_0.6.37            SparseArray_1.9.1        ggrepel_0.9.6           
-    ## [76] rjson_0.2.23             htmlwidgets_1.6.4        farver_2.1.2            
-    ## [79] htmltools_0.5.8.1        pkgdown_2.1.3.9000       lifecycle_1.0.4         
-    ## [82] httr_1.4.7               statmod_1.5.1            MASS_7.3-65
+    ## [13] labeling_0.4.3           Rsamtools_2.26.0         rmarkdown_2.30          
+    ## [16] UCSC.utils_1.6.0         ragg_1.5.0               purrr_1.2.0             
+    ## [19] xfun_0.54                cachem_1.1.0             cigarillo_1.0.0         
+    ## [22] GenomeInfoDb_1.46.0      jsonlite_2.0.0           FMStable_0.1-4          
+    ## [25] DelayedArray_0.36.0      R6_2.6.1                 bslib_0.9.0             
+    ## [28] stringi_1.8.7            RColorBrewer_1.1-3       limma_3.66.0            
+    ## [31] jquerylib_0.1.4          Rcpp_1.1.0               bookdown_0.45           
+    ## [34] knitr_1.50               Matrix_1.7-4             splines_4.5.2           
+    ## [37] tidyselect_1.2.1         abind_1.4-8              yaml_2.3.10             
+    ## [40] codetools_0.2-20         curl_7.0.0               lattice_0.22-7          
+    ## [43] InteractionSet_1.38.0    withr_3.0.2              S7_0.2.0                
+    ## [46] csaw_1.44.0              evaluate_1.0.5           desc_1.4.3              
+    ## [49] pillar_1.11.1            BiocManager_1.30.26      RCurl_1.98-1.17         
+    ## [52] scales_1.4.0             harmonicmeanp_3.0.1      glue_1.8.0              
+    ## [55] metapod_1.18.0           tools_4.5.2              locfit_1.5-9.12         
+    ## [58] GenomicAlignments_1.46.0 forcats_1.0.1            fs_1.6.6                
+    ## [61] XML_3.99-0.20            grid_4.5.2               tidyr_1.3.1             
+    ## [64] edgeR_4.8.0              nlme_3.1-168             restfulr_0.0.16         
+    ## [67] cli_3.6.5                textshaping_1.0.4        S4Arrays_1.10.0         
+    ## [70] viridisLite_0.4.2        dplyr_1.1.4              gtable_0.3.6            
+    ## [73] sass_0.4.10              digest_0.6.38            SparseArray_1.10.1      
+    ## [76] ggrepel_0.9.6            rjson_0.2.23             htmlwidgets_1.6.4       
+    ## [79] farver_2.1.2             htmltools_0.5.8.1        pkgdown_2.2.0.9000      
+    ## [82] lifecycle_1.0.4          httr_1.4.7               statmod_1.5.1           
+    ## [85] MASS_7.3-65
 
 Bailey, Timothy L, and Philip Machanick. 2012. “Inferring Direct DNA
 Binding from ChIP-seq.” *Nucleic Acids Res.* 40 (17): e128.
