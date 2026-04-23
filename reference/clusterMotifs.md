@@ -17,6 +17,10 @@ clusterMotifs(
   plot = FALSE,
   labels = FALSE,
   cex = 1,
+  main = "Motif Cluster Dendrogram",
+  sub = NULL,
+  xlab = NULL,
+  ylab = "Height",
   linecol = "red",
   ...
 )
@@ -60,7 +64,7 @@ clusterMotifs(
   If requested the value set by thresh will be shown as a horizontal
   line
 
-- labels, cex:
+- labels, cex, main, sub, xlab, ylab:
 
   Passed to [plot.hclust](https://rdrr.io/r/stats/hclust.html)
 
