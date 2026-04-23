@@ -41,7 +41,7 @@
 #' @param return_d logical(1) Return the distance matrices for each cluster
 #' @param plot Show tree produced by \link[stats]{hclust}. If requested the
 #' value set by thresh will be shown as a horizontal line
-#' @param labels,cex Passed to \link[stats]{plot.hclust}
+#' @param labels,cex,main,sub,xlab,ylab Passed to \link[stats]{plot.hclust}
 #' @param linecol Passed to \link[graphics]{abline} as the argument `col`
 #' @param ... passed to \link[universalmotif]{compare_motifs}
 #'
@@ -66,7 +66,8 @@ clusterMotifs <- function(
         motifs, type = c("PPM", "ICM"),
         method = c("PCC", "EUCL", "SW", "KL", "ALLR", "BHAT", "HELL", "SEUCL", "MAN", "ALLR_LL", "WEUCL", "WPCC"),
         power = 1, agglom = "complete", thresh = 0.2, return_d = FALSE,
-        plot = FALSE, labels = FALSE, cex = 1, linecol = "red", ...
+        plot = FALSE, labels = FALSE, cex = 1, main = "Motif Cluster Dendrogram",
+        sub = NULL, xlab = NULL, ylab = "Height", linecol = "red", ...
 ){
     # Convert to universal motif, if a list is passed
     if (all(vapply(motifs, is, logical(1), class2 = "matrix"))) {
@@ -89,7 +90,10 @@ clusterMotifs <- function(
     d <- as.dist(mat)
     cl <- hclust(d, method = agglom)
     if (plot) {
-        plot(cl, labels = labels, cex = cex)
+        plot(
+            cl, labels = labels, cex = cex, main = main, sub = sub, xlab = xlab,
+            ylab = ylab
+        )
         abline(a = thresh, b = 0, col = linecol)
     }
     cl <- cutree(cl, h = thresh)

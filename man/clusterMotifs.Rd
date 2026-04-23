@@ -16,6 +16,10 @@ clusterMotifs(
   plot = FALSE,
   labels = FALSE,
   cex = 1,
+  main = "Motif Cluster Dendrogram",
+  sub = NULL,
+  xlab = NULL,
+  ylab = "Height",
   linecol = "red",
   ...
 )
@@ -39,7 +43,7 @@ distance matrix. Only applied if method is either "PCC" or "WPCC"}
 \item{plot}{Show tree produced by \link[stats]{hclust}. If requested the
 value set by thresh will be shown as a horizontal line}
 
-\item{labels, cex}{Passed to \link[stats]{plot.hclust}}
+\item{labels, cex, main, sub, xlab, ylab}{Passed to \link[stats]{plot.hclust}}
 
 \item{linecol}{Passed to \link[graphics]{abline} as the argument \code{col}}
 
