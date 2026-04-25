@@ -9,7 +9,7 @@ getPwmMatches(
   pwm,
   stringset,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   best_only = FALSE,
   break_ties = c("all", "random", "first", "last", "central"),
   mc.cores = 1,
@@ -98,203 +98,209 @@ data("ar_er_seq")
 
 ## Return all matches
 getPwmMatches(esr1, ar_er_seq)
-#> DataFrame with 22 rows and 8 columns
+#> DataFrame with 190 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          29   18.0880         F       193       207           0       400
-#> 2          34   20.8412         R       321       335         128       400
-#> 3          60   17.8088         R       154       168         -39       400
-#> 4          62   17.5548         R       206       220          13       400
-#> 5          98   20.2850         F        13        27        -180       400
+#> 1           1   17.3522         R       216       230          23       400
+#> 2           2   11.9459         R       187       201          -6       400
+#> 3          10   15.7958         R       176       190         -17       400
+#> 4          24   13.5711         F       132       146         -61       400
+#> 5          29   18.0880         F       193       207           0       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 18        478   18.9927         R       134       148         -59       400
-#> 19        517   19.0738         F       223       237          30       400
-#> 20        552   18.4739         F       232       246          39       400
-#> 21        575   17.7611         R         4        18        -189       400
-#> 22        646   17.5586         R       209       223          16       400
+#> 186       824   11.1652         R        63        77        -130       400
+#> 187       826   11.2094         R       196       210           3       400
+#> 188       831   14.8580         R       377       391         184       400
+#> 189       832   11.1978         R       212       226          19       400
+#> 190       849   16.8796         F       313       327         120       400
 #>               match
 #>      <DNAStringSet>
-#> 1   AGGTCACCCTGGCCC
-#> 2   AGGTCACCGTGACCC
-#> 3   AGGTGACCCTGACCT
-#> 4   GGGTCACACTGTCCT
-#> 5   AGGTCACAATGACCT
+#> 1   TGGTCACAGTGACCT
+#> 2   AGCCCAGAGTGACCT
+#> 3   GGGTCATCCTGTCCC
+#> 4   AGGCCACAGGGACCT
+#> 5   AGGTCACCCTGGCCC
 #> ...             ...
-#> 18  AGGTCACCCTGACCG
-#> 19  GGGTCAGCATGACCT
-#> 20  AGGACACACTGACCT
-#> 21  AGGTCACCCTAACCT
-#> 22  AGGTTAGCCTGACCT
+#> 186 GGGTCGACCTGATCC
+#> 187 AGGTCAGAATGCTCA
+#> 188 AAGTCAGACTGTCCT
+#> 189 AGAACAAATTGACCT
+#> 190 AGGTCAGAATGACCG
 
 ## Just the best match
 getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
-#> DataFrame with 22 rows and 8 columns
+#> DataFrame with 175 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          29   18.0880         F       193       207           0       400
-#> 2          34   20.8412         R       321       335         128       400
-#> 3          60   17.8088         R       154       168         -39       400
-#> 4          62   17.5548         R       206       220          13       400
-#> 5          98   20.2850         F        13        27        -180       400
+#> 1           1   17.3522         R       216       230          23       400
+#> 2           2   11.9459         R       187       201          -6       400
+#> 3          10   15.7958         R       176       190         -17       400
+#> 4          24   13.5711         F       132       146         -61       400
+#> 5          29   18.0880         F       193       207           0       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 18        478   18.9927         R       134       148         -59       400
-#> 19        517   19.0738         F       223       237          30       400
-#> 20        552   18.4739         F       232       246          39       400
-#> 21        575   17.7611         R         4        18        -189       400
-#> 22        646   17.5586         R       209       223          16       400
+#> 171       824   11.1652         R        63        77        -130       400
+#> 172       826   11.2094         R       196       210           3       400
+#> 173       831   14.8580         R       377       391         184       400
+#> 174       832   11.1978         R       212       226          19       400
+#> 175       849   16.8796         F       313       327         120       400
 #>               match
 #>      <DNAStringSet>
-#> 1   AGGTCACCCTGGCCC
-#> 2   AGGTCACCGTGACCC
-#> 3   AGGTGACCCTGACCT
-#> 4   GGGTCACACTGTCCT
-#> 5   AGGTCACAATGACCT
+#> 1   TGGTCACAGTGACCT
+#> 2   AGCCCAGAGTGACCT
+#> 3   GGGTCATCCTGTCCC
+#> 4   AGGCCACAGGGACCT
+#> 5   AGGTCACCCTGGCCC
 #> ...             ...
-#> 18  AGGTCACCCTGACCG
-#> 19  GGGTCAGCATGACCT
-#> 20  AGGACACACTGACCT
-#> 21  AGGTCACCCTAACCT
-#> 22  AGGTTAGCCTGACCT
+#> 171 GGGTCGACCTGATCC
+#> 172 AGGTCAGAATGCTCA
+#> 173 AAGTCAGACTGTCCT
+#> 174 AGAACAAATTGACCT
+#> 175 AGGTCAGAATGACCG
 
 ## Apply multiple PWMs as a list
 getPwmMatches(ex_pfm, ar_er_seq, best_only = TRUE)
 #> $ESR1
-#> DataFrame with 22 rows and 8 columns
+#> DataFrame with 175 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          29   18.0880         F       193       207           0       400
-#> 2          34   20.8412         R       321       335         128       400
-#> 3          60   17.8088         R       154       168         -39       400
-#> 4          62   17.5548         R       206       220          13       400
-#> 5          98   20.2850         F        13        27        -180       400
+#> 1           1   17.3522         R       216       230          23       400
+#> 2           2   11.9459         R       187       201          -6       400
+#> 3          10   15.7958         R       176       190         -17       400
+#> 4          24   13.5711         F       132       146         -61       400
+#> 5          29   18.0880         F       193       207           0       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 18        478   18.9927         R       134       148         -59       400
-#> 19        517   19.0738         F       223       237          30       400
-#> 20        552   18.4739         F       232       246          39       400
-#> 21        575   17.7611         R         4        18        -189       400
-#> 22        646   17.5586         R       209       223          16       400
+#> 171       824   11.1652         R        63        77        -130       400
+#> 172       826   11.2094         R       196       210           3       400
+#> 173       831   14.8580         R       377       391         184       400
+#> 174       832   11.1978         R       212       226          19       400
+#> 175       849   16.8796         F       313       327         120       400
 #>               match
 #>      <DNAStringSet>
-#> 1   AGGTCACCCTGGCCC
-#> 2   AGGTCACCGTGACCC
-#> 3   AGGTGACCCTGACCT
-#> 4   GGGTCACACTGTCCT
-#> 5   AGGTCACAATGACCT
+#> 1   TGGTCACAGTGACCT
+#> 2   AGCCCAGAGTGACCT
+#> 3   GGGTCATCCTGTCCC
+#> 4   AGGCCACAGGGACCT
+#> 5   AGGTCACCCTGGCCC
 #> ...             ...
-#> 18  AGGTCACCCTGACCG
-#> 19  GGGTCAGCATGACCT
-#> 20  AGGACACACTGACCT
-#> 21  AGGTCACCCTAACCT
-#> 22  AGGTTAGCCTGACCT
+#> 171 GGGTCGACCTGATCC
+#> 172 AGGTCAGAATGCTCA
+#> 173 AAGTCAGACTGTCCT
+#> 174 AGAACAAATTGACCT
+#> 175 AGGTCAGAATGACCG
 #> 
 #> $ANDR
-#> DataFrame with 8 rows and 8 columns
-#>         seq     score direction     start       end from_centre seq_width
-#>   <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1        27   18.9055         F        58        75      -133.5       400
-#> 2       110   20.5599         F       235       252        43.5       400
-#> 3       285   18.9230         F       205       222        13.5       400
-#> 4       519   18.9718         R       264       281        72.5       400
-#> 5       701   20.3572         F       329       346       137.5       400
-#> 6       704   20.5870         F        68        85      -123.5       400
-#> 7       708   20.9669         F       278       295        86.5       400
-#> 8       833   23.0102         R       167       184       -24.5       400
-#>                match
-#>       <DNAStringSet>
-#> 1 TGTTCTTTTTTGTTGATT
-#> 2 TGTCCTTTTCTGTTTATT
-#> 3 TGTTCCTCTCTGTTTACC
-#> 4 TGTTCAGCTTTGTTTGCT
-#> 5 TGTTCTTTTGTATTTGCT
-#> 6 TGTTCTTCTATGTTTATT
-#> 7 TGTTCTTTATTATTTGCT
-#> 8 TGTTCTTTTTTGTTTGTT
+#> DataFrame with 220 rows and 8 columns
+#>           seq     score direction     start       end from_centre seq_width
+#>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
+#> 1          18   12.5485         F       200       217         8.5       400
+#> 2          20   17.0683         R       176       193       -15.5       400
+#> 3          21   14.9645         R       210       227        18.5       400
+#> 4          22   13.9410         R       262       279        70.5       400
+#> 5          26   12.7758         F       130       147       -61.5       400
+#> ...       ...       ...       ...       ...       ...         ...       ...
+#> 216       833   23.0102         R       167       184       -24.5       400
+#> 217       834   16.6073         F       189       206        -2.5       400
+#> 218       840   14.0060         F       248       265        56.5       400
+#> 219       841   16.1179         R       173       190       -18.5       400
+#> 220       847   12.8122         R        19        36      -172.5       400
+#>                  match
+#>         <DNAStringSet>
+#> 1   TGTGTTGAAATATTTACA
+#> 2   TGTTCTAGATTATTTATA
+#> 3   TCTCCTCTCTTGTTTACT
+#> 4   TTTTATATTCTGTTTATA
+#> 5   TTTTCCTACAAGTTTACT
+#> ...                ...
+#> 216 TGTTCTTTTTTGTTTGTT
+#> 217 TGTTCTTTCGTGTTTGAC
+#> 218 TGTGCTCTTCTCTTTGCA
+#> 219 TCTGCTTTATTGTTTGTT
+#> 220 TTTTTTTTTTTTTTTGCA
 #> 
 #> $FOXA1
-#> DataFrame with 107 rows and 8 columns
+#> DataFrame with 563 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          12   14.0694         F       199       210         4.5       400
-#> 2          16   14.4605         F       177       188       -17.5       400
-#> 3          17   15.1441         F       341       352       146.5       400
-#> 4          18   14.4417         F       301       312       106.5       400
-#> 5          21   14.6369         R       206       217        11.5       400
+#> 1           5   10.3544         R       297       308       102.5       400
+#> 2           7   13.7470         R       203       214         8.5       400
+#> 3           9   11.9835         F       161       172       -33.5       400
+#> 4          12   14.0694         F       199       210         4.5       400
+#> 5          14   11.6783         F       114       125       -80.5       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 103       793   14.3562         F       194       205        -0.5       400
-#> 104       816   14.1175         R        63        74      -131.5       400
-#> 105       817   14.9185         R       291       302        96.5       400
-#> 106       826   14.5836         F       261       272        66.5       400
-#> 107       844   14.3461         F        40        51      -154.5       400
+#> 559       843  10.09923         R        67        78      -127.5       400
+#> 560       844  14.34613         F        40        51      -154.5       400
+#> 561       845   9.43295         F       243       254        48.5       400
+#> 562       846  10.58692         F       371       382       176.5       400
+#> 563       847  11.97986         R       208       219        13.5       400
 #>              match
 #>     <DNAStringSet>
-#> 1     TGTTTGCTTTTG
-#> 2     TGTTTACTTTCC
-#> 3     TGTTTATTTAGG
-#> 4     TGTTTATTCTGG
-#> 5     TGTTTACTCAAC
+#> 1     TATTTGCACAGA
+#> 2     TGTTTATTCTGT
+#> 3     TATTTACAGAGC
+#> 4     TGTTTGCTTTTG
+#> 5     TGTTTGCAGAGC
 #> ...            ...
-#> 103   TGTTTACTTTAA
-#> 104   TGTTTATTTTAG
-#> 105   TGTTTACACAGT
-#> 106   TATTTACTTTAG
-#> 107   TGTTTACTTTCT
+#> 559   TGTTTGTCTTTG
+#> 560   TGTTTACTTTCT
+#> 561   TATTGACATTAA
+#> 562   TGTTTGCAATGG
+#> 563   TGTTTATCTTTG
 #> 
 #> $ZN143
-#> DataFrame with 15 rows and 8 columns
+#> DataFrame with 39 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          30   26.8427         F       166       187       -23.5       400
-#> 2          67   29.0591         F       210       231        20.5       400
-#> 3         118   29.0063         R       205       226        15.5       400
-#> 4         182   28.0840         F       225       246        35.5       400
-#> 5         330   27.3485         R       196       217         6.5       400
+#> 1           3   24.3993         F       360       381       170.5       400
+#> 2           6   16.5389         F       178       199       -11.5       400
+#> 3          11   19.9562         F       140       161       -49.5       400
+#> 4          30   26.8427         F       166       187       -23.5       400
+#> 5          67   29.0591         F       210       231        20.5       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 11        569   28.1714         R        10        31      -179.5       400
-#> 12        750   28.4852         R       151       172       -38.5       400
-#> 13        829   26.6710         R       151       172       -38.5       400
-#> 14        836   28.9222         R       166       187       -23.5       400
-#> 15        837   30.0534         F       216       237        26.5       400
+#> 35        829   22.4081         F       206       227        16.5       400
+#> 36        830   24.5149         F       143       164       -46.5       400
+#> 37        836   28.9222         R       166       187       -23.5       400
+#> 38        837   30.0534         F       216       237        26.5       400
+#> 39        848   22.0774         R       159       180       -30.5       400
 #>                      match
 #>             <DNAStringSet>
-#> 1   AGCCTGCCGGGAGATGTAGTTC
-#> 2   GGCATGCTGGGATTTGTAGTCT
-#> 3   TGCCTCCTGGGAAATGTAGTCC
-#> 4   TGCATGCTGGGAACTGTAGTCT
-#> 5   AGCCTTGTGGGAGTTGTAGTTT
+#> 1   AGCGCCCTGGGAAATGTAGTCC
+#> 2   CGCCTGCCGGTAGCTGTAGTCC
+#> 3   AGCCTCATGGGGGTTGGAGTCC
+#> 4   AGCCTGCCGGGAGATGTAGTTC
+#> 5   GGCATGCTGGGATTTGTAGTCT
 #> ...                    ...
-#> 11  GGCATTTTGGGAGTTGTAGTTT
-#> 12  CGCATGCTGGGAATTGTAGTTC
-#> 13  TGCCCGCTGGGAACTGTAGTCC
-#> 14  TGCATGCTGGGATTTGTAGTCC
-#> 15  TGCATGCTGGGAGTTGTAGTCT
+#> 35  GGCATGCTAGGAGTTGTAGTGT
+#> 36  TGGTTTCTGGGAATTGTAGTGT
+#> 37  TGCATGCTGGGATTTGTAGTCC
+#> 38  TGCATGCTGGGAGTTGTAGTCT
+#> 39  GGCACTGTGGGACTCGTAGTCT
 #> 
 #> $ZN281
-#> DataFrame with 13 rows and 8 columns
+#> DataFrame with 139 rows and 8 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1         109   19.6553         R       369       383         176       400
-#> 2         118   20.1871         F        60        74        -133       400
-#> 3         122   19.3263         F        95       109         -98       400
-#> 4         171   18.5467         R        84        98        -109       400
-#> 5         192   19.1012         F       260       274          67       400
+#> 1           1   11.9978         R       160       174         -33       400
+#> 2           2   12.4604         F       378       392         185       400
+#> 3           9   11.7078         R        88       102        -105       400
+#> 4          11   18.2091         R        35        49        -158       400
+#> 5          15   16.4907         R       224       238          31       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 9         456   21.2625         R       343       357         150       400
-#> 10        507   18.6243         R       175       189         -18       400
-#> 11        668   20.0793         R       168       182         -25       400
-#> 12        763   22.6040         R       274       288          81       400
-#> 13        764   18.8379         R       310       324         117       400
+#> 135       811   17.6496         R        69        83        -124       400
+#> 136       815   16.6439         F         7        21        -186       400
+#> 137       816   13.0790         F       307       321         114       400
+#> 138       840   16.4984         F       366       380         173       400
+#> 139       846   14.9216         R       284       298          91       400
 #>               match
 #>      <DNAStringSet>
-#> 1   AGTTGGGGGAGGGGC
-#> 2   GGCGGGGGGAGGGGA
-#> 3   GAATGGGGGAGGGGC
-#> 4   GGATGGGGGAAGGGG
-#> 5   GGGAGGGGGCGGGGG
+#> 1   GGGGTGGGGCGGGGC
+#> 2   GGCAGGGGGTGGGCC
+#> 3   AGGTGTGGGAGGAGG
+#> 4   CGCGGGGGGAGGGGC
+#> 5   AGGTGGGGGTTGGGC
 #> ...             ...
-#> 9   CGGTGGGGGAGGGGG
-#> 10  GGGAGGGGGAGGGAG
-#> 11  GGGTGGGGGTGGGGG
-#> 12  GGGTGGGGGAGGGGG
-#> 13  AGTGGGGGGAGGGGA
+#> 135 CGGAGGGGGCGGGGC
+#> 136 GGGTGGAGGTGGGGG
+#> 137 TGGGGGTGGAGGGGC
+#> 138 AGTAGGGGGTGGGGG
+#> 139 TAATGGGGGAGGGAA
 #> 
 ```

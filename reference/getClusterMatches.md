@@ -9,7 +9,7 @@ getClusterMatches(
   cl,
   stringset,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   best_only = FALSE,
   break_ties = c("all", "random", "first", "last", "central"),
   mc.cores = 1,
@@ -20,7 +20,7 @@ countClusterMatches(
   cl,
   stringset,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   mc.cores = 1,
   ...
 )
@@ -127,127 +127,127 @@ data("ar_er_seq")
 # Get all matches for each cluster
 getClusterMatches(ex_cl, ar_er_seq)
 #> $ESR1
-#> DataFrame with 22 rows and 9 columns
+#> DataFrame with 190 rows and 9 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          29   18.0880         F       193       207           0       400
-#> 2          34   20.8412         R       321       335         128       400
-#> 3          60   17.8088         R       154       168         -39       400
-#> 4          62   17.5548         R       206       220          13       400
-#> 5          98   20.2850         F        13        27        -180       400
+#> 1           1   17.3522         R       216       230          23       400
+#> 2           2   11.9459         R       187       201          -6       400
+#> 3          10   15.7958         R       176       190         -17       400
+#> 4          24   13.5711         F       132       146         -61       400
+#> 5          29   18.0880         F       193       207           0       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 18        478   18.9927         R       134       148         -59       400
-#> 19        517   19.0738         F       223       237          30       400
-#> 20        552   18.4739         F       232       246          39       400
-#> 21        575   17.7611         R         4        18        -189       400
-#> 22        646   17.5586         R       209       223          16       400
+#> 186       824   11.1652         R        63        77        -130       400
+#> 187       826   11.2094         R       196       210           3       400
+#> 188       831   14.8580         R       377       391         184       400
+#> 189       832   11.1978         R       212       226          19       400
+#> 190       849   16.8796         F       313       327         120       400
 #>           motif           match
 #>     <character>  <DNAStringSet>
-#> 1          ESR1 AGGTCACCCTGGCCC
-#> 2          ESR1 AGGTCACCGTGACCC
-#> 3          ESR1 AGGTGACCCTGACCT
-#> 4          ESR1 GGGTCACACTGTCCT
-#> 5          ESR1 AGGTCACAATGACCT
+#> 1          ESR1 TGGTCACAGTGACCT
+#> 2          ESR1 AGCCCAGAGTGACCT
+#> 3          ESR1 GGGTCATCCTGTCCC
+#> 4          ESR1 AGGCCACAGGGACCT
+#> 5          ESR1 AGGTCACCCTGGCCC
 #> ...         ...             ...
-#> 18         ESR1 AGGTCACCCTGACCG
-#> 19         ESR1 GGGTCAGCATGACCT
-#> 20         ESR1 AGGACACACTGACCT
-#> 21         ESR1 AGGTCACCCTAACCT
-#> 22         ESR1 AGGTTAGCCTGACCT
+#> 186        ESR1 GGGTCGACCTGATCC
+#> 187        ESR1 AGGTCAGAATGCTCA
+#> 188        ESR1 AAGTCAGACTGTCCT
+#> 189        ESR1 AGAACAAATTGACCT
+#> 190        ESR1 AGGTCAGAATGACCG
 #> 
 #> $`ANDR/FOXA1`
-#> DataFrame with 121 rows and 9 columns
-#>           seq     score direction     start       end from_centre seq_width
-#>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          12   14.0694         F       199       210         4.5       400
-#> 2          16   14.4605         F       177       188       -17.5       400
-#> 3          17   15.1441         F       341       352       146.5       400
-#> 4          18   14.4417         F       301       312       106.5       400
-#> 5          21   14.6369         R       206       217        11.5       400
-#> ...       ...       ...       ...       ...       ...         ...       ...
-#> 117       817   14.9185         R       291       302        96.5       400
-#> 118       826   14.5836         F       261       272        66.5       400
-#> 119       833   23.0102         R       167       184       -24.5       400
-#> 120       844   14.3461         F        40        51      -154.5       400
-#> 121       844   14.0222         F        72        83      -122.5       400
-#>           motif              match
-#>     <character>     <DNAStringSet>
-#> 1         FOXA1       TGTTTGCTTTTG
-#> 2         FOXA1       TGTTTACTTTCC
-#> 3         FOXA1       TGTTTATTTAGG
-#> 4         FOXA1       TGTTTATTCTGG
-#> 5         FOXA1       TGTTTACTCAAC
-#> ...         ...                ...
-#> 117       FOXA1       TGTTTACACAGT
-#> 118       FOXA1       TATTTACTTTAG
-#> 119        ANDR TGTTCTTTTTTGTTTGTT
-#> 120       FOXA1       TGTTTACTTTCT
-#> 121       FOXA1       TGTTTGCTCTGC
+#> DataFrame with 1088 rows and 9 columns
+#>            seq     score direction     start       end from_centre seq_width
+#>      <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
+#> 1            5   10.3544         R       297       308       102.5       400
+#> 2            7   13.7470         R       203       214         8.5       400
+#> 3            9   11.9835         F       161       172       -33.5       400
+#> 4           12   14.0694         F       199       210         4.5       400
+#> 5           12   11.0321         F       342       353       147.5       400
+#> ...        ...       ...       ...       ...       ...         ...       ...
+#> 1084       845   9.43295         F       243       254        48.5       400
+#> 1085       845   9.80593         R       259       270        64.5       400
+#> 1086       846  10.58692         F       371       382       176.5       400
+#> 1087       847  12.81220         R        19        36      -172.5       400
+#> 1088       847  11.97986         R       208       219        13.5       400
+#>            motif              match
+#>      <character>     <DNAStringSet>
+#> 1          FOXA1       TATTTGCACAGA
+#> 2          FOXA1       TGTTTATTCTGT
+#> 3          FOXA1       TATTTACAGAGC
+#> 4          FOXA1       TGTTTGCTTTTG
+#> 5          FOXA1       TGTTTATTGTTC
+#> ...          ...                ...
+#> 1084       FOXA1       TATTGACATTAA
+#> 1085       FOXA1       TGTTGACTAAGT
+#> 1086       FOXA1       TGTTTGCAATGG
+#> 1087        ANDR TTTTTTTTTTTTTTTGCA
+#> 1088       FOXA1       TGTTTATCTTTG
 #> 
 #> $ZN143
-#> DataFrame with 21 rows and 9 columns
+#> DataFrame with 76 rows and 9 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1          30   26.8427         F       166       187       -23.5       400
-#> 2          30   26.8023         F       217       238        27.5       400
-#> 3          67   29.0591         F       210       231        20.5       400
-#> 4         118   29.0063         R       205       226        15.5       400
-#> 5         182   28.0840         F       225       246        35.5       400
+#> 1           3   23.2423         F       200       221        10.5       400
+#> 2           3   25.2848         R       267       288        77.5       400
+#> 3           3   24.3993         F       360       381       170.5       400
+#> 4           6   18.0118         R       138       159       -51.5       400
+#> 5           6   16.5389         F       178       199       -11.5       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 17        750   28.4138         R       206       227        16.5       400
-#> 18        829   26.6710         R       151       172       -38.5       400
-#> 19        836   28.9222         R       166       187       -23.5       400
-#> 20        837   30.0534         F       216       237        26.5       400
-#> 21        837   28.0840         F       352       373       162.5       400
+#> 72        836   28.9222         R       166       187       -23.5       400
+#> 73        837   30.0534         F       216       237        26.5       400
+#> 74        837   21.8957         F       276       297        86.5       400
+#> 75        837   28.0840         F       352       373       162.5       400
+#> 76        848   22.0774         R       159       180       -30.5       400
 #>           motif                  match
 #>     <character>         <DNAStringSet>
-#> 1         ZN143 AGCCTGCCGGGAGATGTAGTTC
-#> 2         ZN143 GGCACGCCGGGAAATGTAGTTC
-#> 3         ZN143 GGCATGCTGGGATTTGTAGTCT
-#> 4         ZN143 TGCCTCCTGGGAAATGTAGTCC
-#> 5         ZN143 TGCATGCTGGGAACTGTAGTCT
+#> 1         ZN143 CGCCCCCTGGGACTTGTAGTCT
+#> 2         ZN143 GGGCCGCCGGGAGTTGTAGTTT
+#> 3         ZN143 AGCGCCCTGGGAAATGTAGTCC
+#> 4         ZN143 GGCCTGCCGGGCCTGGTAGTTC
+#> 5         ZN143 CGCCTGCCGGTAGCTGTAGTCC
 #> ...         ...                    ...
-#> 17        ZN143 GGCATGCCGGGAGTTGTAGTCC
-#> 18        ZN143 TGCCCGCTGGGAACTGTAGTCC
-#> 19        ZN143 TGCATGCTGGGATTTGTAGTCC
-#> 20        ZN143 TGCATGCTGGGAGTTGTAGTCT
-#> 21        ZN143 TGCATGCTGGGAACTGTAGTCT
+#> 72        ZN143 TGCATGCTGGGATTTGTAGTCC
+#> 73        ZN143 TGCATGCTGGGAGTTGTAGTCT
+#> 74        ZN143 GGCATGCAGGGAGTTGTAGTCG
+#> 75        ZN143 TGCATGCTGGGAACTGTAGTCT
+#> 76        ZN143 GGCACTGTGGGACTCGTAGTCT
 #> 
 #> $ZN281
-#> DataFrame with 14 rows and 9 columns
+#> DataFrame with 213 rows and 9 columns
 #>           seq     score direction     start       end from_centre seq_width
 #>     <integer> <numeric>  <factor> <integer> <integer>   <numeric> <integer>
-#> 1         109   19.6553         R       369       383         176       400
-#> 2         118   20.1871         F        60        74        -133       400
-#> 3         122   19.3263         F        95       109         -98       400
-#> 4         171   18.5467         R        84        98        -109       400
-#> 5         192   19.1012         F       260       274          67       400
+#> 1           1   11.9978         R       160       174         -33       400
+#> 2           2   12.4604         F       378       392         185       400
+#> 3           9   11.7078         R        88       102        -105       400
+#> 4          11   18.2091         R        35        49        -158       400
+#> 5          11   13.0063         R        71        85        -122       400
 #> ...       ...       ...       ...       ...       ...         ...       ...
-#> 10        456   21.2625         R       343       357         150       400
-#> 11        507   18.6243         R       175       189         -18       400
-#> 12        668   20.0793         R       168       182         -25       400
-#> 13        763   22.6040         R       274       288          81       400
-#> 14        764   18.8379         R       310       324         117       400
+#> 209       815   12.9624         F        32        46        -161       400
+#> 210       816   13.0790         F       307       321         114       400
+#> 211       840   16.4984         F       366       380         173       400
+#> 212       840   12.9600         F       372       386         179       400
+#> 213       846   14.9216         R       284       298          91       400
 #>           motif           match
 #>     <character>  <DNAStringSet>
-#> 1         ZN281 AGTTGGGGGAGGGGC
-#> 2         ZN281 GGCGGGGGGAGGGGA
-#> 3         ZN281 GAATGGGGGAGGGGC
-#> 4         ZN281 GGATGGGGGAAGGGG
-#> 5         ZN281 GGGAGGGGGCGGGGG
+#> 1         ZN281 GGGGTGGGGCGGGGC
+#> 2         ZN281 GGCAGGGGGTGGGCC
+#> 3         ZN281 AGGTGTGGGAGGAGG
+#> 4         ZN281 CGCGGGGGGAGGGGC
+#> 5         ZN281 GAGCGGGGGAGGTGC
 #> ...         ...             ...
-#> 10        ZN281 CGGTGGGGGAGGGGG
-#> 11        ZN281 GGGAGGGGGAGGGAG
-#> 12        ZN281 GGGTGGGGGTGGGGG
-#> 13        ZN281 GGGTGGGGGAGGGGG
-#> 14        ZN281 AGTGGGGGGAGGGGA
+#> 209       ZN281 GAGTGTGGGATGGGC
+#> 210       ZN281 TGGGGGTGGAGGGGC
+#> 211       ZN281 AGTAGGGGGTGGGGG
+#> 212       ZN281 GGGTGGGGGAGAGAC
+#> 213       ZN281 TAATGGGGGAGGGAA
 #> 
 # Or Just count them
 countClusterMatches(ex_cl, ar_er_seq)
 #>       ESR1 ANDR/FOXA1      ZN143      ZN281 
-#>         22        121         21         14 
+#>        199       1088         76        213 
 # Compare this to individual counts
 countPwmMatches(ex_pfm, ar_er_seq)
 #>  ESR1  ANDR FOXA1 ZN143 ZN281 
-#>    22     8   113    21    14 
+#>   199   290  1041    76   213 
 ```

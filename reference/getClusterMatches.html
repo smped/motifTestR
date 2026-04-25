@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
 <span>  <span class="va">cl</span>,</span>
 <span>  <span class="va">stringset</span>,</span>
 <span>  rc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  min_score <span class="op">=</span> <span class="st">"80%"</span>,</span>
+<span>  min_score <span class="op">=</span> <span class="st">"50%"</span>,</span>
 <span>  best_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  break_ties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"random"</span>, <span class="st">"first"</span>, <span class="st">"last"</span>, <span class="st">"central"</span><span class="op">)</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -56,7 +56,7 @@
 <span>  <span class="va">cl</span>,</span>
 <span>  <span class="va">stringset</span>,</span>
 <span>  rc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  min_score <span class="op">=</span> <span class="st">"80%"</span>,</span>
+<span>  min_score <span class="op">=</span> <span class="st">"50%"</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -156,129 +156,129 @@ last, most central, all tied matches, or choosing one at random (the default).</
 <span class="r-in"><span><span class="co"># Get all matches for each cluster</span></span></span>
 <span class="r-in"><span><span class="fu">getClusterMatches</span><span class="op">(</span><span class="va">ex_cl</span>, <span class="va">ar_er_seq</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ESR1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 22 rows and 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 190 rows and 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          29   18.0880         F       193       207           0       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          34   20.8412         R       321       335         128       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          60   17.8088         R       154       168         -39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          62   17.5548         R       206       220          13       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          98   20.2850         F        13        27        -180       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   17.3522         R       216       230          23       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   11.9459         R       187       201          -6       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          10   15.7958         R       176       190         -17       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          24   13.5711         F       132       146         -61       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          29   18.0880         F       193       207           0       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        478   18.9927         R       134       148         -59       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        517   19.0738         F       223       237          30       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        552   18.4739         F       232       246          39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        575   17.7611         R         4        18        -189       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22        646   17.5586         R       209       223          16       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186       824   11.1652         R        63        77        -130       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187       826   11.2094         R       196       210           3       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188       831   14.8580         R       377       391         184       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189       832   11.1978         R       212       226          19       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190       849   16.8796         F       313       327         120       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           motif           match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;character&gt;  &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          ESR1 AGGTCACCCTGGCCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          ESR1 AGGTCACCGTGACCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          ESR1 AGGTGACCCTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          ESR1 GGGTCACACTGTCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          ESR1 AGGTCACAATGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          ESR1 TGGTCACAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          ESR1 AGCCCAGAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          ESR1 GGGTCATCCTGTCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          ESR1 AGGCCACAGGGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          ESR1 AGGTCACCCTGGCCC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...         ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18         ESR1 AGGTCACCCTGACCG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19         ESR1 GGGTCAGCATGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20         ESR1 AGGACACACTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21         ESR1 AGGTCACCCTAACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22         ESR1 AGGTTAGCCTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186        ESR1 GGGTCGACCTGATCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187        ESR1 AGGTCAGAATGCTCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188        ESR1 AAGTCAGACTGTCCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189        ESR1 AGAACAAATTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190        ESR1 AGGTCAGAATGACCG</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`ANDR/FOXA1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 121 rows and 9 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          12   14.0694         F       199       210         4.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          16   14.4605         F       177       188       -17.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          17   15.1441         F       341       352       146.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          18   14.4417         F       301       312       106.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          21   14.6369         R       206       217        11.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117       817   14.9185         R       291       302        96.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118       826   14.5836         F       261       272        66.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119       833   23.0102         R       167       184       -24.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120       844   14.3461         F        40        51      -154.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121       844   14.0222         F        72        83      -122.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           motif              match</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;character&gt;     &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         FOXA1       TGTTTGCTTTTG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         FOXA1       TGTTTACTTTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         FOXA1       TGTTTATTTAGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         FOXA1       TGTTTATTCTGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         FOXA1       TGTTTACTCAAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...         ...                ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117       FOXA1       TGTTTACACAGT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118       FOXA1       TATTTACTTTAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119        ANDR TGTTCTTTTTTGTTTGTT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120       FOXA1       TGTTTACTTTCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121       FOXA1       TGTTTGCTCTGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 1088 rows and 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            seq     score direction     start       end from_centre seq_width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            5   10.3544         R       297       308       102.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            7   13.7470         R       203       214         8.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3            9   11.9835         F       161       172       -33.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           12   14.0694         F       199       210         4.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           12   11.0321         F       342       353       147.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...        ...       ...       ...       ...       ...         ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1084       845   9.43295         F       243       254        48.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1085       845   9.80593         R       259       270        64.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1086       846  10.58692         F       371       382       176.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1087       847  12.81220         R        19        36      -172.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1088       847  11.97986         R       208       219        13.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            motif              match</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;character&gt;     &lt;DNAStringSet&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          FOXA1       TATTTGCACAGA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          FOXA1       TGTTTATTCTGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          FOXA1       TATTTACAGAGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          FOXA1       TGTTTGCTTTTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          FOXA1       TGTTTATTGTTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...          ...                ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1084       FOXA1       TATTGACATTAA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1085       FOXA1       TGTTGACTAAGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1086       FOXA1       TGTTTGCAATGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1087        ANDR TTTTTTTTTTTTTTTGCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1088       FOXA1       TGTTTATCTTTG</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ZN143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 21 rows and 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 76 rows and 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          30   26.8427         F       166       187       -23.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          30   26.8023         F       217       238        27.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          67   29.0591         F       210       231        20.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         118   29.0063         R       205       226        15.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         182   28.0840         F       225       246        35.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           3   23.2423         F       200       221        10.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           3   25.2848         R       267       288        77.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           3   24.3993         F       360       381       170.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           6   18.0118         R       138       159       -51.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           6   16.5389         F       178       199       -11.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17        750   28.4138         R       206       227        16.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        829   26.6710         R       151       172       -38.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        836   28.9222         R       166       187       -23.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        837   30.0534         F       216       237        26.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        837   28.0840         F       352       373       162.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72        836   28.9222         R       166       187       -23.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73        837   30.0534         F       216       237        26.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74        837   21.8957         F       276       297        86.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75        837   28.0840         F       352       373       162.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76        848   22.0774         R       159       180       -30.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           motif                  match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;character&gt;         &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         ZN143 AGCCTGCCGGGAGATGTAGTTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         ZN143 GGCACGCCGGGAAATGTAGTTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         ZN143 GGCATGCTGGGATTTGTAGTCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         ZN143 TGCCTCCTGGGAAATGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         ZN143 TGCATGCTGGGAACTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         ZN143 CGCCCCCTGGGACTTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         ZN143 GGGCCGCCGGGAGTTGTAGTTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         ZN143 AGCGCCCTGGGAAATGTAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         ZN143 GGCCTGCCGGGCCTGGTAGTTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         ZN143 CGCCTGCCGGTAGCTGTAGTCC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...         ...                    ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17        ZN143 GGCATGCCGGGAGTTGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        ZN143 TGCCCGCTGGGAACTGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        ZN143 TGCATGCTGGGATTTGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        ZN143 TGCATGCTGGGAGTTGTAGTCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        ZN143 TGCATGCTGGGAACTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72        ZN143 TGCATGCTGGGATTTGTAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73        ZN143 TGCATGCTGGGAGTTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74        ZN143 GGCATGCAGGGAGTTGTAGTCG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75        ZN143 TGCATGCTGGGAACTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76        ZN143 GGCACTGTGGGACTCGTAGTCT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ZN281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 14 rows and 9 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 213 rows and 9 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         109   19.6553         R       369       383         176       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         118   20.1871         F        60        74        -133       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         122   19.3263         F        95       109         -98       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         171   18.5467         R        84        98        -109       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         192   19.1012         F       260       274          67       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   11.9978         R       160       174         -33       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   12.4604         F       378       392         185       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           9   11.7078         R        88       102        -105       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          11   18.2091         R        35        49        -158       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          11   13.0063         R        71        85        -122       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10        456   21.2625         R       343       357         150       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11        507   18.6243         R       175       189         -18       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        668   20.0793         R       168       182         -25       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13        763   22.6040         R       274       288          81       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14        764   18.8379         R       310       324         117       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209       815   12.9624         F        32        46        -161       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210       816   13.0790         F       307       321         114       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211       840   16.4984         F       366       380         173       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212       840   12.9600         F       372       386         179       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213       846   14.9216         R       284       298          91       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           motif           match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;character&gt;  &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         ZN281 AGTTGGGGGAGGGGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         ZN281 GGCGGGGGGAGGGGA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         ZN281 GAATGGGGGAGGGGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         ZN281 GGATGGGGGAAGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         ZN281 GGGAGGGGGCGGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         ZN281 GGGGTGGGGCGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         ZN281 GGCAGGGGGTGGGCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         ZN281 AGGTGTGGGAGGAGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         ZN281 CGCGGGGGGAGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         ZN281 GAGCGGGGGAGGTGC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...         ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10        ZN281 CGGTGGGGGAGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11        ZN281 GGGAGGGGGAGGGAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        ZN281 GGGTGGGGGTGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13        ZN281 GGGTGGGGGAGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14        ZN281 AGTGGGGGGAGGGGA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209       ZN281 GAGTGTGGGATGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210       ZN281 TGGGGGTGGAGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211       ZN281 AGTAGGGGGTGGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212       ZN281 GGGTGGGGGAGAGAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213       ZN281 TAATGGGGGAGGGAA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Or Just count them</span></span></span>
 <span class="r-in"><span><span class="fu">countClusterMatches</span><span class="op">(</span><span class="va">ex_cl</span>, <span class="va">ar_er_seq</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       ESR1 ANDR/FOXA1      ZN143      ZN281 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         22        121         21         14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        199       1088         76        213 </span>
 <span class="r-in"><span><span class="co"># Compare this to individual counts</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="countPwmMatches.html">countPwmMatches</a></span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">ar_er_seq</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ESR1  ANDR FOXA1 ZN143 ZN281 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    22     8   113    21    14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   199   290  1041    76   213 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

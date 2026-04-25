@@ -111,16 +111,16 @@ positions
 simSeq(10, 50)
 #> DNAStringSet object of length 10:
 #>      width seq
-#>  [1]    50 GAAGGGTGACATGCTACTGGTGGGCGTGAGTGCTATTAGGTGGGGTAGGC
-#>  [2]    50 GCCATTTCGCTAGTGTGAGCTCAGTTGCCGGTATATATGGATACGGCCCT
-#>  [3]    50 GACTTGTAGTCGACATGCTGCTCTCGGTACTAATACAAAACTTCGCAACT
-#>  [4]    50 CAGTGCGTACCAGCGCGCTTCATCTTCGCGTAAAACCAGGAATATGATTG
-#>  [5]    50 TCAAAGGGTCAGGACTCTTTATTATAGCCAGCCTCGCCTAGCGTGTCCTC
-#>  [6]    50 GGGCGGGATGGCGACAGTAAAACTGGGGTCACCAACTGGAGGCATACGTG
-#>  [7]    50 CAAATAAACGGCCCCCCTTACCCTCTTCACTAGCGCTACCCCACTTATGC
-#>  [8]    50 CTGAATATATAAGTAACTATGAGGAGCGACGACCGATTTTCACGACATTA
-#>  [9]    50 GAGCTTGACTCGCCGTTGTGATTAAGTATTATGCATAGGGGTAGCCGGCG
-#> [10]    50 CATAGAGAAAGAAGTGAGGTAGCCCAGGCTACAAGGCGGACATGTATCAG
+#>  [1]    50 GAAGGACAATAGGAATCGCAAGCCTTCGGGACGACGCTTCGAGTGGAAGG
+#>  [2]    50 CGCCCGCAAGATGAGGAGTTAGGACGCAACGTTAATTGGCTACTTTGACT
+#>  [3]    50 TGCTCTCTTAGGGAGATTTCTCTTTGGATTGGGCCCCGATCATCGTGTCC
+#>  [4]    50 CCGAATGATAACATAATTGACTTAATGGTCCAATAGCTGACAAAGGGTCC
+#>  [5]    50 ATCTCTCGAGCACCATCTCCGCGCATTTTCATACGCTCACCCAGAAATTA
+#>  [6]    50 GAAGCCAATACGGTGTCGCGCAGGGGTGTTCAGTATCAACTGCTGTTGCT
+#>  [7]    50 ATGCCATCTATGACCTACTGGAGATAGTGGATGAAAACAGCATTTTGAAG
+#>  [8]    50 CACTGTGTTTTTTTCGTATTCCTATGCCCAGCATGCCTGTGAAGAGCCGT
+#>  [9]    50 ACCAATTCCCATCATAAGATACGGTGGTATCGCAACTTCATGAACTACAG
+#> [10]    50 CCTCGGTGTGCCTATCCGTCGGAATGTCCTCACTAGGTGATGTAGGTTGT
 
 ## Now place a motif at random positions
 data('ex_pfm')
@@ -128,49 +128,49 @@ sim_seq <- simSeq(10, width = 20, pfm = ex_pfm$ESR1)
 sim_seq
 #> DNAStringSet object of length 10:
 #>      width seq
-#>  [1]    20 GACAAGGGCACCATATCCCC
-#>  [2]    20 CGAGGTCATCCTGACCAACG
-#>  [3]    20 ATGGGTCAGCGTGACCCTAT
-#>  [4]    20 TTCGGCCAAAATGCCATCCC
-#>  [5]    20 TGCGAGGTCATATTGACCCA
-#>  [6]    20 AGGGGTGACGCGACATAACC
-#>  [7]    20 TGTCGGGTTACATTGACCCG
-#>  [8]    20 TGAAGGGCCACCGTGACCTT
-#>  [9]    20 TATAAGGACAGCCGGACCTG
-#> [10]    20 GAGGTTACCCTGACCCCGAA
+#>  [1]    20 TATGTCAGCCTGACCCTTCA
+#>  [2]    20 AGAGAGGTCACATGCACATA
+#>  [3]    20 GGCAGAGGTCAAAATGGCCC
+#>  [4]    20 AGGTCAAATTGCTAATACGG
+#>  [5]    20 TTGATCAACCTGACCCTGCC
+#>  [6]    20 AAAAGAGGTCAGACTGACCC
+#>  [7]    20 GGGGCGCCCTGACCCGTAAC
+#>  [8]    20 GTGGGGGCGCCGTGACTTTG
+#>  [9]    20 TAAAGGTCAGCCCGAACTAC
+#> [10]    20 ATGTTCGGTGAACATGACCC
 ## The position of the motif within each sequence is included in the mcols
 mcols(sim_seq)
 #> DataFrame with 10 rows and 2 columns
 #>          pos  n_motifs
 #>    <integer> <integer>
-#> 1          5         1
-#> 2          3         1
-#> 3          3         1
-#> 4          3         1
-#> 5          5         1
-#> 6          2         1
-#> 7          5         1
-#> 8          5         1
-#> 9          5         1
-#> 10         2         1
+#> 1          2         1
+#> 2          5         1
+#> 3          6         1
+#> 4          1         1
+#> 5          2         1
+#> 6          6         1
+#> 7          1         1
+#> 8          4         1
+#> 9          4         1
+#> 10         6         1
 
 ## Use this to extract the random motifs from the random sequences
 library(IRanges)
 i <- mcols(sim_seq)$pos + cumsum(width(sim_seq)) - width(sim_seq)
 Views(unlist(sim_seq), start = i, width = 10)
 #> Views on a 200-letter DNAString subject
-#> subject: GACAAGGGCACCATATCCCCCGAGGTCATCCTGA...GACAGCCGGACCTGGAGGTTACCCTGACCCCGAA
+#> subject: TATGTCAGCCTGACCCTTCAAGAGAGGTCACATG...TCAGCCCGAACTACATGTTCGGTGAACATGACCC
 #> views:
 #>        start end width
-#>    [1]     5  14    10 [AGGGCACCAT]
-#>    [2]    23  32    10 [AGGTCATCCT]
-#>    [3]    43  52    10 [GGGTCAGCGT]
-#>    [4]    63  72    10 [CGGCCAAAAT]
-#>    [5]    85  94    10 [AGGTCATATT]
-#>    [6]   102 111    10 [GGGGTGACGC]
-#>    [7]   125 134    10 [GGGTTACATT]
-#>    [8]   145 154    10 [GGGCCACCGT]
-#>    [9]   165 174    10 [AGGACAGCCG]
-#>   [10]   182 191    10 [AGGTTACCCT]
+#>    [1]     2  11    10 [ATGTCAGCCT]
+#>    [2]    25  34    10 [AGGTCACATG]
+#>    [3]    46  55    10 [AGGTCAAAAT]
+#>    [4]    61  70    10 [AGGTCAAATT]
+#>    [5]    82  91    10 [TGATCAACCT]
+#>    [6]   106 115    10 [AGGTCAGACT]
+#>    [7]   121 130    10 [GGGGCGCCCT]
+#>    [8]   144 153    10 [GGGGCGCCGT]
+#>    [9]   164 173    10 [AGGTCAGCCC]
+#>   [10]   186 195    10 [CGGTGAACAT]
 
 ```

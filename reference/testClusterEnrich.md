@@ -120,10 +120,10 @@ data("ex_pfm")
 cl <- list(A = ex_pfm[1], B = ex_pfm[2:3])
 testClusterEnrich(cl, ar_er_seq, bg_seq, model = "poisson")
 #>   sequences matches expected enrichment        Z            p          fdr
-#> B       849     122     26.8   4.552239 18.38948 5.073115e-41 1.014623e-40
-#> A       849      23      0.6  38.333333 28.91828 1.719458e-28 1.719458e-28
-#>    est_bg_rate
-#> B 0.0315665489
-#> A 0.0007067138
+#> B       849    1089    603.1   1.805671 19.78574 1.243312e-70 2.486625e-70
+#> A       849     200     54.3   3.683241 19.77241 4.143439e-52 4.143439e-52
+#>   est_bg_rate
+#> B   0.7103651
+#> A   0.0639576
 
 ```

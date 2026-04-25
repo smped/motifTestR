@@ -11,7 +11,7 @@ testClusterPos(
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   break_ties = "all",
   alt = c("greater", "less", "two.sided"),
   sort_by = c("p", "none"),
@@ -115,20 +115,20 @@ cl <- list(A = ex_pfm[1], B = ex_pfm[2:3])
 matches <- getClusterMatches(cl, ar_er_seq, best_only = TRUE)
 ## Test for enrichment in any position
 testClusterPos(matches)
-#>   start end centre width total_matches matches_in_region expected enrichment
-#> B   -35  75     20   110           114                45 17.81250   2.526316
-#> A  -195 135    -30   330            22                22  9.03876   2.433962
-#>   prop_total          p        fdr consensus_motif
-#> B  0.3947368 0.03553632 0.07107263    0, 0, 0,....
-#> A  1.0000000 0.83704449 0.83704449    15, 0, 7....
+#>   start end centre width total_matches matches_in_region  expected enrichment
+#> A    -5   5      0    10           175                23  4.521964   5.086286
+#> B   -35  25     -5    60           595                92 46.484375   1.979160
+#>   prop_total            p          fdr consensus_motif
+#> A  0.1314286 9.269662e-09 1.853932e-08    102, 5, ....
+#> B  0.1546218 1.968539e-03 1.968539e-03    15, 5, 3....
 
 ## Or just pass the clustered matrices
 ## Here we've set abs = TRUE to test absolute distance from the centre
 testClusterPos(cl, ar_er_seq, abs = TRUE, binwidth = 10)
-#>   start end centre width total_matches matches_in_region expected enrichment
-#> B    10  20     15    10           114                17 5.937500   2.863158
-#> A     0 140     70   140            22                16 7.979275   2.005195
-#>   prop_total           p         fdr consensus_motif
-#> B  0.1491228 0.001779427 0.003558853    0, 0, 0,....
-#> A  0.7272727 0.657021567 0.657021567    15, 0, 7....
+#>   start end centre width total_matches matches_in_region  expected enrichment
+#> A     0  10      5    10           175                34  9.067358   3.749714
+#> B     0  20     10    20           595               116 61.979167   1.871597
+#>   prop_total            p          fdr consensus_motif
+#> A  0.1942857 5.538352e-10 1.107670e-09    102, 5, ....
+#> B  0.1949580 3.866257e-05 3.866257e-05    15, 5, 3....
 ```

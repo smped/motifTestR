@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">motifTestR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
 <span>  <span class="va">pwm</span>,</span>
 <span>  <span class="va">stringset</span>,</span>
 <span>  rc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  min_score <span class="op">=</span> <span class="st">"80%"</span>,</span>
+<span>  min_score <span class="op">=</span> <span class="st">"50%"</span>,</span>
 <span>  best_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  break_ties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"random"</span>, <span class="st">"first"</span>, <span class="st">"last"</span>, <span class="st">"central"</span><span class="op">)</span>,</span>
 <span>  mc.cores <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -129,204 +129,210 @@ last, most central, all tied matches, or choosing one at random (the default).</
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Return all matches</span></span></span>
 <span class="r-in"><span><span class="fu">getPwmMatches</span><span class="op">(</span><span class="va">esr1</span>, <span class="va">ar_er_seq</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 22 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 190 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          29   18.0880         F       193       207           0       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          34   20.8412         R       321       335         128       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          60   17.8088         R       154       168         -39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          62   17.5548         R       206       220          13       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          98   20.2850         F        13        27        -180       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   17.3522         R       216       230          23       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   11.9459         R       187       201          -6       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          10   15.7958         R       176       190         -17       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          24   13.5711         F       132       146         -61       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          29   18.0880         F       193       207           0       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        478   18.9927         R       134       148         -59       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        517   19.0738         F       223       237          30       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        552   18.4739         F       232       246          39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        575   17.7611         R         4        18        -189       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22        646   17.5586         R       209       223          16       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186       824   11.1652         R        63        77        -130       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187       826   11.2094         R       196       210           3       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188       831   14.8580         R       377       391         184       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189       832   11.1978         R       212       226          19       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190       849   16.8796         F       313       327         120       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGGTCACCCTGGCCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGGTCACCGTGACCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   AGGTGACCCTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   GGGTCACACTGTCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACAATGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   TGGTCACAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGCCCAGAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   GGGTCATCCTGTCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AGGCCACAGGGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACCCTGGCCC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  AGGTCACCCTGACCG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  GGGTCAGCATGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  AGGACACACTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21  AGGTCACCCTAACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22  AGGTTAGCCTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186 GGGTCGACCTGATCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187 AGGTCAGAATGCTCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188 AAGTCAGACTGTCCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189 AGAACAAATTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190 AGGTCAGAATGACCG</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Just the best match</span></span></span>
 <span class="r-in"><span><span class="fu">getPwmMatches</span><span class="op">(</span><span class="va">esr1</span>, <span class="va">ar_er_seq</span>, best_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 22 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 175 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          29   18.0880         F       193       207           0       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          34   20.8412         R       321       335         128       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          60   17.8088         R       154       168         -39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          62   17.5548         R       206       220          13       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          98   20.2850         F        13        27        -180       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   17.3522         R       216       230          23       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   11.9459         R       187       201          -6       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          10   15.7958         R       176       190         -17       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          24   13.5711         F       132       146         -61       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          29   18.0880         F       193       207           0       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        478   18.9927         R       134       148         -59       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        517   19.0738         F       223       237          30       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        552   18.4739         F       232       246          39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        575   17.7611         R         4        18        -189       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22        646   17.5586         R       209       223          16       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171       824   11.1652         R        63        77        -130       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172       826   11.2094         R       196       210           3       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173       831   14.8580         R       377       391         184       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174       832   11.1978         R       212       226          19       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175       849   16.8796         F       313       327         120       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGGTCACCCTGGCCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGGTCACCGTGACCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   AGGTGACCCTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   GGGTCACACTGTCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACAATGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   TGGTCACAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGCCCAGAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   GGGTCATCCTGTCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AGGCCACAGGGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACCCTGGCCC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  AGGTCACCCTGACCG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  GGGTCAGCATGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  AGGACACACTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21  AGGTCACCCTAACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22  AGGTTAGCCTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171 GGGTCGACCTGATCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172 AGGTCAGAATGCTCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173 AAGTCAGACTGTCCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174 AGAACAAATTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175 AGGTCAGAATGACCG</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Apply multiple PWMs as a list</span></span></span>
 <span class="r-in"><span><span class="fu">getPwmMatches</span><span class="op">(</span><span class="va">ex_pfm</span>, <span class="va">ar_er_seq</span>, best_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ESR1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 22 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 175 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          29   18.0880         F       193       207           0       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          34   20.8412         R       321       335         128       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          60   17.8088         R       154       168         -39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          62   17.5548         R       206       220          13       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          98   20.2850         F        13        27        -180       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   17.3522         R       216       230          23       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   11.9459         R       187       201          -6       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          10   15.7958         R       176       190         -17       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          24   13.5711         F       132       146         -61       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          29   18.0880         F       193       207           0       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18        478   18.9927         R       134       148         -59       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19        517   19.0738         F       223       237          30       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        552   18.4739         F       232       246          39       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21        575   17.7611         R         4        18        -189       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22        646   17.5586         R       209       223          16       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171       824   11.1652         R        63        77        -130       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172       826   11.2094         R       196       210           3       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173       831   14.8580         R       377       391         184       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174       832   11.1978         R       212       226          19       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175       849   16.8796         F       313       327         120       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGGTCACCCTGGCCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGGTCACCGTGACCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   AGGTGACCCTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   GGGTCACACTGTCCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACAATGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   TGGTCACAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   AGCCCAGAGTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   GGGTCATCCTGTCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AGGCCACAGGGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTCACCCTGGCCC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  AGGTCACCCTGACCG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  GGGTCAGCATGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  AGGACACACTGACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21  AGGTCACCCTAACCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22  AGGTTAGCCTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171 GGGTCGACCTGATCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172 AGGTCAGAATGCTCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173 AAGTCAGACTGTCCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174 AGAACAAATTGACCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175 AGGTCAGAATGACCG</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ANDR</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 8 rows and 8 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         seq     score direction     start       end from_centre seq_width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        27   18.9055         F        58        75      -133.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       110   20.5599         F       235       252        43.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       285   18.9230         F       205       222        13.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       519   18.9718         R       264       281        72.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       701   20.3572         F       329       346       137.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       704   20.5870         F        68        85      -123.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       708   20.9669         F       278       295        86.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       833   23.0102         R       167       184       -24.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                match</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 TGTTCTTTTTTGTTGATT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 TGTCCTTTTCTGTTTATT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 TGTTCCTCTCTGTTTACC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 TGTTCAGCTTTGTTTGCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 TGTTCTTTTGTATTTGCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 TGTTCTTCTATGTTTATT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 TGTTCTTTATTATTTGCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 TGTTCTTTTTTGTTTGTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 220 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          18   12.5485         F       200       217         8.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          20   17.0683         R       176       193       -15.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          21   14.9645         R       210       227        18.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          22   13.9410         R       262       279        70.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          26   12.7758         F       130       147       -61.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216       833   23.0102         R       167       184       -24.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217       834   16.6073         F       189       206        -2.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218       840   14.0060         F       248       265        56.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219       841   16.1179         R       173       190       -18.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220       847   12.8122         R        19        36      -172.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  match</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;DNAStringSet&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   TGTGTTGAAATATTTACA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   TGTTCTAGATTATTTATA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   TCTCCTCTCTTGTTTACT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   TTTTATATTCTGTTTATA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   TTTTCCTACAAGTTTACT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...                ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216 TGTTCTTTTTTGTTTGTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217 TGTTCTTTCGTGTTTGAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218 TGTGCTCTTCTCTTTGCA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219 TCTGCTTTATTGTTTGTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220 TTTTTTTTTTTTTTTGCA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $FOXA1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 107 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 563 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          12   14.0694         F       199       210         4.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          16   14.4605         F       177       188       -17.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          17   15.1441         F       341       352       146.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          18   14.4417         F       301       312       106.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          21   14.6369         R       206       217        11.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           5   10.3544         R       297       308       102.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           7   13.7470         R       203       214         8.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           9   11.9835         F       161       172       -33.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          12   14.0694         F       199       210         4.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          14   11.6783         F       114       125       -80.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103       793   14.3562         F       194       205        -0.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104       816   14.1175         R        63        74      -131.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105       817   14.9185         R       291       302        96.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106       826   14.5836         F       261       272        66.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107       844   14.3461         F        40        51      -154.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 559       843  10.09923         R        67        78      -127.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 560       844  14.34613         F        40        51      -154.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 561       845   9.43295         F       243       254        48.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 562       846  10.58692         F       371       382       176.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 563       847  11.97986         R       208       219        13.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     TGTTTGCTTTTG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     TGTTTACTTTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     TGTTTATTTAGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     TGTTTATTCTGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     TGTTTACTCAAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     TATTTGCACAGA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     TGTTTATTCTGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     TATTTACAGAGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     TGTTTGCTTTTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     TGTTTGCAGAGC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...            ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103   TGTTTACTTTAA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104   TGTTTATTTTAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105   TGTTTACACAGT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106   TATTTACTTTAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107   TGTTTACTTTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 559   TGTTTGTCTTTG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 560   TGTTTACTTTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 561   TATTGACATTAA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 562   TGTTTGCAATGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 563   TGTTTATCTTTG</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ZN143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 15 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 39 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          30   26.8427         F       166       187       -23.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          67   29.0591         F       210       231        20.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         118   29.0063         R       205       226        15.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         182   28.0840         F       225       246        35.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         330   27.3485         R       196       217         6.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           3   24.3993         F       360       381       170.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           6   16.5389         F       178       199       -11.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          11   19.9562         F       140       161       -49.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          30   26.8427         F       166       187       -23.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          67   29.0591         F       210       231        20.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11        569   28.1714         R        10        31      -179.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        750   28.4852         R       151       172       -38.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13        829   26.6710         R       151       172       -38.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14        836   28.9222         R       166       187       -23.5       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15        837   30.0534         F       216       237        26.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35        829   22.4081         F       206       227        16.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36        830   24.5149         F       143       164       -46.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37        836   28.9222         R       166       187       -23.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38        837   30.0534         F       216       237        26.5       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39        848   22.0774         R       159       180       -30.5       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGCCTGCCGGGAGATGTAGTTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   GGCATGCTGGGATTTGTAGTCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   TGCCTCCTGGGAAATGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   TGCATGCTGGGAACTGTAGTCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGCCTTGTGGGAGTTGTAGTTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGCGCCCTGGGAAATGTAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   CGCCTGCCGGTAGCTGTAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   AGCCTCATGGGGGTTGGAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AGCCTGCCGGGAGATGTAGTTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   GGCATGCTGGGATTTGTAGTCT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...                    ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  GGCATTTTGGGAGTTGTAGTTT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  CGCATGCTGGGAATTGTAGTTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  TGCCCGCTGGGAACTGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  TGCATGCTGGGATTTGTAGTCC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  TGCATGCTGGGAGTTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  GGCATGCTAGGAGTTGTAGTGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  TGGTTTCTGGGAATTGTAGTGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  TGCATGCTGGGATTTGTAGTCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  TGCATGCTGGGAGTTGTAGTCT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  GGCACTGTGGGACTCGTAGTCT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ZN281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 13 rows and 8 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 139 rows and 8 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           seq     score direction     start       end from_centre seq_width</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt;  &lt;factor&gt; &lt;integer&gt; &lt;integer&gt;   &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         109   19.6553         R       369       383         176       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         118   20.1871         F        60        74        -133       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         122   19.3263         F        95       109         -98       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         171   18.5467         R        84        98        -109       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         192   19.1012         F       260       274          67       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   11.9978         R       160       174         -33       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   12.4604         F       378       392         185       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           9   11.7078         R        88       102        -105       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          11   18.2091         R        35        49        -158       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          15   16.4907         R       224       238          31       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...       ...       ...         ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         456   21.2625         R       343       357         150       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10        507   18.6243         R       175       189         -18       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11        668   20.0793         R       168       182         -25       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        763   22.6040         R       274       288          81       400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13        764   18.8379         R       310       324         117       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135       811   17.6496         R        69        83        -124       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136       815   16.6439         F         7        21        -186       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137       816   13.0790         F       307       321         114       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138       840   16.4984         F       366       380         173       400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139       846   14.9216         R       284       298          91       400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;DNAStringSet&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   AGTTGGGGGAGGGGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   GGCGGGGGGAGGGGA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   GAATGGGGGAGGGGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   GGATGGGGGAAGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   GGGAGGGGGCGGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   GGGGTGGGGCGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   GGCAGGGGGTGGGCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   AGGTGTGGGAGGAGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   CGCGGGGGGAGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AGGTGGGGGTTGGGC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...             ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   CGGTGGGGGAGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  GGGAGGGGGAGGGAG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  GGGTGGGGGTGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  GGGTGGGGGAGGGGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  AGTGGGGGGAGGGGA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135 CGGAGGGGGCGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136 GGGTGGAGGTGGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137 TGGGGGTGGAGGGGC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138 AGTAGGGGGTGGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139 TAATGGGGGAGGGAA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

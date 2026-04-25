@@ -9,7 +9,7 @@ countPwmMatches(
   pwm,
   stringset,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   mc.cores = 1,
   ...
 )
@@ -61,10 +61,10 @@ esr1 <- ex_pfm$ESR1
 ## Load the example Peaks
 data("ar_er_seq")
 countPwmMatches(esr1, ar_er_seq)
-#> [1] 22
+#> [1] 199
 
 ## Count all PWMs
 countPwmMatches(ex_pfm, ar_er_seq)
 #>  ESR1  ANDR FOXA1 ZN143 ZN281 
-#>    22     8   113    21    14 
+#>   199   290  1041    76   213 
 ```

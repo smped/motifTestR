@@ -11,7 +11,7 @@ testMotifPos(
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
-  min_score = "80%",
+  min_score = "50%",
   break_ties = "all",
   alt = c("greater", "less", "two.sided"),
   sort_by = c("p", "none"),
@@ -145,23 +145,23 @@ matches <- getPwmMatches(esr1, ar_er_seq, best_only = TRUE)
 ## Test for enrichment in any position
 testMotifPos(matches)
 #>   start end centre width total_matches matches_in_region expected enrichment
-#> 1  -195 135    -30   330            22                22  9.03876   2.433962
-#>   prop_total         p       fdr consensus_motif
-#> 1          1 0.8370445 0.8370445    15, 0, 7....
+#> 1    -5   5      0    10           175                23 4.521964   5.086286
+#>   prop_total            p          fdr consensus_motif
+#> 1  0.1314286 9.269662e-09 9.269662e-09    102, 5, ....
 
 ## Provide a list of PWMs, testing for distance from zero
 testMotifPos(ex_pfm, ar_er_seq, abs = TRUE, binwidth = 10)
-#>       start end centre width total_matches matches_in_region expected
-#> FOXA1    10  20     15    10           107                16 5.487179
-#> ZN143    20  40     30    20            15                 8 1.578947
-#> ESR1      0 140     70   140            22                16 7.979275
-#> ANDR     10 140     75   130             8                 8 2.916667
-#> ZN281    10 180     95   170            13                11 6.062176
-#>       enrichment prop_total           p        fdr consensus_motif
-#> FOXA1   2.915888  0.1495327 0.002314982 0.01157491    0, 0, 0,....
-#> ZN143   5.066667  0.5333333 0.086140631 0.21535158    3, 1, 6,....
-#> ESR1    2.005195  0.7272727 0.657021567 0.94718429    15, 0, 7....
-#> ANDR    2.742857  1.0000000 0.900392478 0.94718429    0, 0, 0,....
-#> ZN281   1.814530  0.8461538 0.947184286 0.94718429    2, 1, 9,....
+#>       start end centre width total_matches matches_in_region  expected
+#> ESR1      0  10      5    10           175                34  9.067358
+#> FOXA1     0  20     10    20           563                94 57.743590
+#> ZN143    20  50     35    30            39                20  6.157895
+#> ANDR      0  30     15    30           220                63 34.375000
+#> ZN281   130 140    135    10           139                16  7.202073
+#>       enrichment prop_total            p          fdr consensus_motif
+#> ESR1    3.749714  0.1942857 5.538352e-10 2.769176e-09    102, 5, ....
+#> FOXA1   1.627886  0.1669627 7.483999e-03 1.871000e-02    9, 0, 0,....
+#> ZN143   3.247863  0.5128205 1.631398e-02 2.718996e-02    7, 2, 18....
+#> ANDR    1.832727  0.2863636 3.838278e-02 4.797847e-02    28, 9, 6....
+#> ZN281   2.221583  0.1151079 5.819868e-02 5.819868e-02    35, 13, ....
 
 ```
