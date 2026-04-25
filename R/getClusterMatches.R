@@ -82,7 +82,7 @@
 #' @export
 #' @rdname getClusterMatches
 getClusterMatches <- function(
-        cl, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
+        cl, stringset, rc = TRUE, min_score = "50%", best_only = FALSE,
         break_ties = c("all", "random", "first", "last", "central"),
         mc.cores = 1, ...
 ) {
@@ -148,7 +148,7 @@ getClusterMatches <- function(
 #' @export
 #' @rdname getClusterMatches
 countClusterMatches <- function(
-        cl, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
+        cl, stringset, rc = TRUE, min_score = "50%", mc.cores = 1, ...
 ) {
 
     stopifnot(is.list(cl))
@@ -295,7 +295,7 @@ countClusterMatches <- function(
 #' @import Biostrings
 #' @keywords internal
 .countSinglePwmMatches <- function(
-        pwm, views, rc = TRUE, min_score = "80%", ...
+        pwm, views, rc = TRUE, min_score = "50%", ...
 ){
     ## Checks & the map
     pwm <- .checkPWM(pwm)

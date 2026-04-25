@@ -10,7 +10,7 @@ testClusterPos(
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
-  min_score = "80\%",
+  min_score = "50\%",
   break_ties = "all",
   alt = c("greater", "less", "two.sided"),
   sort_by = c("p", "none"),

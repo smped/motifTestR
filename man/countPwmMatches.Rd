@@ -8,7 +8,7 @@ countPwmMatches(
   pwm,
   stringset,
   rc = TRUE,
-  min_score = "80\%",
+  min_score = "50\%",
   mc.cores = 1,
   ...
 )

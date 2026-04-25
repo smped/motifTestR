@@ -4,11 +4,11 @@ exp_cols <- c(
 )
 
 ## Bodgy up a set of matches
-matches <- getPwmMatches(esr1, stringset)
+matches <- getPwmMatches(esr1, stringset, min_score = "80%")
 matches$seq <- c(1, seq_len(nrow(matches) - 1))
 
 test_that("testMotifPos returns symmetrical peaks as expected",{
-    res <- testMotifPos(matches)
+    res <- testMotifPos(matches,)
     expect_true(nrow(res) == 1)
     expect_equal(colnames(res), exp_cols)
     expect_equal(
@@ -36,7 +36,7 @@ test_that("setting abs = TRUE behaves as expected", {
 })
 
 test_that("Passing to getPwmMatches works", {
-    res <- testMotifPos(esr1, stringset, abs = TRUE, binwidth = 100)
+    res <- testMotifPos(esr1, stringset, abs = TRUE, binwidth = 100, min_score = "80%")
     expect_true(nrow(res) == 1)
     expect_equal(
         res[,1:6],

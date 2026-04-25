@@ -1,3 +1,7 @@
+# Changes in version 1.7.2
+
++ Changed default for `min_score` to 50% instead of 80%
+
 # Changes in version 1.5.6
 
 + Added GLM-Poisson model for enrichment testing
