@@ -1,10 +1,10 @@
 test_that("countPwmMatches behaves as expected",{
-    expect_true(countPwmMatches(esr1, stringset) == 1)
-    expect_true(countPwmMatches(esr1, stringset, rc = FALSE) == 0)
+    expect_true(countPwmMatches(esr1, stringset, min_score = "80%") == 1)
+    expect_true(countPwmMatches(esr1, stringset, rc = FALSE, min_score = "80%") == 0)
 })
 
 test_that("countPwmMatches accepts a list", {
-    n <- countPwmMatches(ex_pfm, stringset)
+    n <- countPwmMatches(ex_pfm, stringset, min_score = "80%")
     expect_true(length(n) == 5)
     expect_equal(names(n), names(ex_pfm))
 })

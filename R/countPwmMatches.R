@@ -33,7 +33,7 @@
 #' @import Biostrings
 #' @export
 countPwmMatches <- function(
-        pwm, stringset, rc = TRUE, min_score = "80%", mc.cores = 1, ...
+        pwm, stringset, rc = TRUE, min_score = "50%", mc.cores = 1, ...
 ) {
 
     if (!is.list(pwm)) pwm <- list(pwm)

@@ -3,8 +3,8 @@ exp_cols <- c(
 )
 
 test_that("getPwmMatches works as expected",{
-    all <- getPwmMatches(esr1, stringset)
-    fwd_only <- getPwmMatches(esr1, stringset, rc = FALSE)
+    all <- getPwmMatches(esr1, stringset, min_score = "80%")
+    fwd_only <- getPwmMatches(esr1, stringset, rc = FALSE, min_score = "80%")
     expect_true(is(all, "DataFrame"))
     expect_true(nrow(all) == 1)
     expect_true(nrow(fwd_only) == 0)
@@ -22,11 +22,11 @@ test_that("No matches are returned correctly", {
 test_that("Choosing only the best matches works", {
     ## Test the default first
     stringset <- ar_er_seq[2]
-    best <- getPwmMatches(esr1, stringset, best_only = TRUE)
+    best <- getPwmMatches(esr1, stringset, best_only = TRUE, min_score = "80%")
     expect_true(nrow(best) == 1)
     expect_true(best$start == 99)
     ## Now modify & check other options in the private function
-    all <- getPwmMatches(esr1, stringset)
+    all <- getPwmMatches(esr1, stringset, min_score = "80%")
     all$score <- 5 # Bodge up a tie
     expect_true(.getBestMatch(all, "first")$start == 99)
     expect_true(.getBestMatch(all, "central")$start == 186)

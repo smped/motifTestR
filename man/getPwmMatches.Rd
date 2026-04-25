@@ -8,7 +8,7 @@ getPwmMatches(
   pwm,
   stringset,
   rc = TRUE,
-  min_score = "80\%",
+  min_score = "50\%",
   best_only = FALSE,
   break_ties = c("all", "random", "first", "last", "central"),
   mc.cores = 1,

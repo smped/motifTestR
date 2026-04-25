@@ -63,7 +63,7 @@
 #' @importClassesFrom universalmotif universalmotif
 #' @export
 getPwmMatches <- function(
-        pwm, stringset, rc = TRUE, min_score = "80%", best_only = FALSE,
+        pwm, stringset, rc = TRUE, min_score = "50%", best_only = FALSE,
         break_ties = c("all", "random", "first", "last", "central"),
         mc.cores = 1, ...
 ) {

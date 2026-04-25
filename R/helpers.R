@@ -143,7 +143,7 @@
 #' @importFrom IRanges Views
 #' @import Biostrings
 #' @keywords internal
-.hasPwmMatch <- function(pwm, stringset, rc = TRUE, min_score = "80%", ...) {
+.hasPwmMatch <- function(pwm, stringset, rc = TRUE, min_score = "50%", ...) {
     ## Returns a logical vector the same length as the input stringset
     ## Checks & the map
     pwm <- .checkPWM(pwm)
@@ -175,7 +175,7 @@
 #' @importFrom IRanges Views
 #' @import Biostrings
 #' @keywords internal
-.hasClusterMatch <- function(cl, stringset, rc = TRUE, min_score = "80%", ...){
+.hasClusterMatch <- function(cl, stringset, rc = TRUE, min_score = "50%", ...){
 
     ## Returns a logical vector the same length as the input stringset
     ## Checks & the map
