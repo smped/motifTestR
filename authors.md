@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/smped/motifTestR/blob/gh-actions/DESCRIPTION)
 
 Pederson S (2026). *motifTestR: Perform key tests for binding motifs in
-sequence data*. R package version 1.7.2,
+sequence data*. R package version 1.9.1,
 <https://github.com/smped/motifTestR>.
 
     @Manual{,
       title = {motifTestR: Perform key tests for binding motifs in sequence data},
       author = {Stevie Pederson},
       year = {2026},
-      note = {R package version 1.7.2},
+      note = {R package version 1.9.1},
       url = {https://github.com/smped/motifTestR},
     }
