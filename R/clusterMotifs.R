@@ -81,12 +81,14 @@ clusterMotifs <- function(
     if (type == "ICM" & method %in% c("ALLR", "ALLR_LL"))
         stop("Cannot use ICM with ALLR or ALLR_LL")
     is_dist <- method %in% c("EUCL", "KL", "HELL", "SEUCL", "MAN", "WEUCL")
+    ## This can return NA values for low IC motifs
     mat <- compare_motifs(motifs, use.type = type, method = method, ...)
     ## This is really only useful for correlations
     if (power != 1 & method %in% c("PCC", "WPCC")) mat <- mat^power
     ## Make a distance/dissimilarity matrix
-    mat <- abs(mat) / max(abs(mat)) # Scale to be in [0,1]
+    mat <- abs(mat) / max(abs(mat), na.rm = TRUE) # Scale to be in [0,1]
     if (!is_dist) mat <- 1 - abs(mat)
+    mat[is.na(mat)] <- 1 ## Set NA values to be the max distance
     d <- as.dist(mat)
     cl <- hclust(d, method = agglom)
     if (plot) {
