@@ -4,18 +4,18 @@ exp_cols <- c(
 )
 
 ## Bodgy up a set of matches
-matches <- getPwmMatches(esr1, stringset, min_score = "80%")
+matches <- getPwmMatches(esr1, stringset,  pvalue = 1e-3)
 matches$seq <- c(1, seq_len(nrow(matches) - 1))
 
 test_that("testMotifPos returns symmetrical peaks as expected",{
-    res <- testMotifPos(matches,)
+    res <- testMotifPos(matches)
     expect_true(nrow(res) == 1)
     expect_equal(colnames(res), exp_cols)
     expect_equal(
         res[,1:6],
         data.frame(
-            start = 35, end = 45, centre = 40, width = 10,
-            total_matches = 1, matches_in_region = 1
+            start = 15, end = 55, centre = 35, width = 40,
+            total_matches = 5, matches_in_region = 3, row.names = "motif1"
         )
     )
     expect_true(is(res$consensus_motif[[1]], "matrix"))
@@ -24,7 +24,7 @@ test_that("testMotifPos returns symmetrical peaks as expected",{
 
 test_that("setting abs = TRUE behaves as expected", {
     bins <- .makeBmBins(matches, binwidth = 10, abs = TRUE)
-    expect_equal(bins$weight, 1)
+    expect_equal(bins$weight, c(0.5, 0.5, 1, 1, 1))
     exp_bins <- c(
         "[0,10]", "(10,20]", "(20,30]", "(30,40]", "(40,50]", "(50,60]",
         "(60,70]", "(70,80]", "(80,90]", "(90,100]", "(100,110]", "(110,120]",
@@ -36,13 +36,16 @@ test_that("setting abs = TRUE behaves as expected", {
 })
 
 test_that("Passing to getPwmMatches works", {
-    res <- testMotifPos(esr1, stringset, abs = TRUE, binwidth = 100, min_score = "80%")
+    res <- testMotifPos(
+        esr1, stringset, abs = TRUE, binwidth = 100, min_score = "50%",
+        threshold_type = "logodds"
+    )
     expect_true(nrow(res) == 1)
     expect_equal(
         res[,1:6],
         data.frame(
             start = 0, end = 100, centre = 50, width = 100,
-            total_matches = 1, matches_in_region = 1
+            total_matches = 1, matches_in_region = 1, row.names = "motif1"
         )
     )
 })

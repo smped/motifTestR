@@ -310,3 +310,89 @@ countClusterMatches <- function(
 
     as.integer(sum(n_matches))
 }
+
+#' @import Biostrings
+#' @importFrom IRanges Views IRanges
+#' @importFrom S4Vectors DataFrame mcols mcols<-
+#' @importFrom methods as is
+#' @importFrom stats setNames
+#' @keywords internal
+.getSinglePwmMatches <- function(
+        pwm, views, rc, min_score, best_only = FALSE, break_ties, nm_type,
+        ...
+){
+
+    ## Checks
+    pwm <- .checkPWM(pwm)
+    stopifnot(is(views, "XStringViews"))
+    ## Handle empty stringsets
+    if (!length(views)) return(.emptyPwmDF(nm_type))
+
+    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE)
+    mcols(hits)$direction <- rep_len("F", length(hits))
+    if (rc) {
+        rev_pwm <- reverseComplement(pwm)
+        hits_rev <- matchPWM(
+            rev_pwm, views, min.score = min_score, with.score = TRUE
+        )
+        mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
+        hits <- c(hits, hits_rev)
+        hits <- hits[!duplicated(IRanges(hits))] # Remove strict palindromic hits
+    }
+
+    ## Setup the return object as empty for any cases without matches
+    if (length(hits) == 0) return(.emptyPwmDF(nm_type))
+
+    ## Form it as a list, the eventually wrap into a DF
+    cols <- c(
+        "seq", "score", "direction", "start", "end", "from_centre",
+        "seq_width", "match"
+    )
+    out <- mcols(hits)
+    out$direction <- factor(out$direction, levels = c("F", "R"))
+
+    ## Map back to the original Views
+    map <- as.data.frame(views@ranges)
+    hits_to_map <- findInterval(start(hits), map$start)
+    w <- width(hits)
+
+    ## Form the output
+    out$seq <- hits_to_map
+    out$start <- as.integer(start(hits) - c(0, map$end)[hits_to_map])
+    out$end <- as.integer(out$start + w - 1)
+    out$seq_width <- width(views[out$seq])
+    out$from_centre <- (out$start + out$end - out$seq_width) / 2
+
+    ## The match itself
+    to_rev <- out$direction == "R"
+    out$match <- as(hits, "XStringSet")
+    out$match[to_rev] <- reverseComplement(out$match[to_rev])
+
+    ## Setup any named strings to appear in the same order
+    if (nm_type == "character") {
+        out$seq <- factor(map$names[hits_to_map], map$names)
+        out$seq <- droplevels(out$seq)
+    }
+
+    ## The final object
+    if (best_only) out <- .getBestMatch(out, break_ties)
+    o <- order(out$seq, out$start)
+    if (nm_type == "character") out$seq <- as.character(out$seq)
+    out[o, cols]
+
+}
+
+#' @importFrom S4Vectors DataFrame
+#' @keywords internal
+.emptyPwmDF <- function(nm_type){
+    DataFrame(
+        seq = vector(nm_type, 0),
+        score = numeric(),
+        direction = factor(NULL, levels = c("F", "R")),
+        start = integer(),
+        end = integer(),
+        from_centre = numeric(),
+        seq_width = integer(),
+        match = DNAStringSet()
+    )
+}

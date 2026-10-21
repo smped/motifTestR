@@ -10,8 +10,6 @@ testMotifPos(
   binwidth = 10,
   abs = FALSE,
   rc = TRUE,
-  min_score = "50\%",
-  break_ties = "all",
   alt = c("greater", "less", "two.sided"),
   sort_by = c("p", "none"),
   mc.cores = 1,
@@ -31,10 +29,6 @@ by \link{getPwmMatches} with \code{best_only = TRUE}}
 
 \item{rc}{logical(1) Also find matches using the reverse complement of each
 PWM}
-
-\item{min_score}{The minimum score to return a match}
-
-\item{break_ties}{Choose how to resolve matches with tied scores}
 
 \item{alt}{Alternative hypothesis for the binomial test}
 

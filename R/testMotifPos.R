@@ -64,8 +64,6 @@
 #' @param abs Use absolute positions around zero to find symmetrical enrichment
 #' @param rc logical(1) Also find matches using the reverse complement of each
 #' PWM
-#' @param min_score The minimum score to return a match
-#' @param break_ties Choose how to resolve matches with tied scores
 #' @param alt Alternative hypothesis for the binomial test
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
@@ -93,15 +91,19 @@
 #' @importFrom stats p.adjust
 #' @export
 testMotifPos <- function(
-        x, stringset, binwidth = 10, abs = FALSE, rc = TRUE, min_score = "50%",
-        break_ties = "all", alt = c("greater", "less", "two.sided"),
-        sort_by = c("p", "none"), mc.cores = 1,
-        ...
+        x, stringset, binwidth = 10, abs = FALSE, rc = TRUE,
+        alt = c("greater", "less", "two.sided"), sort_by = c("p", "none"),
+        mc.cores = 1, ...
 ) {
 
     ## Handle single objects by coercing to a list where appropriate
+    ## May need rethinking!!!!
     valid_cl <- c("matrix", "universalmotif", "DataFrame")
-    if (any(vapply(valid_cl, \(cl) is(x, cl), logical(1)))) x <- list(x)
+    if (any(vapply(valid_cl, \(cl) is(x, cl), logical(1)))) {
+        needs_name <- !is(x, "universalmotif")
+        x <- list(x)
+        if (needs_name) names(x) <- "motif1"
+    }
     if (!is.list(x))
         stop("Input should be provided as a list, PWM/matrix or DF of matches")
 
@@ -114,8 +116,7 @@ testMotifPos <- function(
         if (length(unique(width(stringset))) != 1)
             stop("All sequences are required to be the same width")
         matches <- getPwmMatches(
-            x, stringset, rc, min_score, best_only = TRUE, break_ties,
-            mc.cores, ...
+            x, stringset, rc =  rc, best_only = TRUE, mc.cores = mc.cores, ...
         )
     } else {
         ## Now for a list of matches
@@ -131,9 +132,8 @@ testMotifPos <- function(
     )
 
     out <- mclapply(
-        matches, .testSingleMotifPos, binwidth = binwidth, abs = abs, rc = rc,
-        min_score = min_score, break_ties = break_ties, alt = alt, ...,
-        mc.cores = mc.cores
+        matches, .testSingleMotifPos, binwidth = binwidth, abs = abs,
+        alt = alt, ..., mc.cores = mc.cores
     )
     out <- do.call("rbind", out)
     out$fdr <- p.adjust(out$p, "fdr")
@@ -147,9 +147,7 @@ testMotifPos <- function(
 #' @importFrom harmonicmeanp p.hmp
 #' @importFrom stats binom.test
 #' @keywords internal
-.testSingleMotifPos <- function(
-        matches, binwidth, abs, rc, min_score, break_ties, alt, ...
-) {
+.testSingleMotifPos <- function(matches, binwidth, abs, alt, ...) {
 
     ## Setup a well formed output object for easy combining with other tests
     out_cols <- c(

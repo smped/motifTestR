@@ -58,118 +58,80 @@
 #' ## Apply multiple PWMs as a list
 #' getPwmMatches(ex_pfm, ar_er_seq, best_only = TRUE)
 #'
-#' @importFrom parallel mclapply
-#' @importFrom methods slot
+#' @importFrom universalmotif scan_sequences convert_motifs convert_type to_list
+#' @importFrom universalmotif to_list to_df
+#' @importFrom Biostrings width
 #' @importClassesFrom universalmotif universalmotif
 #' @export
 getPwmMatches <- function(
-        pwm, stringset, rc = TRUE, min_score = "50%", best_only = FALSE,
+        pwm, stringset, rc = TRUE, min_score = "50%", pvalue = 1e-4,
+        qvalue = 0.05, threshold_type = "pvalue", best_only = FALSE,
         break_ties = c("all", "random", "first", "last", "central"),
         mc.cores = 1, ...
-) {
-
-    break_ties <- match.arg(break_ties)
-    args <- c(as.list(environment()), list(...))
-    args <- args[names(args) != "mc.cores"]
-    nm_type <- "integer"
-    if (!is.null(names(stringset))) nm_type <- "character"
-
-    # Form the entire XStringSetList into a Views object
-    map <- .viewMapFromXStringset(stringset)
-    views <- Views(
-        unlist(stringset), start = map$start, width = map$width,
-        names = map$names
-    )
-
-    if (is.list(pwm)) {
-        pwm <- .cleanMotifList(pwm)
-        out <- mclapply(
-            pwm, .getSinglePwmMatches, views = views, rc = rc,
-            min_score = min_score, best_only = best_only,
-            break_ties = break_ties, nm_type = nm_type, mc.cores = mc.cores
-        )
-    } else {
-        args$nm_type <- nm_type
-        args$stringset <- NULL
-        args$views <- views
-        out <- do.call(".getSinglePwmMatches", args)
-    }
-    out
-
-}
-
-#' @import Biostrings
-#' @importFrom IRanges Views IRanges
-#' @importFrom S4Vectors DataFrame mcols mcols<-
-#' @importFrom methods as is
-#' @importFrom stats setNames
-#' @keywords internal
-.getSinglePwmMatches <- function(
-        pwm, views, rc, min_score, best_only = FALSE, break_ties, nm_type,
-        ...
 ){
 
-    ## Checks
-    pwm <- .checkPWM(pwm)
-    stopifnot(is(views, "XStringViews"))
-    ## Handle empty stringsets
-    if (!length(views)) return(.emptyPwmDF(nm_type))
-
-    hits <- matchPWM(pwm, views, min.score = min_score, with.score = TRUE)
-    mcols(hits)$direction <- rep_len("F", length(hits))
-    if (rc) {
-        rev_pwm <- reverseComplement(pwm)
-        hits_rev <- matchPWM(
-            rev_pwm, views, min.score = min_score, with.score = TRUE
-        )
-        mcols(hits_rev)$direction <- rep_len("R", length(hits_rev))
-        hits <- c(hits, hits_rev)
-        hits <- hits[!duplicated(IRanges(hits))] # Remove strict palindromic hits
-    }
-
-    ## Setup the return object as empty for any cases without matches
-    if (length(hits) == 0) return(.emptyPwmDF(nm_type))
-
-    ## Form it as a list, the eventually wrap into a DF
-    cols <- c(
-        "seq", "score", "direction", "start", "end", "from_centre",
-        "seq_width", "match"
+    break_ties <- match.arg(break_ties)
+    threshold_type <- match.arg(
+        threshold_type, eval(formals(scan_sequences)$threshold.type)
     )
-    out <- mcols(hits)
-    out$direction <- factor(out$direction, levels = c("F", "R"))
+    pwm_was_matrix <- is.matrix(pwm)
 
-    ## Map back to the original Views
-    map <- as.data.frame(views@ranges)
-    hits_to_map <- findInterval(start(hits), map$start)
-    w <- width(hits)
+    ## Check the min_score
+    if (!is.null(min_score)){
+        if (is.character(min_score)) {
+            stopifnot(grepl("%$", min_score))
+            min_score <- as.numeric(gsub("%$", "", min_score)) / 100
+        }
+        if (is.numeric(min_score)) stopifnot(min_score > 0 & min_score < 1)
+    }
+    stopifnot(pvalue > 0 & pvalue < 1) # Cannot be NULL
+    thresh <- pvalue
+    if (grepl("logodds", threshold_type)) thresh <- min_score
+    if (threshold_type == "qvalue") {
+        stopifnot(qvalue > 0 & qvalue < 1)
+        thresh <- qvalue
+    }
+    stopifnot(thresh > 0) # Would lead to silly results
 
-    ## Form the output
-    out$seq <- hits_to_map
-    out$start <- as.integer(start(hits) - c(0, map$end)[hits_to_map])
-    out$end <- as.integer(out$start + w - 1)
-    out$seq_width <- width(views[out$seq])
-    out$from_centre <- (out$start + out$end - out$seq_width) / 2
-
-    ## The match itself
-    to_rev <- out$direction == "R"
-    out$match <- as(hits, "XStringSet")
-    out$match[to_rev] <- reverseComplement(out$match[to_rev])
-
-    ## Setup any named strings to appear in the same order
-    if (nm_type == "character") {
-        out$seq <- factor(map$names[hits_to_map], map$names)
-        out$seq <- droplevels(out$seq)
+    ## Now run the checks on the PWM
+    if (is.list(pwm)) {
+        if (all(vapply(pwm, is.matrix, logical(1)))) {
+            um <- lapply(pwm, convert_motifs)
+            um_df <- to_df(um)
+            stopifnot(length(unique(names(pwm))) == length(pwm)) # Uniq names
+            um_df$name <- names(pwm)
+            um_df$nsites <- 100 # Avoids an annoying message in the next step
+            pwm <- to_list(um_df)
+        }
+        stopifnot(all(vapply(pwm, is, logical(1), class2 = "universalmotif")))
+        pwm <- convert_type(pwm, type = "PWM")
     }
 
-    ## The final object
-    if (best_only) out <- .getBestMatch(out, break_ties)
-    o <- order(out$seq, out$start)
-    if (nm_type == "character") out$seq <- as.character(out$seq)
-    out[o, cols]
+    matches <- scan_sequences(
+        pwm, stringset, threshold = thresh, threshold.type = threshold_type,
+        RC = rc, nthreads = mc.cores, ...
+    )
+    if (!is.null(min_score)) matches <- matches[matches$score.pct > min_score*100,]
+    names(matches)[c(3, 6)] <- c("seq", "end")
+    matches <- matches[order(matches$motif, matches$sequence.i, matches$start),]
+    matches$direction <- c("+" = "F", "-" = "R")[matches$strand]
+    matches$direction <- factor(matches$direction, levels = c("F", "R"))
+    matches$seq_width <- width(stringset)[matches$sequence.i]
+    matches$from_centre <- (matches$start + matches$end - matches$seq_width) / 2
+    matches$match <- as(matches$match, is(stringset)[[1]])
+    keep_cols <- c(
+        "seq", "score", "direction", "start", "end", "from_centre", "seq_width",
+        "match", "pvalue", "qvalue"
+    )
+    out <- matches[, keep_cols]
+    matches$motif <- factor(matches$motif, levels = to_df(pwm)$name)
+    out <- split(out, matches$motif)
 
+    if (best_only) out <- lapply(out, .getBestMatch, ties = break_ties)
+    if (pwm_was_matrix) out <- DataFrame(out[[1]])
+    out
 }
 
-#' @importFrom S4Vectors splitAsList
 #' @keywords internal
 .getBestMatch <- function(df, ties, score_col = "score"){
 
@@ -195,17 +157,3 @@ getPwmMatches <- function(
 
 }
 
-#' @importFrom S4Vectors DataFrame
-#' @keywords internal
-.emptyPwmDF <- function(nm_type){
-    DataFrame(
-        seq = vector(nm_type, 0),
-        score = numeric(),
-        direction = factor(NULL, levels = c("F", "R")),
-        start = integer(),
-        end = integer(),
-        from_centre = numeric(),
-        seq_width = integer(),
-        match = DNAStringSet()
-    )
-}

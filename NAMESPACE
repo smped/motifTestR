@@ -18,49 +18,68 @@ import(Biostrings)
 import(GenomicRanges)
 import(ggplot2)
 importClassesFrom(universalmotif,universalmotif)
-importFrom(IRanges,DataFrameList)
-importFrom(IRanges,IRanges)
-importFrom(IRanges,IRangesList)
-importFrom(IRanges,IntegerList)
-importFrom(IRanges,Views)
-importFrom(IRanges,findOverlaps)
-importFrom(IRanges,overlapsAny)
-importFrom(IRanges,width)
-importFrom(S4Vectors,"mcols<-")
-importFrom(S4Vectors,DataFrame)
-importFrom(S4Vectors,endoapply)
-importFrom(S4Vectors,mcols)
-importFrom(S4Vectors,queryHits)
-importFrom(S4Vectors,splitAsList)
-importFrom(S4Vectors,subjectHits)
+importFrom(Biostrings,width)
+importFrom(IRanges,
+  DataFrameList,
+  IRanges,
+  IRangesList,
+  IntegerList,
+  Views,
+  findOverlaps,
+  overlapsAny,
+  width
+)
+importFrom(S4Vectors,
+  "mcols<-",
+  DataFrame,
+  endoapply,
+  mcols,
+  queryHits,
+  splitAsList,
+  subjectHits
+)
 importFrom(Seqinfo,seqinfo)
 importFrom(graphics,abline)
 importFrom(harmonicmeanp,p.hmp)
-importFrom(matrixStats,colSds)
-importFrom(matrixStats,rowSums2)
-importFrom(methods,as)
-importFrom(methods,is)
-importFrom(methods,slot)
+importFrom(matrixStats,
+  colSds,
+  rowSums2
+)
+importFrom(methods,
+  as,
+  is,
+  slot
+)
 importFrom(parallel,mclapply)
 importFrom(patchwork,plot_layout)
-importFrom(rlang,"!!")
-importFrom(rlang,sym)
-importFrom(stats,as.dendrogram)
-importFrom(stats,as.dist)
-importFrom(stats,as.formula)
-importFrom(stats,binom.test)
-importFrom(stats,cutree)
-importFrom(stats,dist)
-importFrom(stats,glm)
-importFrom(stats,hclust)
-importFrom(stats,p.adjust)
-importFrom(stats,pchisq)
-importFrom(stats,phyper)
-importFrom(stats,poisson)
-importFrom(stats,poisson.test)
-importFrom(stats,quasipoisson)
-importFrom(stats,setNames)
-importFrom(stats,xtabs)
-importFrom(universalmotif,compare_motifs)
-importFrom(universalmotif,convert_type)
-importFrom(universalmotif,create_motif)
+importFrom(rlang,
+  "!!",
+  sym
+)
+importFrom(stats,
+  as.dendrogram,
+  as.dist,
+  as.formula,
+  binom.test,
+  cutree,
+  dist,
+  glm,
+  hclust,
+  p.adjust,
+  pchisq,
+  phyper,
+  poisson,
+  poisson.test,
+  quasipoisson,
+  setNames,
+  xtabs
+)
+importFrom(universalmotif,
+  compare_motifs,
+  convert_motifs,
+  convert_type,
+  create_motif,
+  scan_sequences,
+  to_df,
+  to_list
+)
