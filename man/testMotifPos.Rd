@@ -36,7 +36,7 @@ PWM}
 
 \item{mc.cores}{Passed to \link[parallel]{mclapply}}
 
-\item{...}{Passed to \link[Biostrings]{matchPWM}}
+\item{...}{Passed to \link{getPwmMatches}}
 }
 \value{
 A data.frame with columns \code{start}, \code{end}, \code{centre}, \code{width}, \code{total_matches},

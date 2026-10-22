@@ -1,6 +1,6 @@
 exp_cols <- c(
     "seq", "score", "direction", "start", "end", "from_centre", "seq_width",
-    "match", "pvalue", "qvalue"
+    "match"#, "pvalue", "qvalue"
 )
 
 test_that("getPwmMatches works as expected",{
@@ -30,15 +30,15 @@ test_that("Choosing only the best matches works", {
     stringset <- ar_er_seq[2]
     best <- getPwmMatches(esr1, stringset, best_only = TRUE, threshold_type = "logodds")
     expect_true(nrow(best) == 1)
-    expect_true(best$end == 99)
+    expect_true(best$start == 99)
     ## Now modify & check other options in the private function
     all <- getPwmMatches(
         esr1, stringset, min_score = "80%", threshold_type = "logodds"
     )
     all$score <- 5 # Bodge up a tie
-    expect_true(.getBestMatch(all, "first")$start == 107)
-    expect_true(.getBestMatch(all, "central")$start == 194)
-    expect_true(.getBestMatch(all, "last")$start == 194)
+    expect_true(.getBestMatch(all, "first")$start == 99)
+    expect_true(.getBestMatch(all, "central")$start == 186)
+    expect_true(.getBestMatch(all, "last")$start == 186)
     expect_equal(nrow(.getBestMatch(all, "all")), nrow(all))
 
 })

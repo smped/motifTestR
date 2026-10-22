@@ -11,10 +11,11 @@ getPwmMatches(
   min_score = "50\%",
   pvalue = 1e-04,
   qvalue = 0.05,
-  threshold_type = "pvalue",
+  threshold_type = "logodds",
   best_only = FALSE,
   break_ties = c("all", "random", "first", "last", "central"),
   mc.cores = 1,
+  calc.pvals = NULL,
   ...
 )
 }
@@ -25,20 +26,31 @@ getPwmMatches(
 
 \item{rc}{logical(1) Also find matches using the reverse complement of pwm}
 
-\item{min_score}{The minimum score to return a match}
+\item{min_score}{The minimum score to return a match if matching by logodds
+or logadds.abs. Can be passed as a percentage or as a value between 0 & 1}
+
+\item{pvalue, qvalue}{thresholds for returning amatch when using either as the
+threshold type}
+
+\item{threshold_type}{See \link[universalmotif]{scan_sequences}. Defaults to
+"logodds" for approximate compatiblity with earlier versions}
 
 \item{best_only}{logical(1) Only return the best match}
 
 \item{break_ties}{Method for breaking ties when only returning the best match
 Ignored when all matches are returned (the default)}
 
-\item{mc.cores}{Passed to \link[parallel]{mclapply} if passing multiple PWMs}
+\item{mc.cores}{Passed as \code{nthreads} to  \link[universalmotif]{scan_sequences}}
 
-\item{...}{Passed to \link[Biostrings]{matchPWM}}
+\item{calc.pvals}{See \link[universalmotif]{scan_sequences}}
+
+\item{...}{Passed to See \link[universalmotif]{scan_sequences}}
 }
 \value{
 A DataFrame with columns: \code{seq}, \code{score}, \code{direction}, \code{start},
-\code{end}, \code{from_centre}, \code{seq_width}, and \code{match}
+\code{end}, \code{from_centre}, \code{seq_width}, and \code{match}.
+Additional columns contain \code{pvalue} and \code{qvalue} will also be included if
+requested via \code{calc.pvals}, or if using either of these methods.
 
 The first three columns describe the sequence with matches, the score of
 the match and whether the match was found using the forward or reverse PWM.
@@ -60,13 +72,16 @@ generally representing a transcription factor binding motif.
 By default, matches are performed using the PWM as provided and the reverse
 complement, however this can easily be disabled by setting \code{rc = FALSE}.
 
-The function relies heavily on \link[Biostrings]{matchPWM} and
-\link[IRanges]{Views} for speed.
-
 When choosing to return the best match (\code{best_only = TRUE}), only the match
 with the highest score is returned for each sequence.
 Should there be tied scores, the best match can be chosen as either the first,
 last, most central, all tied matches, or choosing one at random (the default).
+
+Importantly, prior to Bioconductor Release 3.25, this relied on
+\link[Biostrings]{matchPWM} but now utilises
+\link[universalmotif]{scan_sequences} for greater flexibility.
+There may be a slight decrease in speed as a result, especially when
+incorporating pvalues or qvalues for thresholding matches.
 }
 \examples{
 ## Load the example PWM

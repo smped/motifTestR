@@ -67,7 +67,7 @@
 #' @param alt Alternative hypothesis for the binomial test
 #' @param sort_by Column to sort results by
 #' @param mc.cores Passed to \link[parallel]{mclapply}
-#' @param ... Passed to \link[Biostrings]{matchPWM}
+#' @param ... Passed to \link{getPwmMatches}
 #'
 #'
 #' @examples

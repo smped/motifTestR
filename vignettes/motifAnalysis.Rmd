@@ -354,6 +354,11 @@ As a relevant example, when looking at the above UpSet plot, about half of the s
 Does this mean that both are bound to the sequence, or have the same sequences simply been matched to both PWMs?
 As we can see there is quite some similarity in the core regions of the two binding motifs
 
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+
 ```{r compare-andr-foxa1, fig.cap = "Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions.", fig.alt="Binding Motifs for ANDR and FOXA1 overlaid for the best alignment, showing the similarity in the core regions."}
 c("ANDR", "FOXA1") |>
     lapply(

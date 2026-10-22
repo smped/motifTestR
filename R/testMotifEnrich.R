@@ -179,7 +179,7 @@ testMotifEnrich <- function(
     cols <- c(cols, mod_cols[[model]])
     if (model == "hypergeometric") cols <- setdiff(cols, "Z")
     ## Run the analysis
-    if (is.matrix(pwm)) pwm <- list(pwm)
+    if (is.matrix(pwm)) pwm <- list(motif1 = pwm)
     pwm <- .cleanMotifList(pwm)
     if (model == "poisson")
         out <- .testPois(pwm, stringset, bg, mc.cores, "pwm", prior.count, ...)
@@ -228,12 +228,10 @@ testMotifEnrich <- function(
     type <- match.arg(type)
 
     if (type == "pwm") {
-        matches_ss <- mclapply(
-            x, .hasPwmMatch, stringset = ss, ..., mc.cores = mc.cores
-        )
-        matches_bg <- mclapply(
-            x, .hasPwmMatch, stringset = bg, ..., mc.cores = mc.cores
-        )
+
+        matches_ss <- getPwmMatches(x, stringset, mc.cores = mc.cores, ...)
+        matches_bg <- getPwmMatches(x, bg, mc.cores = mc.cores, ...)
+
     }
     if (type == "cluster") {
         matches_ss <- mclapply(
@@ -243,8 +241,8 @@ testMotifEnrich <- function(
             x, .hasClusterMatch, stringset = bg, ..., mc.cores = mc.cores
         )
     }
-    n_matches_ss <- vapply(matches_ss, sum, integer(1)) + pc
-    n_matches_bg <- vapply(matches_bg, sum, integer(1)) + pc
+    n_matches_ss <- vapply(matches_ss, \(x) length(unique(x$seq)), integer(1)) + pc
+    n_matches_bg <- vapply(matches_bg, \(x) length(unique(x$seq)), integer(1)) + pc
 
     or_denom <- (n_ss - n_matches_ss) / (n_bg - n_matches_bg)
     or <- (n_matches_ss / n_matches_bg) / or_denom

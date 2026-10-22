@@ -10,26 +10,37 @@
 #' By default, matches are performed using the PWM as provided and the reverse
 #' complement, however this can easily be disabled by setting `rc = FALSE`.
 #'
-#' The function relies heavily on \link[Biostrings]{matchPWM} and
-#' \link[IRanges]{Views} for speed.
-#'
 #' When choosing to return the best match (`best_only = TRUE`), only the match
 #' with the highest score is returned for each sequence.
 #' Should there be tied scores, the best match can be chosen as either the first,
 #' last, most central, all tied matches, or choosing one at random (the default).
 #'
+#' Importantly, prior to Bioconductor Release 3.25, this relied on
+#' \link[Biostrings]{matchPWM} but now utilises
+#' \link[universalmotif]{scan_sequences} for greater flexibility.
+#' There may be a slight decrease in speed as a result, especially when
+#' incorporating pvalues or qvalues for thresholding matches.
+#'
 #' @param pwm A Position Weight Matrix, list of PWMs or universalmotif list
 #' @param stringset An XStringSet
 #' @param rc logical(1) Also find matches using the reverse complement of pwm
-#' @param min_score The minimum score to return a match
+#' @param min_score The minimum score to return a match if matching by logodds
+#' or logadds.abs. Can be passed as a percentage or as a value between 0 & 1
+#' @param pvalue,qvalue thresholds for returning amatch when using either as the
+#' threshold type
+#' @param threshold_type See \link[universalmotif]{scan_sequences}. Defaults to
+#' "logodds" for approximate compatiblity with earlier versions
 #' @param best_only logical(1) Only return the best match
 #' @param break_ties Method for breaking ties when only returning the best match
 #' Ignored when all matches are returned (the default)
-#' @param mc.cores Passed to \link[parallel]{mclapply} if passing multiple PWMs
-#' @param ... Passed to \link[Biostrings]{matchPWM}
+#' @param mc.cores Passed as `nthreads` to  \link[universalmotif]{scan_sequences}
+#' @param calc.pvals See \link[universalmotif]{scan_sequences}
+#' @param ... Passed to See \link[universalmotif]{scan_sequences}
 #'
 #' @return A DataFrame with columns: `seq`, `score`, `direction`, `start`,
-#' `end`, `from_centre`, `seq_width`, and `match`
+#' `end`, `from_centre`, `seq_width`, and `match`.
+#' Additional columns contain `pvalue` and `qvalue` will also be included if
+#' requested via `calc.pvals`, or if using either of these methods.
 #'
 #' The first three columns describe the sequence with matches, the score of
 #' the match and whether the match was found using the forward or reverse PWM.
@@ -61,13 +72,14 @@
 #' @importFrom universalmotif scan_sequences convert_motifs convert_type to_list
 #' @importFrom universalmotif to_list to_df
 #' @importFrom Biostrings width
+#' @importFrom methods as
 #' @importClassesFrom universalmotif universalmotif
 #' @export
 getPwmMatches <- function(
         pwm, stringset, rc = TRUE, min_score = "50%", pvalue = 1e-4,
-        qvalue = 0.05, threshold_type = "pvalue", best_only = FALSE,
+        qvalue = 0.05, threshold_type = "logodds", best_only = FALSE,
         break_ties = c("all", "random", "first", "last", "central"),
-        mc.cores = 1, ...
+        mc.cores = 1, calc.pvals = NULL, ...
 ){
 
     break_ties <- match.arg(break_ties)
@@ -82,16 +94,15 @@ getPwmMatches <- function(
             stopifnot(grepl("%$", min_score))
             min_score <- as.numeric(gsub("%$", "", min_score)) / 100
         }
-        if (is.numeric(min_score)) stopifnot(min_score > 0 & min_score < 1)
     }
-    stopifnot(pvalue > 0 & pvalue < 1) # Cannot be NULL
     thresh <- pvalue
-    if (grepl("logodds", threshold_type)) thresh <- min_score
-    if (threshold_type == "qvalue") {
-        stopifnot(qvalue > 0 & qvalue < 1)
-        thresh <- qvalue
+    if (grepl("logodds", threshold_type)) {
+        thresh <- min_score
+        if (is.null(calc.pvals)) calc.pvals <- FALSE
     }
-    stopifnot(thresh > 0) # Would lead to silly results
+    if (is.null(calc.pvals)) calc.pvals <- TRUE
+    if (threshold_type == "qvalue") thresh <- qvalue
+    stopifnot(thresh > 0 & thresh < 1) # Would lead to silly results
 
     ## Now run the checks on the PWM
     if (is.list(pwm)) {
@@ -109,26 +120,32 @@ getPwmMatches <- function(
 
     matches <- scan_sequences(
         pwm, stringset, threshold = thresh, threshold.type = threshold_type,
-        RC = rc, nthreads = mc.cores, ...
+        RC = rc, nthreads = mc.cores, calc.pvals = calc.pvals, ...
     )
-    if (!is.null(min_score)) matches <- matches[matches$score.pct > min_score*100,]
-    names(matches)[c(3, 6)] <- c("seq", "end")
-    matches <- matches[order(matches$motif, matches$sequence.i, matches$start),]
-    matches$direction <- c("+" = "F", "-" = "R")[matches$strand]
-    matches$direction <- factor(matches$direction, levels = c("F", "R"))
-    matches$seq_width <- width(stringset)[matches$sequence.i]
-    matches$from_centre <- (matches$start + matches$end - matches$seq_width) / 2
-    matches$match <- as(matches$match, is(stringset)[[1]])
-    keep_cols <- c(
-        "seq", "score", "direction", "start", "end", "from_centre", "seq_width",
-        "match", "pvalue", "qvalue"
-    )
-    out <- matches[, keep_cols]
     matches$motif <- factor(matches$motif, levels = to_df(pwm)$name)
-    out <- split(out, matches$motif)
+    if (!is.null(min_score)) matches <- matches[matches$score.pct > min_score*100,]
+    if (is.null(names(stringset))) matches$sequence <- as.integer(matches$sequence)
+    out <- list(
+        seq = matches$sequence, score = matches$score,
+        direction = factor(
+            c("+" = "F", "-" = "R")[matches$strand], levels = c("F", "R")
+        ),
+        start = pmin(matches$start, matches$stop),
+        end = pmax(matches$start, matches$stop),
+        from_centre = numeric(),
+        seq_width = width(stringset)[matches$sequence.i],
+        match =  as(matches$match, is(stringset)[[1]])
+    )
+    out$from_centre <- (out$start + out$end - out$seq_width) / 2
+    if (calc.pvals) {
+        out$pvalue <- matches$pvalue
+        out$qvalue <- matches$qvalue
+    }
+    o <- order(out$seq)
+    out <- split(as(out, "DataFrame")[o,], matches$motif[o])
 
     if (best_only) out <- lapply(out, .getBestMatch, ties = break_ties)
-    if (pwm_was_matrix) out <- DataFrame(out[[1]])
+    if (pwm_was_matrix) out <- out[[1]]
     out
 }
 

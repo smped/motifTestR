@@ -4,7 +4,7 @@ exp_cols <- c(
 )
 
 ## Bodgy up a set of matches
-matches <- getPwmMatches(esr1, stringset,  pvalue = 1e-3)
+matches <- getPwmMatches(esr1, stringset, pvalue = 1e-3, threshold_type = "pv")
 matches$seq <- c(1, seq_len(nrow(matches) - 1))
 
 test_that("testMotifPos returns symmetrical peaks as expected",{

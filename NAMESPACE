@@ -41,10 +41,7 @@ importFrom(S4Vectors,
 importFrom(Seqinfo,seqinfo)
 importFrom(graphics,abline)
 importFrom(harmonicmeanp,p.hmp)
-importFrom(matrixStats,
-  colSds,
-  rowSums2
-)
+importFrom(matrixStats,colSds)
 importFrom(methods,
   as,
   is,

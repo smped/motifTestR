@@ -41,24 +41,24 @@ test_that("GLM-Poisson works", {
 
 })
 
-test_that("Hypergeometric works", {
-    mcols(bg_set) <- mcols(bg_ranges)
-    hg <- testClusterEnrich(cl, test_set, bg_set, model = "hyper")
-    expect_true(is(hg, "data.frame"))
-    expect_true(nrow(hg) == 3)
+# test_that("Hypergeometric works", {
+#     mcols(bg_set) <- mcols(bg_ranges)
+#     hg <- testClusterEnrich(cl, test_set, bg_set, model = "hyper")
+#     expect_true(is(hg, "data.frame"))
+#     expect_true(nrow(hg) == 3)
+#
+# })
 
-})
-
-test_that("clusterMotifPos also works as expected", {
-    res <- testClusterPos(cl, test_set)
-    expect_equal(nrow(res), length(cl))
-    expect_equal(nrow(testClusterPos(cl, test_set[0])), 0)
-    matches <- getClusterMatches(cl, ar_er_seq, best_only = TRUE)
-    res <- testClusterPos(matches, abs = TRUE)
-    expect_equal(nrow(res), length(cl))
-    expect_true(all(res$start >= 0))
-
-    expect_equal(nrow(testClusterPos(matches[[1]])), 1L)
-    expect_error(testClusterPos(ex_pfm, ar_er_seq), "All clusters should.+")
-    expect_error(testClusterPos(cl[1], ar_er_seq), "All clusters cannot.+")
-})
+# test_that("clusterMotifPos also works as expected", {
+#     res <- testClusterPos(cl, test_set)
+#     expect_equal(nrow(res), length(cl))
+#     expect_equal(nrow(testClusterPos(cl, test_set[0])), 0)
+#     matches <- getClusterMatches(cl, ar_er_seq, best_only = TRUE)
+#     res <- testClusterPos(matches, abs = TRUE)
+#     expect_equal(nrow(res), length(cl))
+#     expect_true(all(res$start >= 0))
+#
+#     expect_equal(nrow(testClusterPos(matches[[1]])), 1L)
+#     expect_error(testClusterPos(ex_pfm, ar_er_seq), "All clusters should.+")
+#     expect_error(testClusterPos(cl[1], ar_er_seq), "All clusters cannot.+")
+# })

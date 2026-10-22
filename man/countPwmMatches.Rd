@@ -25,7 +25,7 @@ countPwmMatches(
 \item{mc.cores}{Passed to \link[parallel]{mclapply} when analysing a list of
 PWMs}
 
-\item{...}{Passed to \link[Biostrings]{countPWM}}
+\item{...}{Passed to \link{getPwmMatches}}
 }
 \value{
 An integer vector
